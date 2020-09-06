@@ -21,11 +21,46 @@ class CommunityStatsPageState extends  State<CommunityStatsPage> {
           centerTitle: true,
           backgroundColor: Colors.white,
           elevation: 0,
-          actions: <Widget>[IconButton(
-            icon: Icon(Icons.arrow_drop_down),
-            color: Colors.black,
-            onPressed: () {},
-          ),]
+          actions: <Widget>[
+            PopupMenuButton(
+              icon: Icon(
+                Icons.arrow_drop_down,
+                color: Colors.black,),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  child: Text("All Time"),
+                  value: 1,
+                ),
+                PopupMenuItem(
+                  child: Text("Month"),
+                  value: 2,
+                ),
+                PopupMenuItem(
+                  child: Text("Week"),
+                  value: 3,
+                ),
+                PopupMenuItem(
+                  child: Text("Today"),
+                  value: 4,
+                ),
+              ],
+
+              onCanceled: () {
+                print("You have canceled the menu.");
+              },
+              onSelected: (value) {},
+            )
+
+
+            // IconButton(
+            // icon: Icon(Icons.arrow_drop_down),
+            // color: Colors.black,
+            // onPressed: () {},),
+
+
+
+
+          ]
       ),
       body: Container(
           color: Colors.white,

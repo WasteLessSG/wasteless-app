@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:LessApp/massentry.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:intl/intl.dart';
 
 
 class MainStatsPage extends StatefulWidget{
@@ -14,28 +14,29 @@ class MainStatsPage extends StatefulWidget{
 
 class MainStatsPageState extends State<MainStatsPage>{
 
+
+  List<bool> isSelected = [true, false, false, false];
   List<charts.Series<MassEntry, String>> _seriesBarData;
   List<MassEntry> mydata;
   _generateData(mydata) {
     _seriesBarData = List<charts.Series<MassEntry, String>>();
+
     _seriesBarData.add(
       charts.Series(
-        domainFn: (MassEntry massEntry, _) => massEntry.timestamp.toString(),
+        domainFn: (MassEntry massEntry, _) => massEntry.timestamp,
         measureFn: (MassEntry massEntry, _) => massEntry.mass,
         seriesColor: charts.ColorUtil.fromDartColor(Colors.green),
         id: 'Mass',
-        data: mydata
-//        ,
-//        labelAccessorFn: (MassEntry row, _) => "${row.timestamp}",
+        data: mydata,
+
       ),
     );
   }
 
 
-
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Home",
@@ -47,11 +48,25 @@ class MainStatsPageState extends State<MainStatsPage>{
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        actions: <Widget>[IconButton(
-          icon: Icon(Icons.menu),
-          color: Colors.black,
-          onPressed: () {},
-        ),]
+        actions: <Widget>[
+          PopupMenuButton(
+            icon: Icon(
+              Icons.menu,
+              color: Colors.black,),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: Text("Log Out"),
+                value: 1,
+              ),
+            ],
+
+            onCanceled: () {
+              print("You have canceled the menu.");
+            },
+            onSelected: (value) {},
+          )
+
+        ],
       ),
       body: Container(
         alignment: Alignment.center,
@@ -77,12 +92,41 @@ class MainStatsPageState extends State<MainStatsPage>{
                   SizedBox(
                     height:5
                   ),
-                  Text("100kg",
-                    style: TextStyle(
-                      fontSize: 50,
-                        fontWeight: FontWeight.bold
-                    ),),
+                  // Text("100kg",
+                  //   style: TextStyle(
+                  //     fontSize: 50,
+                  //       fontWeight: FontWeight.bold
+                  //   ),),
+                  StreamBuilder<QuerySnapshot>(
 
+                    stream: Firestore.instance
+                        .collection('houses')
+                        .document("House_A")
+                        .collection("RawData")
+                        .where("timestamp2", isEqualTo: DateFormat('d MMM y').format(DateTime.now()).toString() )
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.data.documents.length == 0) {
+                        return Text("0kg",
+                          style: TextStyle(
+                              fontSize: 50,
+                              fontWeight: FontWeight.bold
+                          ),);
+                      } else {
+                        List<MassEntry> massEntry = snapshot.data.documents
+                            .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
+                            .toList();
+                        double todayMass = massEntry.fold(0, (previousValue, element) => previousValue + element.mass);
+                        return Text( todayMass.toString() + " kg",
+                          style: TextStyle(
+                              fontSize: 50,
+                              fontWeight: FontWeight.bold
+                          ),);
+                      }
+                    },
+                  )
 
                 ],
               ),
@@ -113,7 +157,7 @@ class MainStatsPageState extends State<MainStatsPage>{
                       ),
                       Container(
 
-                        child: Text("14.0 Kg",
+                        child: Text("XXX Kg",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 17,
@@ -136,9 +180,10 @@ class MainStatsPageState extends State<MainStatsPage>{
                             fontWeight: FontWeight.bold,
                           ),),
                       ),
+
                       Container(
 
-                        child: Text("14.0 Kg",
+                        child: Text("XXX Kg",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 17,
@@ -147,6 +192,9 @@ class MainStatsPageState extends State<MainStatsPage>{
                           ),),
 
                       ),
+
+
+
 
                     ],
                   ),
@@ -165,12 +213,45 @@ class MainStatsPageState extends State<MainStatsPage>{
               width: MediaQuery.of(context).size.width/1.05,
               padding: EdgeInsets.all(7),
               child: Center(
-                child:Text("Waste Over Time",
-                  style: TextStyle(
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                  ),)
-              ),
+                child: ToggleButtons(
+                  renderBorder: false,
+
+                  children: <Widget>[
+                    Text("  Today  ",
+                      style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                      ),),
+                    Text("  Week  ",
+                      style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                      ),),
+                    Text("  Month  ",
+                      style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                      ),),
+                    Text("  All Time  ",
+                      style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                      ),),
+                  ],
+                  onPressed: (int index) {
+                    setState(() {
+                      for (int buttonIndex = 0; buttonIndex < isSelected.length; buttonIndex++) {
+                        if (buttonIndex == index) {
+                          isSelected[buttonIndex] = true;
+                        } else {
+                          isSelected[buttonIndex] = false;
+                        }
+                      }
+                    });
+                  },
+                  isSelected: isSelected,
+                ),
+              )
             ),
             _buildBody(context),
     ]
@@ -186,7 +267,7 @@ class MainStatsPageState extends State<MainStatsPage>{
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return LinearProgressIndicator();
+          return CircularProgressIndicator();
         } else {
           List<MassEntry> massEntry = snapshot.data.documents
               .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
@@ -197,6 +278,7 @@ class MainStatsPageState extends State<MainStatsPage>{
     );
   }
   Widget _buildChart(BuildContext context, List<MassEntry> massdata) {
+    //TODO: Change to time series chart
     mydata = massdata;
     _generateData(mydata);
     return Expanded(

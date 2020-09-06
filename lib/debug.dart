@@ -140,7 +140,7 @@ class DebugPageState extends State<DebugPage> {
           .document(DateTime.now().toIso8601String().toString())
           .setData({
         'mass': massController.text,
-        'timestamp2': DateFormat('d MMM').format(DateTime.now()).toString(),
+        'timestamp2': DateFormat('d MMM y').format(DateTime.now()).toString(),
         'timestamp' :DateTime.now().toIso8601String().toString(),
       }).then((response) {
         print("success");
@@ -155,9 +155,8 @@ class DebugPageState extends State<DebugPage> {
           .setData({
         'alltime': allTimeMass + double.parse(massController.text),
       }).then((response) {
-        print("success");
-        _showAlertDialog(
-            'Success!', 'Succesfully Saved Data');
+        print("updated all time counter");
+
       }).catchError((error) {
         print(error);
         _showAlertDialog(
