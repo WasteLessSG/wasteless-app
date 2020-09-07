@@ -14,11 +14,11 @@ class MainStatsPage extends StatefulWidget{
 
 class MainStatsPageState extends State<MainStatsPage>{
 
-
+  String selectedTime = "today";
   List<bool> isSelected = [true, false, false, false];
   List<charts.Series<MassEntry, String>> _seriesBarData;
-  List<MassEntry> mydata;
-  _generateData(mydata) {
+  List<MassEntry> myData, massEntryDay;
+  _generateData(myData) {
     _seriesBarData = List<charts.Series<MassEntry, String>>();
 
     _seriesBarData.add(
@@ -27,7 +27,7 @@ class MainStatsPageState extends State<MainStatsPage>{
         measureFn: (MassEntry massEntry, _) => massEntry.mass,
         seriesColor: charts.ColorUtil.fromDartColor(Colors.green),
         id: 'Mass',
-        data: mydata,
+        data: myData,
 
       ),
     );
@@ -240,6 +240,16 @@ class MainStatsPageState extends State<MainStatsPage>{
                   ],
                   onPressed: (int index) {
                     setState(() {
+                      switch(index){
+                        case 0: {selectedTime = "today";}
+                        break;
+                        case 1: {selectedTime = "week";}
+                        break;
+                        case 2: {selectedTime = "month";}
+                        break;
+                        case 3: {selectedTime = "allTime";}
+                        break;
+                      }
                       for (int buttonIndex = 0; buttonIndex < isSelected.length; buttonIndex++) {
                         if (buttonIndex == index) {
                           isSelected[buttonIndex] = true;
@@ -253,13 +263,12 @@ class MainStatsPageState extends State<MainStatsPage>{
                 ),
               )
             ),
-            _buildBody(context),
+            _buildBody(context, selectedTime),
     ]
     )));
   }
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody(BuildContext context, String time) {
     return StreamBuilder<QuerySnapshot>(
-
       stream: Firestore.instance
           .collection('houses')
           .document("House_A")
@@ -269,26 +278,71 @@ class MainStatsPageState extends State<MainStatsPage>{
         if (!snapshot.hasData) {
           return CircularProgressIndicator();
         } else {
-          List<MassEntry> massEntry = snapshot.data.documents
+          List<MassEntry> massEntryRaw = snapshot.data.documents
               .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
               .toList();
-          return _buildChart(context, massEntry);
+
+          return _chooseChart(context, massEntryRaw, time);
         }
       },
     );
   }
-  Widget _buildChart(BuildContext context, List<MassEntry> massdata) {
-    //TODO: Change to time series chart
-    mydata = massdata;
-    _generateData(mydata);
-    return Expanded(
-      child: charts.BarChart(_seriesBarData,
-        animate: false,),
-    );
+  Widget _chooseChart(BuildContext context, List<MassEntry> massdata, String time) {
+    //TODO: Change all time graph to line chart
+    switch(time){
+      case "today":{
+        myData = massdata.where((i)=> i.shortenedTime == DateFormat('d MMM y').format(DateTime.now()).toString())
+            .toList();
+        _generateData(myData);
+        return Expanded(
+          child: charts.BarChart(_seriesBarData,
+            animate: true,),
+        );
+      }
+      break;
+      case "week":{
+        myData = massdata.where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime.now().subtract(Duration(days: 7)))  )
+            .toList();
+        _generateData(myData);
+        return Expanded(
+          child: charts.BarChart(_seriesBarData,
+            animate: true,),
+        );
+      }
+      break;
+      case "month":{
+        myData = massdata.where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime.now().subtract(Duration(days: 30)))  )
+            .toList();
+        _generateData(myData);
+        return Expanded(
+          child: charts.BarChart(_seriesBarData,
+            animate: true,),
+        );
+      }
+      break;
+      case "allTime":{
+        myData = massdata;
+        _generateData(myData);
+        return Expanded(
+          child: charts.BarChart(_seriesBarData,
+            animate: true,),
+        );
+      }
+      break;
+      default:{
+        //same as today
+        myData = massdata.where((i)=> i.shortenedTime == DateFormat('d MMM y').format(DateTime.now()).toString())
+            .toList();
+        _generateData(myData);
+        return Expanded(
+          child: charts.BarChart(_seriesBarData,
+            animate: true,),
+        );
+      }
+      break;
+    }
+
   }
-
-
-
 
 
 
