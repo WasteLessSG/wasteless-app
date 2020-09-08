@@ -62,7 +62,7 @@ class HomePageState extends State<HomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.black,
+        selectedItemColor: Colors.green[900],
         unselectedItemColor: Colors.grey[500],
         type: BottomNavigationBarType.fixed,
         onTap: _onItemTapped,
