@@ -92,11 +92,6 @@ class MainStatsPageState extends State<MainStatsPage>{
                   SizedBox(
                     height:5
                   ),
-                  // Text("100kg",
-                  //   style: TextStyle(
-                  //     fontSize: 50,
-                  //       fontWeight: FontWeight.bold
-                  //   ),),
                   StreamBuilder<QuerySnapshot>(
 
                     stream: Firestore.instance
@@ -142,64 +137,100 @@ class MainStatsPageState extends State<MainStatsPage>{
                   color: Colors.lightGreen[200],
                   borderRadius: BorderRadius.circular(5)
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Container(
-                        child: Text("Weekly Target: ",
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),),
-                      ),
-                      Container(
+              child:
+              StreamBuilder<QuerySnapshot>(
 
-                        child: Text("XXX Kg",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red
-                          ),),
-
-                      ),
-
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Container(
-                        child: Text("Weekly Total: ",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),),
-                      ),
-
-                      Container(
-
-                        child: Text("XXX Kg",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red
-                          ),),
-
-                      ),
+                stream: Firestore.instance
+                    .collection('houses')
+                    .document("House_A")
+                    .collection("RawData")
+                    .snapshots(),
+                builder: (context, snapshot) {
 
 
+                  if (!snapshot.hasData) {
+                    return CircularProgressIndicator();
+                  }
+                  // else if (snapshot.data.documents.length == 0) {
+                  //   return Text("0kg",
+                  //     style: TextStyle(
+                  //         fontSize: 50,
+                  //         fontWeight: FontWeight.bold
+                  //     ),);
+                  // }
+                  else {
+                    List<MassEntry> weekData = snapshot.data.documents
+                        .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
+                        .toList()
+                        .where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime.now().subtract(Duration(days: 7))))
+                        .toList();
+                    double weeklyMass = weekData.fold(0, (previousValue, element) => previousValue + element.mass);
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Container(
+                              child: Text("Weekly Target: ",
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),),
+                            ),
+                            Container(
+
+                              child: Text("XXX Kg",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red
+                                ),),
+                            ),
+
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Container(
+                              child: Text("Weekly Total: ",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),),
+                            ),
+
+                            Container(
+
+                              child: Text(weeklyMass.toString() +" Kg",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red
+                                ),),
+
+                            ),
 
 
-                    ],
-                  ),
-                ],
+
+
+                          ],
+                        ),
+                      ],
+                    );
+                  }
+                },
               ),
+
+
+
+
+
+
             ),
             SizedBox(
               height: 10,

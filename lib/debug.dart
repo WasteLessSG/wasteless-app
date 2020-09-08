@@ -39,6 +39,16 @@ class DebugPageState extends State<DebugPage> {
 
                   Center(
                     child: Padding(
+                        padding: EdgeInsets.fromLTRB(10,0,10,0),
+                        child: Text("Note: This page will not be in actual deployed app.",
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),),
+                    ),
+                  ),
+
+                  Center(
+                    child: Padding(
                       padding: EdgeInsets.fromLTRB(10,0,10,0),
                       child: DropdownButton(
                           items: houseNames.map((String dropDownStringItem) {

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:LessApp/mainStatsPage.dart';
 import 'package:LessApp/debug.dart';
 import 'package:LessApp/communityStats.dart';
+import 'package:LessApp/fullPersonalStats.dart';
 
 class HomePage extends StatefulWidget{
 
@@ -14,11 +15,12 @@ class HomePage extends StatefulWidget{
 
 class HomePageState extends State<HomePage> {
 
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   static const TextStyle optionStyle =
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   List<Widget> _widgetOptions = <Widget>[
+    new FullPersonalStatsPage(),
     new MainStatsPage(),
     new CommunityStatsPage(),
     new DebugPage(),
@@ -38,7 +40,13 @@ class HomePageState extends State<HomePage> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_box),
+            title: Text('Stats'),
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             title: Text('Home'),
@@ -55,6 +63,8 @@ class HomePageState extends State<HomePage> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey[500],
+        type: BottomNavigationBarType.fixed,
         onTap: _onItemTapped,
       ),
     );

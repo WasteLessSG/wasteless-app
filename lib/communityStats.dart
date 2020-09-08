@@ -51,15 +51,6 @@ class CommunityStatsPageState extends  State<CommunityStatsPage> {
               onSelected: (value) {},
             )
 
-
-            // IconButton(
-            // icon: Icon(Icons.arrow_drop_down),
-            // color: Colors.black,
-            // onPressed: () {},),
-
-
-
-
           ]
       ),
       body: Container(
@@ -80,32 +71,21 @@ class CommunityStatsPageState extends  State<CommunityStatsPage> {
               itemBuilder: (context,int index){
                 return Container(
                   color: Colors.white,
-
-
                   child: ListTile(
-
-
                     leading: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(index.toString(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,),),
+                        Padding(
+                          padding:  EdgeInsets.fromLTRB(10,0,0,0),
+                          child: Text(index.toString(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,),),
+                        )
                       ],
                     ),
-
-
-
                       title: Text(snapshot.data.documents[index].documentID),
                     subtitle: Text("All Time Mass Thrown: " + snapshot.data.documents[index]['alltime'].toString() + "kg"),
                   ),
-
-
-
-
-
-
-
                 );}, //itemBuilder
             );
           },
