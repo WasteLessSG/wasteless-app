@@ -21,6 +21,37 @@ class FullPersonalStatsPageState extends  State<FullPersonalStatsPage> {
             centerTitle: true,
             backgroundColor: Colors.white,
             elevation: 0,
+            actions: <Widget>[
+              PopupMenuButton(
+                icon: Icon(
+                  Icons.filter_list,
+                  color: Colors.black,),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: Text("All Time"),
+                    value: 1,
+                  ),
+                  PopupMenuItem(
+                    child: Text("Month"),
+                    value: 2,
+                  ),
+                  PopupMenuItem(
+                    child: Text("Week"),
+                    value: 3,
+                  ),
+                  PopupMenuItem(
+                    child: Text("Today"),
+                    value: 4,
+                  ),
+                ],
+
+                onCanceled: () {
+                  print("You have canceled the menu.");
+                },
+                onSelected: (value) {},
+              )
+
+            ]
         ),
         body: Container(
             color: Colors.white,
@@ -54,7 +85,7 @@ class FullPersonalStatsPageState extends  State<FullPersonalStatsPage> {
                             )
                           ],
                         ),
-                        title: Text("Date: "+snapshot.data.documents[index]['timestamp2']),
+                        title: Text(snapshot.data.documents[index]['timestamp2']),
                         subtitle: Text("Mass Thrown: " + snapshot.data.documents[index]['mass'].toString() + " kg"),
                       ),
                     );}, //itemBuilder
