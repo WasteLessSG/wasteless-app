@@ -234,18 +234,18 @@ class MainStatsPageState extends State<MainStatsPage>{
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Container(
-                              child: Text("Weekly Target: ",
+                              child: Text("Week Daily Avg: ",
                                 style: TextStyle(
-                                  fontSize: 17,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),),
                             ),
                             Container(
 
-                              child: Text("TBD Kg",
+                              child: Text((weeklyMass/combineDays(weekData).length).toStringAsFixed(2) +" Kg",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    fontSize: 17,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.red
                                 ),),
@@ -260,7 +260,7 @@ class MainStatsPageState extends State<MainStatsPage>{
                               child: Text("Weekly Total: ",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 17,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),),
                             ),
@@ -270,7 +270,7 @@ class MainStatsPageState extends State<MainStatsPage>{
                               child: Text(weeklyMass.toString() +" Kg",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    fontSize: 17,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.red
                                 ),),
@@ -491,6 +491,8 @@ class MainStatsPageState extends State<MainStatsPage>{
     }
 
   }
+
+
 
 }
 
