@@ -12,7 +12,7 @@ class FullPersonalStatsPageState extends  State<FullPersonalStatsPage> {
 
     return Scaffold(
         appBar: AppBar(
-            title: Text("All Time Stats",
+            title: Text("Personal Stats",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -21,37 +21,38 @@ class FullPersonalStatsPageState extends  State<FullPersonalStatsPage> {
             centerTitle: true,
             backgroundColor: Colors.white,
             elevation: 0,
-            actions: <Widget>[
-              PopupMenuButton(
-                icon: Icon(
-                  Icons.filter_list,
-                  color: Colors.black,),
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    child: Text("All Time"),
-                    value: 1,
-                  ),
-                  PopupMenuItem(
-                    child: Text("Month"),
-                    value: 2,
-                  ),
-                  PopupMenuItem(
-                    child: Text("Week"),
-                    value: 3,
-                  ),
-                  PopupMenuItem(
-                    child: Text("Today"),
-                    value: 4,
-                  ),
-                ],
-
-                onCanceled: () {
-                  print("You have canceled the menu.");
-                },
-                onSelected: (value) {},
-              )
-
-            ]
+            //TODO:add ability to filter by time period
+            // actions: <Widget>[
+            //   PopupMenuButton(
+            //     icon: Icon(
+            //       Icons.filter_list,
+            //       color: Colors.black,),
+            //     itemBuilder: (context) => [
+            //       PopupMenuItem(
+            //         child: Text("All Time"),
+            //         value: 1,
+            //       ),
+            //       PopupMenuItem(
+            //         child: Text("Month"),
+            //         value: 2,
+            //       ),
+            //       PopupMenuItem(
+            //         child: Text("Week"),
+            //         value: 3,
+            //       ),
+            //       PopupMenuItem(
+            //         child: Text("Today"),
+            //         value: 4,
+            //       ),
+            //     ],
+            //
+            //     onCanceled: () {
+            //       print("You have canceled the menu.");
+            //     },
+            //     onSelected: (value) {},
+            //   )
+            //
+            // ]
         ),
         body: Container(
             color: Colors.white,
@@ -79,7 +80,7 @@ class FullPersonalStatsPageState extends  State<FullPersonalStatsPage> {
                           children: <Widget>[
                             Padding(
                               padding:  EdgeInsets.fromLTRB(10,0,0,0),
-                              child: Text(index.toString(),
+                              child: Text((index+1).toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,),),
                             )
@@ -95,16 +96,3 @@ class FullPersonalStatsPageState extends  State<FullPersonalStatsPage> {
     );
   }
 }
-
-
-/*
-*
-* stream: Firestore.instance
-                        .collection('houses')
-                        .document("House_A")
-                        .collection("RawData")
-                        .where("timestamp2", isEqualTo: DateFormat('d MMM y').format(DateTime.now()).toString() )
-                        .snapshots(),
-*
-*
-* */

@@ -28,6 +28,8 @@ flutter_icons:
 
 
 dependencies:
+
+  convert:
   validators: ^2.0.1
   flutter_launcher_icons: ^0.7.5
   flutter:

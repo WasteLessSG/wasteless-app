@@ -21,37 +21,38 @@ class CommunityStatsPageState extends  State<CommunityStatsPage> {
           centerTitle: true,
           backgroundColor: Colors.white,
           elevation: 0,
-          actions: <Widget>[
-            PopupMenuButton(
-              icon: Icon(
-                Icons.arrow_drop_down,
-                color: Colors.black,),
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: Text("All Time"),
-                  value: 1,
-                ),
-                PopupMenuItem(
-                  child: Text("Month"),
-                  value: 2,
-                ),
-                PopupMenuItem(
-                  child: Text("Week"),
-                  value: 3,
-                ),
-                PopupMenuItem(
-                  child: Text("Today"),
-                  value: 4,
-                ),
-              ],
-
-              onCanceled: () {
-                print("You have canceled the menu.");
-              },
-              onSelected: (value) {},
-            )
-
-          ]
+          //TODO:add ability to filter by time period
+          // actions: <Widget>[
+          //   PopupMenuButton(
+          //     icon: Icon(
+          //       Icons.arrow_drop_down,
+          //       color: Colors.black,),
+          //     itemBuilder: (context) => [
+          //       PopupMenuItem(
+          //         child: Text("All Time"),
+          //         value: 1,
+          //       ),
+          //       PopupMenuItem(
+          //         child: Text("Month"),
+          //         value: 2,
+          //       ),
+          //       PopupMenuItem(
+          //         child: Text("Week"),
+          //         value: 3,
+          //       ),
+          //       PopupMenuItem(
+          //         child: Text("Today"),
+          //         value: 4,
+          //       ),
+          //     ],
+          //
+          //     onCanceled: () {
+          //       print("You have canceled the menu.");
+          //     },
+          //     onSelected: (value) {},
+          //   )
+          //
+          // ]
       ),
       body: Container(
           color: Colors.white,
@@ -66,7 +67,13 @@ class CommunityStatsPageState extends  State<CommunityStatsPage> {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            } else  return ListView.builder(
+            } else
+
+              //  List<MassEntry> massEntryRaw = snapshot.data.documents
+              //               .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
+              //               .toList();
+
+              return ListView.builder(
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context,int index){
                 return Container(
@@ -77,7 +84,7 @@ class CommunityStatsPageState extends  State<CommunityStatsPage> {
                       children: <Widget>[
                         Padding(
                           padding:  EdgeInsets.fromLTRB(10,0,0,0),
-                          child: Text(index.toString(),
+                          child: Text((index+1).toString(),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,),),
                         )

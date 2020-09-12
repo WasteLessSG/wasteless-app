@@ -93,6 +93,7 @@ class DebugPageState extends State<DebugPage> {
                     ),
                   ),
 
+
                   Padding(
                     padding: EdgeInsets.fromLTRB(10,0,10,0),
                     child: RaisedButton(
@@ -110,8 +111,16 @@ class DebugPageState extends State<DebugPage> {
                         });
                       },
                     ),
-                  )
-
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(10,20,10,0),
+                      child: Text("Note: This page will not be in actual deployed app.",
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),),
+                    ),
+                  ),
 
                 ],
         )));
@@ -152,6 +161,9 @@ class DebugPageState extends State<DebugPage> {
         'mass': massController.text,
         'timestamp2': DateFormat('d MMM y').format(DateTime.now()).toString(),
         'timestamp' :DateTime.now().toIso8601String().toString(),
+        'day':DateFormat('d').format(DateTime.now()).toString(),
+        'month':DateFormat('MMM').format(DateTime.now()).toString(),
+        'year':DateFormat('y').format(DateTime.now()).toString(),
       }).then((response) {
         print("success");
       }).catchError((error) {

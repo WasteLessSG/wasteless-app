@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -13,14 +14,15 @@ class MainStatsPage extends StatefulWidget{
 }
 
 class MainStatsPageState extends State<MainStatsPage>{
-
+  final now = DateTime.now();
   String selectedTime = "today";
   List<bool> isSelected = [true, false, false, false];
   List<charts.Series<MassEntry, String>> _seriesBarData;
+  List<charts.Series<formattedWeekEntry, String>> _weekSeriesBarData;
+  List<charts.Series<MassEntry, DateTime>> _timeChartData;
   List<MassEntry> myData, massEntryDay;
   _generateData(myData) {
     _seriesBarData = List<charts.Series<MassEntry, String>>();
-
     _seriesBarData.add(
       charts.Series(
         domainFn: (MassEntry massEntry, _) => massEntry.timestamp,
@@ -32,6 +34,64 @@ class MainStatsPageState extends State<MainStatsPage>{
       ),
     );
   }
+  _generateDailyData(myData) {
+    _seriesBarData = List<charts.Series<MassEntry, String>>();
+    _seriesBarData.add(
+      charts.Series(
+        domainFn: (MassEntry massEntry, _) => DateFormat.Hm().format(massEntry.dateTimeValue),
+        measureFn: (MassEntry massEntry, _) => massEntry.mass,
+        seriesColor: charts.ColorUtil.fromDartColor(Colors.green),
+        id: 'Mass',
+        data: myData,
+
+      ),
+    );
+  }
+  _generateComDayData(myData) {
+    _seriesBarData = List<charts.Series<MassEntry, String>>();
+    _seriesBarData.add(
+      charts.Series(
+        domainFn: (MassEntry massEntry, _) => massEntry.shortenedTime.substring(0,massEntry.shortenedTime.length-5),
+        measureFn: (MassEntry massEntry, _) => massEntry.mass,
+        seriesColor: charts.ColorUtil.fromDartColor(Colors.green),
+        id: 'Mass',
+        data: myData,
+
+      ),
+    );
+  }
+  
+  _generateWeeklyData(myData) {
+    _weekSeriesBarData = List<charts.Series<formattedWeekEntry, String>>();
+    _weekSeriesBarData.add(
+      charts.Series(
+        domainFn: (formattedWeekEntry e, _) => e.day,
+        measureFn: (formattedWeekEntry e, _) => e.mass,
+        seriesColor: charts.ColorUtil.fromDartColor(Colors.green),
+        id: 'Mass',
+        data: myData,
+
+      ),
+    );
+  }
+  _generateTimeChartData(myData) {
+    _timeChartData = List<charts.Series<MassEntry, DateTime>>();
+
+    _timeChartData.add(
+      charts.Series(
+        domainFn: (MassEntry massEntry, _) => massEntry.dateTimeValue,
+        measureFn: (MassEntry massEntry, _) => massEntry.mass,
+        colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
+        areaColorFn: (MassEntry massEntry, _) => charts.MaterialPalette.green.shadeDefault.lighter,
+        // seriesColor: charts.ColorUtil.fromDartColor(Colors.green),
+        id: 'Mass',
+        data: myData,
+
+      ),
+    );
+  }
+
+
 
 
   @override
@@ -113,6 +173,7 @@ class MainStatsPageState extends State<MainStatsPage>{
                         List<MassEntry> massEntry = snapshot.data.documents
                             .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
                             .toList();
+                        //print(jsonEncode(massEntry).toString());
                         double todayMass = massEntry.fold(0, (previousValue, element) => previousValue + element.mass);
                         return Text( todayMass.toString() + " kg",
                           style: TextStyle(
@@ -162,7 +223,8 @@ class MainStatsPageState extends State<MainStatsPage>{
                     List<MassEntry> weekData = snapshot.data.documents
                         .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
                         .toList()
-                        .where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime.now().subtract(Duration(days: 7))))
+                        .where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6))))
+
                         .toList();
                     double weeklyMass = weekData.fold(0, (previousValue, element) => previousValue + element.mass);
                     return Row(
@@ -180,7 +242,7 @@ class MainStatsPageState extends State<MainStatsPage>{
                             ),
                             Container(
 
-                              child: Text("XXX Kg",
+                              child: Text("TBD Kg",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 17,
@@ -294,11 +356,11 @@ class MainStatsPageState extends State<MainStatsPage>{
                 ),
               )
             ),
-            _buildBody(context, selectedTime),
+            _buildBody(context),
     ]
     )));
-  }
-  Widget _buildBody(BuildContext context, String time) {
+  }//, String time
+  Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance
           .collection('houses')
@@ -312,19 +374,65 @@ class MainStatsPageState extends State<MainStatsPage>{
           List<MassEntry> massEntryRaw = snapshot.data.documents
               .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
               .toList();
-
-          return _chooseChart(context, massEntryRaw, time);
+          return _chooseChart(context, massEntryRaw, selectedTime);
+          //return _chooseChart(context, massEntryRaw, time);
         }
       },
     );
   }
+  List<MassEntry> combineDays(List<MassEntry> rawdata){
+    List<MassEntry> output = [];
+
+    for ( var i = 0; i <rawdata.length; i++){
+      if (output.where((element) =>
+          element.shortenedTime
+              == rawdata[i].shortenedTime).isEmpty){
+        output.add(rawdata[i]);
+      }
+      else {
+         var x = output.where((element) =>
+         element.shortenedTime
+             == rawdata[i].shortenedTime).toList()[0];
+         var index = output.indexOf(x);
+         output[index].mass = output[index].mass + rawdata[i].mass;
+      }
+
+    }
+    return output;
+  }
+
+  List<formattedWeekEntry> formatWeekdays(List<MassEntry> rawdata){
+    List<formattedWeekEntry> output = [
+      formattedWeekEntry(0,"MON"),
+      formattedWeekEntry(0,"TUE"),
+      formattedWeekEntry(0,"WED"),
+      formattedWeekEntry(0,"THU"),
+      formattedWeekEntry(0,"FRI"),
+      formattedWeekEntry(0,"SAT"),
+      formattedWeekEntry(0,"SUN")
+    ];
+    int currentTime = DateTime.now().weekday;
+    for ( var i = currentTime; i >0; i--){
+      var x = rawdata.where((element) =>
+      element.dateTimeValue.weekday == i);
+      if (x.isNotEmpty){
+        output[i-1].mass = rawdata[rawdata.indexOf(x.toList()[0])].mass;
+      }
+      
+    }
+
+
+
+    return output;
+  }
+
   Widget _chooseChart(BuildContext context, List<MassEntry> massdata, String time) {
     //TODO: Change all time graph to line chart
     switch(time){
       case "today":{
         myData = massdata.where((i)=> i.shortenedTime == DateFormat('d MMM y').format(DateTime.now()).toString())
             .toList();
-        _generateData(myData);
+        _generateDailyData(myData);
         return Expanded(
           child: charts.BarChart(_seriesBarData,
             animate: true,),
@@ -332,19 +440,24 @@ class MainStatsPageState extends State<MainStatsPage>{
       }
       break;
       case "week":{
-        myData = massdata.where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime.now().subtract(Duration(days: 7)))  )
+
+        myData = massdata.where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
             .toList();
-        _generateData(myData);
+        _generateWeeklyData(formatWeekdays(combineDays(myData)));
+        print(DateTime.now().weekday.toString());
         return Expanded(
-          child: charts.BarChart(_seriesBarData,
+          child: charts.BarChart(_weekSeriesBarData,
             animate: true,),
         );
       }
+
       break;
       case "month":{
-        myData = massdata.where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime.now().subtract(Duration(days: 30)))  )
+        myData = massdata.where((i)=> i.dateTimeValue.month == DateTime.now().month )
             .toList();
-        _generateData(myData);
+        // myData = massdata.where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime.now().subtract(Duration(days: 30)))  )
+        //     .toList();
+        _generateComDayData(combineDays(myData));
         return Expanded(
           child: charts.BarChart(_seriesBarData,
             animate: true,),
@@ -353,13 +466,17 @@ class MainStatsPageState extends State<MainStatsPage>{
       break;
       case "allTime":{
         myData = massdata;
-        _generateData(myData);
+        _generateTimeChartData(combineDays(myData));
         return Expanded(
-          child: charts.BarChart(_seriesBarData,
-            animate: true,),
+          child: charts.TimeSeriesChart(_timeChartData,
+              animate: true,
+            defaultRenderer:
+                new charts.LineRendererConfig(includeArea: true, stacked: true),
+          ),
         );
       }
       break;
+
       default:{
         //same as today
         myData = massdata.where((i)=> i.shortenedTime == DateFormat('d MMM y').format(DateTime.now()).toString())
@@ -375,19 +492,6 @@ class MainStatsPageState extends State<MainStatsPage>{
 
   }
 
-
-
 }
 
 
-
-
-//,
-//behaviors: [
-//new charts.DatumLegend(
-//entryTextStyle: charts.TextStyleSpec(
-//color: charts.MaterialPalette.purple.shadeDefault,
-//fontFamily: 'Georgia',
-//fontSize: 18),
-//)
-//],
