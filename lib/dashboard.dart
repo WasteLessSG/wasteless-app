@@ -6,12 +6,12 @@ import 'package:csv_reader/csv_reader.dart';
 import 'package:LessApp/styles.dart';
 import 'dart:math';
 
-class summaryPage extends StatefulWidget{
+class DashboardPage extends StatefulWidget{
   @override
-  summaryPageState createState() => new summaryPageState();
+  DashboardPageState createState() => new DashboardPageState();
 }
 
-class summaryPageState extends State<summaryPage> {
+class DashboardPageState extends State<DashboardPage> {
   String selectedState = "rubbishEmpty";
   double sizeRelativeVisual = 1.0;
 

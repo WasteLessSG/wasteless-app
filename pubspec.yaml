@@ -29,6 +29,8 @@ flutter_icons:
 
 dependencies:
 
+  csv_reader:
+  smooth_page_indicator: ^0.2.0
   convert:
   validators: ^2.0.1
   flutter_launcher_icons: ^0.7.5

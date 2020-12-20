@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:LessApp/mainStatsPage.dart';
+import 'package:LessApp/personal-stats.dart';
 import 'package:LessApp/debug.dart';
-import 'package:LessApp/communityStats.dart';
-import 'package:LessApp/fullPersonalStats.dart';
-import 'package:LessApp/summary.dart';
+import 'package:LessApp/leaderboard.dart';
+import 'package:LessApp/HistoryPage.dart';
+import 'package:LessApp/dashboard.dart';
 import 'package:LessApp/styles.dart';
 
 class HomePage extends StatefulWidget{
@@ -20,10 +20,10 @@ class HomePageState extends State<HomePage> {
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   List<Widget> _widgetOptions = <Widget>[
-    new FullPersonalStatsPage(),
-    new MainStatsPage(),
-    new summaryPage(),
-    new CommunityStatsPage(),
+    new HistoryPage(),
+    new PersonalStatsPage(),
+    new DashboardPage(),
+    new LeaderboardPage(),
     new DebugPage(),
   ];
 

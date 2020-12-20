@@ -9,12 +9,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:LessApp/styles.dart';
 
-class MainStatsPage extends StatefulWidget{
+class PersonalStatsPage extends StatefulWidget{
   @override
-  MainStatsPageState createState() => new MainStatsPageState();
+  PersonalStatsPageState createState() => new PersonalStatsPageState();
 }
 
-class MainStatsPageState extends State<MainStatsPage>{
+class PersonalStatsPageState extends State<PersonalStatsPage>{
   final now = DateTime.now();
   String selectedTime = "today";
   String selectedType = "general";
@@ -145,9 +145,9 @@ class MainStatsPageState extends State<MainStatsPage>{
   @override
   Widget build(BuildContext context) {
 
-    bool paperVisible = MainStatsPageState.pageCounter % 3 == 0;
-    bool allVisible = MainStatsPageState.pageCounter % 3 == 1;
-    bool plasticVisible = MainStatsPageState.pageCounter % 3 == 2;
+    bool paperVisible = PersonalStatsPageState.pageCounter % 3 == 0;
+    bool allVisible = PersonalStatsPageState.pageCounter % 3 == 1;
+    bool plasticVisible = PersonalStatsPageState.pageCounter % 3 == 2;
 
     return Scaffold(
       appBar: Styles.MainStatsPageHeader("Personal Statistics", FontWeight.bold, Colors.black),
@@ -176,7 +176,7 @@ class MainStatsPageState extends State<MainStatsPage>{
                         child: Icon(Icons.arrow_back),
                         onPressed: () {
                           setState(() {
-                            MainStatsPageState.pageCounter--;
+                            PersonalStatsPageState.pageCounter--;
                           });
                         },
                       ),
@@ -206,7 +206,7 @@ class MainStatsPageState extends State<MainStatsPage>{
                         child: Icon(Icons.arrow_forward),
                         onPressed: () {
                           setState(() {
-                            MainStatsPageState.pageCounter++;
+                            PersonalStatsPageState.pageCounter++;
                           });
                         },
                       ),

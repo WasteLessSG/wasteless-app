@@ -3,12 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:LessApp/styles.dart';
 import 'package:intl/intl.dart';
 
-class CommunityStatsPage extends StatefulWidget{
+class LeaderboardPage extends StatefulWidget{
   @override
-  CommunityStatsPageState createState() => new CommunityStatsPageState();
+  LeaderboardPageState createState() => new LeaderboardPageState();
 }
 
-class CommunityStatsPageState extends  State<CommunityStatsPage> {
+class LeaderboardPageState extends  State<LeaderboardPage> {
 
   NumberFormat nf = NumberFormat("###.00", "en_US");
 

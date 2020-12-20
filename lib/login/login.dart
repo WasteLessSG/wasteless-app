@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:LessApp/mainStatsPage.dart';
+import 'package:LessApp/personal-stats.dart';
 import 'package:LessApp/login/landing.dart';
 
 class Login extends StatefulWidget {
@@ -87,7 +87,7 @@ class LoginState extends State<Login> {
   Future<void> signIn() async{
     try {
       FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password)).user;
-      Navigator.push(context, MaterialPageRoute(builder: (context)=> MainStatsPage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> PersonalStatsPage()));
     } catch (e) {
       _showAlertDialog("ERROR",e.message);
     }
