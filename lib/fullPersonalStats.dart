@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:LessApp/styles.dart';
+import 'package:intl/intl.dart';
 
 class FullPersonalStatsPage extends StatefulWidget{
   @override
@@ -7,53 +9,26 @@ class FullPersonalStatsPage extends StatefulWidget{
 }
 
 class FullPersonalStatsPageState extends  State<FullPersonalStatsPage> {
+
+  NumberFormat nf = NumberFormat("###.00", "en_US");
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
         appBar: AppBar(
-            title: Text("Personal Stats",
+            title: Text("History",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
             ),
-            centerTitle: true,
-            backgroundColor: Colors.white,
-            elevation: 0,
-            //TODO:add ability to filter by time period
-            // actions: <Widget>[
-            //   PopupMenuButton(
-            //     icon: Icon(
-            //       Icons.filter_list,
-            //       color: Colors.black,),
-            //     itemBuilder: (context) => [
-            //       PopupMenuItem(
-            //         child: Text("All Time"),
-            //         value: 1,
-            //       ),
-            //       PopupMenuItem(
-            //         child: Text("Month"),
-            //         value: 2,
-            //       ),
-            //       PopupMenuItem(
-            //         child: Text("Week"),
-            //         value: 3,
-            //       ),
-            //       PopupMenuItem(
-            //         child: Text("Today"),
-            //         value: 4,
-            //       ),
-            //     ],
-            //
-            //     onCanceled: () {
-            //       print("You have canceled the menu.");
-            //     },
-            //     onSelected: (value) {},
-            //   )
-            //
-            // ]
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0,
         ),
+
+        //Styles.CommonHeader("Personal Statistics", FontWeight.bold, Colors.white),),
         body: Container(
             color: Colors.white,
             child: StreamBuilder(
@@ -69,11 +44,18 @@ class FullPersonalStatsPageState extends  State<FullPersonalStatsPage> {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
-                } else  return ListView.builder(
+                } else  return ListView.separated(
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context,int index){
+                    return ListTile(
+                      tileColor: Colors.lightGreen[200],
+                      title: Text(snapshot.data.documents[index]['timestamp2']),
+                      subtitle: Text("Mass Thrown: " + snapshot.data.documents[index]['mass'].toString() + " kg"),
+                    );
+
+                    /* Original Code
                     return Container(
-                      color: Colors.white,
+                      color: Colors.white, //is the background color. need to change to ListView.builder version
                       child: ListTile(
                         leading: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -82,14 +64,22 @@ class FullPersonalStatsPageState extends  State<FullPersonalStatsPage> {
                               padding:  EdgeInsets.fromLTRB(10,0,0,0),
                               child: Text((index+1).toString(),
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,),),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             )
                           ],
                         ),
                         title: Text(snapshot.data.documents[index]['timestamp2']),
                         subtitle: Text("Mass Thrown: " + snapshot.data.documents[index]['mass'].toString() + " kg"),
                       ),
-                    );}, //itemBuilder
+                    );
+                    */
+                    }, //itemBuilder
+
+                  separatorBuilder: (context, index) {
+                    return Divider();
+                  },
                 );
               },
             ))

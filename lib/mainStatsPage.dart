@@ -1,3 +1,4 @@
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:LessApp/massEntry.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-
+import 'package:LessApp/styles.dart';
 
 class MainStatsPage extends StatefulWidget{
   @override
@@ -16,11 +17,17 @@ class MainStatsPage extends StatefulWidget{
 class MainStatsPageState extends State<MainStatsPage>{
   final now = DateTime.now();
   String selectedTime = "today";
-  List<bool> isSelected = [true, false, false, false];
+  String selectedType = "general";
+  List<bool> isSelectedTrend = [true, false, false, false];
+  List<bool> isSelectedType = [false, true, false];
   List<charts.Series<MassEntry, String>> _seriesBarData;
   List<charts.Series<formattedWeekEntry, String>> _weekSeriesBarData;
   List<charts.Series<MassEntry, DateTime>> _timeChartData;
   List<MassEntry> myData, massEntryDay;
+  bool viewVisible = false;
+  static int pageCounter = 15001;
+  int _selectedPage = 1;
+
   _generateData(myData) {
     _seriesBarData = List<charts.Series<MassEntry, String>>();
     _seriesBarData.add(
@@ -60,7 +67,7 @@ class MainStatsPageState extends State<MainStatsPage>{
       ),
     );
   }
-  
+
   _generateWeeklyData(myData) {
     _weekSeriesBarData = List<charts.Series<formattedWeekEntry, String>>();
     _weekSeriesBarData.add(
@@ -91,212 +98,175 @@ class MainStatsPageState extends State<MainStatsPage>{
     );
   }
 
+  static Text getPersonalWeekTotal(String house) {
 
+    StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance
+            .collection('houses')
+            .document(house)
+            .collection("RawData")
+            .snapshots(),
 
+        builder: (context, snapshot) {
+
+          if (!snapshot.hasData) {
+            return Styles.formatNumber(0.00);
+          }
+          else {
+            print(snapshot.toString());
+            List<MassEntry> weekData = snapshot.data.documents
+                .map((documentSnapshot) =>
+                MassEntry.fromMap(documentSnapshot.data))
+                .toList()
+                .where((i) =>
+                DateTime.parse(i.timestamp).isAfter(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+                    .subtract(Duration(days: 6))))
+                .toList();
+            double weeklyMass = weekData.fold(0, (previousValue, element) => previousValue + element.mass);
+            debugPrint(weeklyMass.toString());
+            return Styles.formatNumber(38.2);
+          }
+        }
+    );
+  }
+
+  void showWidget(){
+    setState(() {
+      viewVisible = true ;
+    });
+  }
+
+  void hideWidget(){
+    setState(() {
+      viewVisible = false ;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
 
+    bool paperVisible = MainStatsPageState.pageCounter % 3 == 0;
+    bool allVisible = MainStatsPageState.pageCounter % 3 == 1;
+    bool plasticVisible = MainStatsPageState.pageCounter % 3 == 2;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        actions: <Widget>[
-          PopupMenuButton(
-            icon: Icon(
-              Icons.menu,
-              color: Colors.black,),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: Text("Log Out"),
-                value: 1,
-              ),
-            ],
+      appBar: Styles.MainStatsPageHeader("Personal Statistics", FontWeight.bold, Colors.black),
 
-            onCanceled: () {
-              print("You have canceled the menu.");
-            },
-            onSelected: (value) {},
-          )
-
-        ],
-      ),
       body: Container(
         alignment: Alignment.center,
         color: Colors.white,
+
         child: Column(
           children: <Widget>[
 
+            //type selection
             Container(
-              decoration: BoxDecoration(
-                color: Colors.lightGreen[200],
-                borderRadius: BorderRadius.circular(5),
-              ),
-              height: 115,
-              width: MediaQuery.of(context).size.width/1.05,
-              padding: EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("Today you threw away",
-                  style: TextStyle(
-                    fontSize: 25,
-                  ),),
-                  SizedBox(
-                    height:5
-                  ),
-                  StreamBuilder<QuerySnapshot>(
-
-                    stream: Firestore.instance
-                        .collection('houses')
-                        .document("House_A")
-                        .collection("RawData")
-                        .where("timestamp2", isEqualTo: DateFormat('d MMM y').format(DateTime.now()).toString() )
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return CircularProgressIndicator();
-                      } else if (snapshot.data.documents.length == 0) {
-                        return Text("0kg",
-                          style: TextStyle(
-                              fontSize: 50,
-                              fontWeight: FontWeight.bold
-                          ),);
-                      } else {
-                        List<MassEntry> massEntry = snapshot.data.documents
-                            .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
-                            .toList();
-                        //print(jsonEncode(massEntry).toString());
-                        double todayMass = massEntry.fold(0, (previousValue, element) => previousValue + element.mass);
-                        return Text( todayMass.toString() + " kg",
-                          style: TextStyle(
-                              fontSize: 50,
-                              fontWeight: FontWeight.bold
-                          ),);
-                      }
-                    },
-                  )
-
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width/1.05,
-              height: 35,
-              padding: EdgeInsets.all(7),
-              decoration: BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.lightGreen[200],
-                  borderRadius: BorderRadius.circular(5)
-              ),
-              child:
-              StreamBuilder<QuerySnapshot>(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                height: 40,
+                width: MediaQuery.of(context).size.width/1.05,
+                padding: EdgeInsets.all(7),
+                child: Center(
+                  child: Row(
+                    children: <Widget>[
 
-                stream: Firestore.instance
-                    .collection('houses')
-                    .document("House_A")
-                    .collection("RawData")
-                    .snapshots(),
-                builder: (context, snapshot) {
+                      FlatButton(
+                        child: Icon(Icons.arrow_back),
+                        onPressed: () {
+                          setState(() {
+                            MainStatsPageState.pageCounter--;
+                          });
+                        },
+                      ),
 
-
-                  if (!snapshot.hasData) {
-                    return CircularProgressIndicator();
-                  }
-                  // else if (snapshot.data.documents.length == 0) {
-                  //   return Text("0kg",
-                  //     style: TextStyle(
-                  //         fontSize: 50,
-                  //         fontWeight: FontWeight.bold
-                  //     ),);
-                  // }
-                  else {
-                    List<MassEntry> weekData = snapshot.data.documents
-                        .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
-                        .toList()
-                        .where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6))))
-
-                        .toList();
-                    double weeklyMass = weekData.fold(0, (previousValue, element) => previousValue + element.mass);
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Container(
-                              child: Text("Week Daily Avg: ",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),),
-                            ),
-                            Container(
-
-                              child: Text((weeklyMass/combineDays(weekData).length).toStringAsFixed(2) +" Kg",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red
-                                ),),
-                            ),
-
-                          ],
+                      allVisible ? Text("               All                ",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Container(
-                              child: Text("Weekly Total: ",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),),
-                            ),
+                      ) : new Container(),
 
-                            Container(
-
-                              child: Text(weeklyMass.toString() +" Kg",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red
-                                ),),
-
-                            ),
-
-
-
-
-                          ],
+                      paperVisible ? Text("              Paper            ",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
-                    );
-                  }
-                },
-              ),
+                      ) : new Container(),
 
+                      plasticVisible ? Text("            Plastic            ",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ) : new Container(),
 
+                      FlatButton(
+                        child: Icon(Icons.arrow_forward),
+                        onPressed: () {
+                          setState(() {
+                            MainStatsPageState.pageCounter++;
+                          });
+                        },
+                      ),
 
+                    ],
+                  ),
 
+                  /* previous version of changing between pages
+                  child: ToggleButtons(
+                    renderBorder: false,
+                    children: <Widget>[
+                      Text("  General  ",
+                        style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
 
+                      Text("  Recyclables  ",
+                        style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
 
+                    onPressed: (int index) {
+                      setState(() {
+                        switch(index){
+                          case 0: {selectedType = "general";}
+                          break;
+                          case 1: {selectedType = "recyclables";}
+                          break;
+                        }
+
+                        for (int buttonIndex = 0; buttonIndex < isSelectedType.length; buttonIndex++) {
+                          if (buttonIndex == index) {
+                            isSelectedType[buttonIndex] = true;
+                          } else {
+                            isSelectedType[buttonIndex] = false;
+                          }
+                        }
+                        if (isSelectedType[1] == true) {
+                          showWidget();
+                        } else {
+                          hideWidget();
+                        }
+                      });
+                    },
+                    isSelected: isSelectedType,
+                  ),
+                  */
+                )
             ),
+
             SizedBox(
               height: 10,
             ),
+
+            //trend selection
             Container(
               decoration: BoxDecoration(
                 color: Colors.lightGreen[200],
@@ -314,22 +284,26 @@ class MainStatsPageState extends State<MainStatsPage>{
                       style: TextStyle(
                         fontSize: 23,
                         fontWeight: FontWeight.bold,
-                      ),),
+                      ),
+                    ),
                     Text("  Week  ",
                       style: TextStyle(
                         fontSize: 23,
                         fontWeight: FontWeight.bold,
-                      ),),
+                      ),
+                    ),
                     Text("  Month  ",
                       style: TextStyle(
                         fontSize: 23,
                         fontWeight: FontWeight.bold,
-                      ),),
+                      ),
+                    ),
                     Text("  All Time  ",
                       style: TextStyle(
                         fontSize: 23,
                         fontWeight: FontWeight.bold,
-                      ),),
+                      ),
+                    ),
                   ],
                   onPressed: (int index) {
                     setState(() {
@@ -343,23 +317,252 @@ class MainStatsPageState extends State<MainStatsPage>{
                         case 3: {selectedTime = "allTime";}
                         break;
                       }
-                      for (int buttonIndex = 0; buttonIndex < isSelected.length; buttonIndex++) {
+
+                      for (int buttonIndex = 0; buttonIndex < isSelectedTrend.length; buttonIndex++) {
                         if (buttonIndex == index) {
-                          isSelected[buttonIndex] = true;
+                          isSelectedTrend[buttonIndex] = true;
                         } else {
-                          isSelected[buttonIndex] = false;
+                          isSelectedTrend[buttonIndex] = false;
                         }
                       }
                     });
                   },
-                  isSelected: isSelected,
+                  isSelected: isSelectedTrend,
                 ),
               )
             ),
-            _buildBody(context),
+
+            SizedBox(
+              height: 10,
+            ),
+
+
+
+
+            /* using the box implemenetation. nothing moves
+            Visibility(
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                visible: viewVisible,
+                child: Container(
+                    height: 200,
+                    width: 200,
+                    color: Colors.redAccent,
+                    margin: EdgeInsets.only(top: 20, bottom: 20),
+                    child: Center(child: Text('Show Hide View Container Widget in Flutter',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white,
+                            fontSize: 24)))
+                )
+            ),
+
+            SizedBox(
+              height: 10,
+            ),
+            */
+
+            /* original impl
+            Container(
+                decoration: BoxDecoration(
+                  color: Colors.lightGreen[200],
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                height: 40,
+                width: MediaQuery.of(context).size.width/1.05,
+                padding: EdgeInsets.all(7),
+                child: Center(
+
+                  child: ToggleButtons(
+                    renderBorder: false,
+                    children: <Widget>[
+                      Text("  Plastics  ",
+                        style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      Text("  Papers  ",
+                        style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+
+                    onPressed: (int index) {
+                      setState(() {
+                        switch(index){
+                          case 0: {selectedType = "plastics";}
+                          break;
+                          case 1: {selectedType = "papers";}
+                          break;
+                        }
+
+                        for (int buttonIndex = 0; buttonIndex < isSelectedRec.length; buttonIndex++) {
+                          if (buttonIndex == index) {
+                            isSelectedRec[buttonIndex] = true;
+                          } else {
+                            isSelectedRec[buttonIndex] = false;
+                          }
+                        }
+                      });
+                    },
+                    isSelected: isSelectedRec,
+                  ),
+                )
+            ),
+            */
+
+
+            /* Original Impl with the bar below
+            viewVisible ? new Container(
+                    decoration: BoxDecoration(
+                      color: Colors.lightGreen[200],
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    height: 40,
+                    width: MediaQuery.of(context).size.width/1.05,
+                    padding: EdgeInsets.all(7),
+                    child: Center(
+
+                      child: ToggleButtons(
+                        renderBorder: false,
+                        children: <Widget>[
+                          Text("  Plastics  ",
+                            style: TextStyle(
+                              fontSize: 23,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                          Text("  Papers  ",
+                            style: TextStyle(
+                              fontSize: 23,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+
+                        onPressed: (int index) {
+                          setState(() {
+                            switch(index){
+                              case 0: {selectedType = "plastics";}
+                              break;
+                              case 1: {selectedType = "papers";}
+                              break;
+                            }
+
+                            for (int buttonIndex = 0; buttonIndex < isSelectedRec.length; buttonIndex++) {
+                              if (buttonIndex == index) {
+                                isSelectedRec[buttonIndex] = true;
+                              } else {
+                                isSelectedRec[buttonIndex] = false;
+                              }
+                            }
+                          });
+                        },
+                        isSelected: isSelectedRec,
+                      ),
+                    )
+            ) : new Container(),
+
+            SizedBox(
+              height: 10,
+            ),
+            */
+
+            //text box for trash threw today
+            allVisible ? Container(
+              decoration: BoxDecoration(
+                color: Colors.lightGreen[200],
+                borderRadius: BorderRadius.circular(5),
+              ),
+              height: 115,
+              width: MediaQuery.of(context).size.width/1.05,
+              padding: EdgeInsets.all(10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("Today you threw away",
+                    style: TextStyle(
+                      fontSize: 25,
+                    ),),
+                  SizedBox(
+                      height:5
+                  ),
+
+              /*
+              //for week's worth of trash thrown
+              StreamBuilder<QuerySnapshot>(
+                  stream: Firestore.instance
+                      .collection('houses')
+                      .document("House_A")
+                      .collection("RawData")
+                      .snapshots(),
+
+                  builder: (context, snapshot) {
+
+                    if (!snapshot.hasData) {
+                      return Styles.formatNumber(0.00);
+                    }
+                    else {
+                      List<MassEntry> weekData = snapshot.data.documents
+                          .map((documentSnapshot) =>
+                          MassEntry.fromMap(documentSnapshot.data))
+                          .toList()
+                          .where((i) =>
+                          DateTime.parse(i.timestamp).isAfter(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+                              .subtract(Duration(days: 6))))
+                          .toList();
+                      double weeklyMass = weekData.fold(0, (previousValue, element) => previousValue + element.mass);
+                      //debugPrint(weeklyMass.toString());
+                      return Styles.formatNumber(weeklyMass);
+                    }
+                  }
+              ),
+                  */
+
+                  StreamBuilder<QuerySnapshot>(
+                    stream: Firestore.instance
+                        .collection('houses')
+                        .document("House_A")
+                        .collection("RawData")
+                        .where("timestamp2", isEqualTo: DateFormat('d MMM y').format(DateTime.now()).toString() )
+                        .snapshots(),
+
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.data.documents.length == 0) {
+                        return Text("0.00 kg",
+                          style: TextStyle(
+                              fontSize: 50,
+                              fontWeight: FontWeight.bold
+                          ),);
+                      } else {
+                        List<MassEntry> massEntry = snapshot.data.documents
+                            .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
+                            .toList();
+                        //print(jsonEncode(massEntry).toString());
+                        double todayMass = massEntry.fold(0, (previousValue, element) => previousValue + element.mass);
+                        //return getPersonalWeekTotal("House_A");
+                        return Styles.formatNumber(todayMass);
+                      }
+                    },
+                  )
+                ],
+              ),
+            ) : new Container(),
+
+
+            //build the graph
+            allVisible ? _buildBody(context) : new Container(),
     ]
     )));
   }//, String time
+
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance
@@ -380,6 +583,31 @@ class MainStatsPageState extends State<MainStatsPage>{
       },
     );
   }
+
+  /*
+  //new graph with data filtered to include type of trash thrown also
+  Widget _buildBody(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance
+          .collection('houses')
+          .document("House_A")
+          .collection("RawData")
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        } else {
+          List<MassEntry> massEntryRaw = snapshot.data.documents
+              .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
+              .toList();
+          return _chooseChart(context, massEntryRaw, selectedTime, selectedType);
+          //return _chooseChart(context, massEntryRaw, time);
+        }
+      },
+    );
+  }
+  */
+
   List<MassEntry> combineDays(List<MassEntry> rawdata){
     List<MassEntry> output = [];
 
@@ -427,7 +655,6 @@ class MainStatsPageState extends State<MainStatsPage>{
   }
 
   Widget _chooseChart(BuildContext context, List<MassEntry> massdata, String time) {
-    //TODO: Change all time graph to line chart
     switch(time){
       case "today":{
         myData = massdata.where((i)=> i.shortenedTime == DateFormat('d MMM y').format(DateTime.now()).toString())
