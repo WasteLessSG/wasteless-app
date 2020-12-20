@@ -58,7 +58,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     _seriesBarData = List<charts.Series<MassEntry, String>>();
     _seriesBarData.add(
       charts.Series(
-        domainFn: (MassEntry massEntry, _) => massEntry.shortenedTime.substring(0,massEntry.shortenedTime.length-5),
+        domainFn: (MassEntry massEntry, _) => massEntry.day,
         measureFn: (MassEntry massEntry, _) => massEntry.mass,
         seriesColor: charts.ColorUtil.fromDartColor(Colors.green),
         id: 'Mass',
@@ -628,6 +628,35 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     }
     return output;
   }
+  
+  List<MassEntry> fillInDays(List<MassEntry> rawdata) {
+    var now = new DateTime.now();
+    final firstEntryDate = rawdata[0].dateTimeValue;
+    var timeFromFirstEntryInSeconds = now.difference(firstEntryDate);
+    var daysFromStart = timeFromFirstEntryInSeconds.inDays;
+    int iteratorIndicator = 0;
+
+    for (var i = 1; i<daysFromStart; i++) {
+      var iteratedDateTime = rawdata[0].dateTimeValue.add(Duration(days:i));
+      var iteratedShortenedTime = DateFormat('d MMM y').format(iteratedDateTime);
+      if (rawdata.firstWhere((e) => e.shortenedTime == iteratedShortenedTime, orElse: () => null) == null) {
+        var iteratedMassEntry = new MassEntry(
+          0.0,
+          iteratedDateTime.toString(),
+          iteratedShortenedTime,
+          iteratedDateTime,
+          DateFormat('d').format(iteratedDateTime).toString(),
+          DateFormat('MMM').format(iteratedDateTime).toString(),
+          DateFormat('y').format(iteratedDateTime).toString(),
+        );
+        iteratorIndicator += 1;
+        rawdata.insert(iteratorIndicator, iteratedMassEntry);
+      } else {
+        iteratorIndicator += 1;
+      }
+    }
+    return rawdata;
+  }
 
   List<formattedWeekEntry> formatWeekdays(List<MassEntry> rawdata){
     List<formattedWeekEntry> output = [
@@ -684,7 +713,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             .toList();
         // myData = massdata.where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime.now().subtract(Duration(days: 30)))  )
         //     .toList();
-        _generateComDayData(combineDays(myData));
+        _generateComDayData(fillInDays(combineDays(myData)));
         return Expanded(
           child: charts.BarChart(_seriesBarData,
             animate: true,),
@@ -693,7 +722,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       break;
       case "allTime":{
         myData = massdata;
-        _generateTimeChartData(combineDays(myData));
+        _generateTimeChartData(fillInDays(combineDays(myData)));
         return Expanded(
           child: charts.TimeSeriesChart(_timeChartData,
               animate: true,
