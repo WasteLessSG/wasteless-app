@@ -4,24 +4,25 @@ import 'package:LessApp/mainStatsPage.dart';
 import 'package:LessApp/debug.dart';
 import 'package:LessApp/communityStats.dart';
 import 'package:LessApp/fullPersonalStats.dart';
+import 'package:LessApp/summary.dart';
+import 'package:LessApp/styles.dart';
 
 class HomePage extends StatefulWidget{
 
-
   @override
   HomePageState createState() => new HomePageState();
-
 }
 
 class HomePageState extends State<HomePage> {
 
-  int _selectedIndex = 1;
+  int _selectedIndex = 2;
   static const TextStyle optionStyle =
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   List<Widget> _widgetOptions = <Widget>[
     new FullPersonalStatsPage(),
     new MainStatsPage(),
+    new summaryPage(),
     new CommunityStatsPage(),
     new DebugPage(),
   ];
@@ -35,10 +36,10 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
+
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
@@ -48,21 +49,28 @@ class HomePageState extends State<HomePage> {
             title: Text('Stats'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.trending_down),
             title: Text('Home'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.insert_chart),
+            icon: Icon(Icons.home),
+            title: Text('Summary'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.leaderboard),
             title: Text('Leaderboard'),
           ),
+
+          /*
           BottomNavigationBarItem(
             icon: Icon(Icons.warning),
             title: Text('!!FOR DEBUG!!'),
-
           ),
+          */
+
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green[900],
+        selectedItemColor: Colors.blue[200],
         unselectedItemColor: Colors.grey[500],
         type: BottomNavigationBarType.fixed,
         onTap: _onItemTapped,

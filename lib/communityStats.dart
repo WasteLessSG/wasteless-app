@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:LessApp/styles.dart';
+import 'package:intl/intl.dart';
 
 class CommunityStatsPage extends StatefulWidget{
   @override
@@ -7,6 +9,9 @@ class CommunityStatsPage extends StatefulWidget{
 }
 
 class CommunityStatsPageState extends  State<CommunityStatsPage> {
+
+  NumberFormat nf = NumberFormat("###.00", "en_US");
+
   @override
   Widget build(BuildContext context) {
 
@@ -60,7 +65,7 @@ class CommunityStatsPageState extends  State<CommunityStatsPage> {
           stream:  Firestore
               .instance
               .collection("houses")
-              .orderBy('alltime', descending: true)
+              .orderBy('alltime', descending: false)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -72,7 +77,6 @@ class CommunityStatsPageState extends  State<CommunityStatsPage> {
               //  List<MassEntry> massEntryRaw = snapshot.data.documents
               //               .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
               //               .toList();
-
               return ListView.builder(
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context,int index){
@@ -90,8 +94,8 @@ class CommunityStatsPageState extends  State<CommunityStatsPage> {
                         )
                       ],
                     ),
-                      title: Text(snapshot.data.documents[index].documentID),
-                    subtitle: Text("All Time Mass Thrown: " + snapshot.data.documents[index]['alltime'].toString() + "kg"),
+                    title: Text(snapshot.data.documents[index].documentID),
+                    subtitle: Text("All Time Mass Thrown: " + nf.format(snapshot.data.documents[index]['alltime']).toString() + " kg"),
                   ),
                 );}, //itemBuilder
             );
