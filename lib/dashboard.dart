@@ -12,7 +12,7 @@ class DashboardPage extends StatefulWidget{
 }
 
 class DashboardPageState extends State<DashboardPage> {
-  String selectedState = "rubbishEmpty";
+  String selectedState = "rubbishOverflow";
   double sizeRelativeVisual = 1.0;
 
   // Uncomment below after tip URL is settled
@@ -144,14 +144,23 @@ class DashboardPageState extends State<DashboardPage> {
                                 child: Column(
                                     children: <Widget>[
                                       Expanded(
-                                          child: Text("Your waste this week:", textAlign: TextAlign.center)
+                                          child: Text("Your waste this week:",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          )
                                       ),
-
-                                      /* placeholder text
                                       Expanded(
-                                          child: Text("2.56kg", textAlign: TextAlign.center)
+                                          child: Text("0.67kg",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          )
                                       )
-                                       */
                                     ]
                                 )
                             ),
@@ -160,10 +169,22 @@ class DashboardPageState extends State<DashboardPage> {
                                 child: Column(
                                     children: <Widget>[
                                       Expanded(
-                                          child: Text("Tembusu average this week:", textAlign: TextAlign.center)
+                                          child: Text("Tembusu average this week:",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          )
                                       ),
                                       Expanded(
-                                          child: Text("2.44kg", textAlign: TextAlign.center)
+                                          child: Text("0.51kg",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          )
                                       )
                                     ]
                                 )
