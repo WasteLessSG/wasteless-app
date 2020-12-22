@@ -298,13 +298,31 @@ class DashboardPageState extends State<DashboardPage> {
                         SizedBox(
                           height: 15,
                         ),
-
-                        Text("Daily Tip: \nAn apple a day keeps the doctor away",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
+                  Container(
+                      alignment: Alignment.center,
+                      padding: new EdgeInsets.only(
+                          top:10,
+                          right: 20.0,
+                          left: 20.0),
+                      child: new Container(
+                        height: MediaQuery.of(context).size.height *.18,
+                        width: MediaQuery.of(context).size.width,
+                        child: new Card(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          color: Colors.green,
+                          child:  Text("\nDaily Tip: \nAn apple a day keeps the doctor away",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
                           ),
+
                         ),
+                      ),
+                  )
+
+
 
                       ]
                   )

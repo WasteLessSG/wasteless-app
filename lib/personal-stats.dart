@@ -15,6 +15,7 @@ class PersonalStatsPage extends StatefulWidget{
 }
 
 class PersonalStatsPageState extends State<PersonalStatsPage>{
+  final title = ["Personal Trash Stats", "Personal Recycling Stats"];
   final now = DateTime.now();
   String selectedTime = "today";
   String selectedType = "general";
@@ -150,7 +151,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     bool plasticVisible = PersonalStatsPageState.pageCounter % 3 == 2;
 
     return Scaffold(
-      appBar: Styles.MainStatsPageHeader("Personal Statistics", FontWeight.bold, Colors.black),
+      appBar: Styles.MainStatsPageHeader(title[0], FontWeight.bold, Colors.black),
 
       body: Container(
         alignment: Alignment.center,
@@ -162,7 +163,8 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             //type selection
             Container(
                 decoration: BoxDecoration(
-                  color: Colors.lightGreen[200],
+                  color: Colors.brown[100],
+            //Colors.lightGreen[200],
                   borderRadius: BorderRadius.circular(5),
                 ),
                 height: 40,
@@ -269,7 +271,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             //trend selection
             Container(
               decoration: BoxDecoration(
-                color: Colors.lightGreen[200],
+                color: Colors.brown[100],
                 borderRadius: BorderRadius.circular(5),
               ),
               height: 40,
@@ -476,7 +478,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             //text box for trash threw today
             allVisible ? Container(
               decoration: BoxDecoration(
-                color: Colors.lightGreen[200],
+                color:  Colors.brown[100],
                 borderRadius: BorderRadius.circular(5),
               ),
               height: 115,
