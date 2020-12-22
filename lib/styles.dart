@@ -18,24 +18,24 @@ class Styles {
       centerTitle: true,
       backgroundColor: Colors.white,
       elevation: 0,
-      actions: <Widget>[
-        PopupMenuButton(
-          icon: Icon(
-            Icons.menu,
-            color: Colors.black,),
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              child: Text("Log Out"),
-              value: 1,
-            ),
-          ],
-
-          onCanceled: () {
-            print("You have canceled the menu.");
-          },
-          onSelected: (value) {},
-        )
-      ],
+      // actions: <Widget>[
+      //   PopupMenuButton(
+      //     icon: Icon(
+      //       Icons.menu,
+      //       color: Colors.black,),
+      //     itemBuilder: (context) => [
+      //       PopupMenuItem(
+      //         child: Text("Log Out"),
+      //         value: 1,
+      //       ),
+      //     ],
+      //
+      //     onCanceled: () {
+      //       print("You have canceled the menu.");
+      //     },
+      //     onSelected: (value) {},
+      //   )
+      // ],
     );
   }
 

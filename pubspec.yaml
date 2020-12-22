@@ -29,6 +29,7 @@ flutter_icons:
 
 dependencies:
 
+  http:
   csv_reader:
   smooth_page_indicator: ^0.2.0
   convert:

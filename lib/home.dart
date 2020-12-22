@@ -3,8 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:LessApp/personal-stats.dart';
 import 'package:LessApp/debug.dart';
 import 'package:LessApp/leaderboard.dart';
-import 'package:LessApp/HistoryPage.dart';
+import 'package:LessApp/history.dart';
 import 'package:LessApp/dashboard.dart';
+import 'package:LessApp/settings.dart';
 import 'package:LessApp/styles.dart';
 
 class HomePage extends StatefulWidget{
@@ -24,7 +25,8 @@ class HomePageState extends State<HomePage> {
     new PersonalStatsPage(),
     new DashboardPage(),
     new LeaderboardPage(),
-    new DebugPage(),
+    new SettingsPage()
+    //new DebugPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -61,12 +63,12 @@ class HomePageState extends State<HomePage> {
             title: Text('Leaderboard'),
           ),
 
-          /*
+
           BottomNavigationBarItem(
-            icon: Icon(Icons.warning),
-            title: Text('!!FOR DEBUG!!'),
+            icon: Icon(Icons.settings),
+            title: Text('Setting'),
           ),
-          */
+
 
         ],
         currentIndex: _selectedIndex,
