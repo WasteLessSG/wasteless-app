@@ -23,12 +23,19 @@ class SettingsPageState extends State<SettingsPage>{
             title: 'Account',
             tiles: [
               SettingsTile(
+                title: 'Change Password ',
+                leading: Icon(Icons.language),
+                onPressed: (BuildContext context) {},
+              ),
+
+              SettingsTile(
                 title: 'Sign Out',
                 leading: Icon(Icons.language),
                 onPressed: (BuildContext context) {},
               ),
             ],
           ),
+
           SettingsSection(
             title: 'Misc',
             tiles: [

@@ -13,8 +13,20 @@ class DashboardPage extends StatefulWidget{
 }
 
 class DashboardPageState extends State<DashboardPage> {
-  String selectedState = "rubbishOverflow";
+
+  String selectedState = DashboardPageState.stateSelector(0.10, 0.50);
   double sizeRelativeVisual = 1.0;
+
+  static String stateSelector(double a, double b) {
+    double percFill = (a/b)*100;
+    if (percFill < 50.0) {
+      return "rubbishEmpty";
+    } else if (50.0 <= percFill && percFill < 80.0) {
+      return "rubbishFilled";
+    } else {
+      return "rubbishOverflow";
+    }
+  }
 
   // Uncomment below after tip URL is settled
   /*
@@ -50,14 +62,15 @@ class DashboardPageState extends State<DashboardPage> {
       initialPage: 0,
       viewportFraction: 1
     )
-    ..addListener(_onController1Scroll)
-    ;
+
+    ..addListener(_onController1Scroll);
+
     _controller2 = PageController(
       initialPage: 0,
       viewportFraction: 1
     )
-    ..addListener(_onController2Scroll)
-    ;
+    ..addListener(_onController2Scroll);
+
     WidgetsBinding.instance
         .addPostFrameCallback((_) => _getVisualSize());
   }
@@ -74,6 +87,7 @@ class DashboardPageState extends State<DashboardPage> {
       return;
 
     _isController1 = true;
+
     if (_controller1.page.toInt() == _controller1.page) {
       _previousPage = _controller1.page.toInt();
       resetMoveInfo();
@@ -89,6 +103,7 @@ class DashboardPageState extends State<DashboardPage> {
       return;
 
     _isController2 = true;
+
     if (_controller2.page.toInt() == _controller2.page) {
       _previousPage = _controller2.page.toInt();
       resetMoveInfo();
@@ -133,7 +148,6 @@ class DashboardPageState extends State<DashboardPage> {
             children: <Widget>[
 
               // The first expanded is for SUMMARY STATISTICS
-
               Expanded(
                   child: PageView(
                     controller: _controller1,
@@ -165,6 +179,7 @@ class DashboardPageState extends State<DashboardPage> {
                                     ]
                                 )
                             ),
+
                             // This second expanded contains TEMBUSU WEEKLY TOTAL AVERAGE
                             Expanded(
                                 child: Column(
@@ -192,6 +207,8 @@ class DashboardPageState extends State<DashboardPage> {
                             )
                           ]
                       ),
+
+
                       Column(
                           children: <Widget>[
                             SizedBox(
@@ -238,7 +255,7 @@ class DashboardPageState extends State<DashboardPage> {
                                               textAlign: TextAlign.center)
                                       ),
                                       Expanded(
-                                          child: Text("0.20kg",
+                                          child: Text("0.50kg",
                                               style: TextStyle(
                                                 fontSize: 25,
                                                 fontWeight: FontWeight.bold,
@@ -265,26 +282,28 @@ class DashboardPageState extends State<DashboardPage> {
                           child: PageView(
                             controller: _controller2,
                             children: [
-                              trashBin(context, selectedState),
+                              trashBin(selectedState),
                               Image.asset('assets/recyclingIsland.png'),
                             ],
                             key: _keyVisual,
                           ),
                         ),
                       ),
+
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                            color: Color(0xffCBC76C),
+                            color: Colors.white,
+                            //color: Color(0xffCBC76C),
                             width: 5
                         ),
-                        color: Color(0xffE4E5A3),
+                        color: Colors.white,
+                        //color: Color(0xffE4E5A3),
                       )
                   )
               ),
 
               // The third expanded is for the LIGHT BULB TIP
-
               Expanded(
                   child: Column(
                       children: <Widget>[
@@ -323,7 +342,6 @@ class DashboardPageState extends State<DashboardPage> {
                   )
 
 
-
                       ]
                   )
               ),
@@ -343,13 +361,12 @@ class DashboardPageState extends State<DashboardPage> {
 
 
   // trashBin
-
-  Widget trashBin(BuildContext context, selectedState) {
-    if (this.selectedState == "rubbishEmpty") {
+  Widget trashBin(String selectedState) {
+    if (selectedState == "rubbishEmpty") {
       return Image.asset('assets/rubbishEmptyIsland.png');
-    } else if (this.selectedState == 'rubbishFilled') {
+    } else if (selectedState == 'rubbishFilled') {
       return Image.asset('assets/rubbishFilledIsland.png');
-    } else if (this.selectedState == 'rubbishOverflow') {
+    } else if (selectedState == 'rubbishOverflow') {
       return Image.asset('assets/rubbishOverflowIsland.png');
     }
   }
