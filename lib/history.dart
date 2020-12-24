@@ -36,7 +36,6 @@ class HistoryPageState extends  State<HistoryPage> {
           elevation: 0,
         ),
 
-        //Styles.CommonHeader("Personal Statistics", FontWeight.bold, Colors.white),),
         body: Container(
           alignment: Alignment.center,
           color: Colors.white,
@@ -67,7 +66,6 @@ class HistoryPageState extends  State<HistoryPage> {
                                _typeChosen[i] = false;
                              }
                            }
-
                            _selectedType = newValue;
                          });
                       },
@@ -96,7 +94,6 @@ class HistoryPageState extends  State<HistoryPage> {
                               _trendChosen[i] = false;
                             }
                           }
-
                           _selectedTrend = newValue;
                         });
                       },
