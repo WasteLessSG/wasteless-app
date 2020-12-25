@@ -8,6 +8,7 @@ import 'package:LessApp/massEntry.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:LessApp/styles.dart';
+import 'package:LessApp/dashboard.dart';
 
 class PersonalStatsPage extends StatefulWidget{
   @override
@@ -17,7 +18,7 @@ class PersonalStatsPage extends StatefulWidget{
 class PersonalStatsPageState extends State<PersonalStatsPage>{
   final title = ["Personal Trash Stats", "Personal Recycling Stats"];
   final now = DateTime.now();
-  String selectedTime = "today";
+  String selectedTime = "week";
   String selectedType = "general";
   List<bool> isSelectedTrend = [true, false, false];
   List<bool> isSelectedType = [false, true, false];
@@ -28,7 +29,10 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   List<charts.Series<MassEntry, DateTime>> _timeChartData;
   List<MassEntry> myData, massEntryDay;
   static int pageCounter = 15001;
-  int _selectedPage = 1;
+  double personalWeekAverage = 0.00;
+  double areaWeekAverage = 0.00;
+
+  NumberFormat nf = NumberFormat("###.00", "en_US");
 
   _generateData(myData) {
     _seriesBarData = List<charts.Series<MassEntry, String>>();
@@ -363,7 +367,8 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                   builder: (context, snapshot) {
 
                     if (!snapshot.hasData) {
-                      return Styles.formatNumber(0.00);
+                      //return Styles.formatNumber(0.00);
+                      return new Container();
                     }
                     else {
                       List<MassEntry> weekData = snapshot.data.documents
@@ -376,12 +381,18 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                           .toList();
                       double weeklyMass = weekData.fold(0, (previousValue, element) => previousValue + element.mass);
                       //debugPrint(weeklyMass.toString());
-                      return Styles.formatNumber(weeklyMass);
+                      //return Styles.formatNumber(weeklyMass);
+                      setState(() {
+                        personalWeekAverage = weeklyMass / 7;
+                      });
+                      return new Container();
                     }
                   }
               ),
                   */
 
+
+                  //for amount thrown today by user
                   StreamBuilder<QuerySnapshot>(
                     stream: Firestore.instance
                         .collection('houses')
@@ -403,13 +414,27 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                         List<MassEntry> massEntry = snapshot.data.documents
                             .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
                             .toList();
+
+                        //to change the average value for each person.
+                        List<MassEntry> weekData = snapshot.data.documents
+                            .map((documentSnapshot) =>
+                            MassEntry.fromMap(documentSnapshot.data))
+                            .toList()
+                            .where((i) =>
+                            DateTime.parse(i.timestamp).isAfter(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+                                .subtract(Duration(days: 6))))
+                            .toList();
+
                         //print(jsonEncode(massEntry).toString());
                         double todayMass = massEntry.fold(0, (previousValue, element) => previousValue + element.mass);
+                        double weeklyMass = weekData.fold(0, (previousValue, element) => previousValue + element.mass);
+                        personalWeekAverage = weeklyMass / 7.0;
                         //return getPersonalWeekTotal("House_A");
                         return Styles.formatNumber(todayMass);
                       }
                     },
                   )
+
                 ],
               ),
             ) : new Container(),
@@ -636,11 +661,21 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
         print(DateTime.now().weekday.toString());
         return Expanded(
           child: charts.BarChart(_weekSeriesBarData,
-            animate: true,),
+            animate: true, behaviors: [
+              new charts.RangeAnnotation([
+                new charts.LineAnnotationSegment(
+                    personalWeekAverage, charts.RangeAnnotationAxisType.measure,
+                    //startLabel: "Your week average: " + nf.format(personalWeekAverage) + "kg",
+                    endLabel: "Your week average: " + nf.format(personalWeekAverage) + "kg",
+                    color: charts.MaterialPalette.gray.shade400),
+                //TODO: NEED TO ADD TEMBUSU'S WEEKLY AVERAGE. SIMILAR IMPLEMENTATION TO ABOVE.
+              ])
+            ],
+          ),
         );
       }
-
       break;
+
       case "month":{
         myData = massdata.where((i)=> i.dateTimeValue.month == DateTime.now().month )
             .toList();
@@ -649,10 +684,12 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
         _generateComDayData(fillInDays(combineDays(myData)));
         return Expanded(
           child: charts.BarChart(_seriesBarData,
-            animate: true,),
+            animate: true,
+          ),
         );
       }
       break;
+
       case "allTime":{
         myData = massdata;
         _generateTimeChartData(fillInDays(combineDays(myData)));
@@ -666,7 +703,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       }
       break;
 
-      default:{
+      default: {
         //same as today
         myData = massdata.where((i)=> i.shortenedTime == DateFormat('d MMM y').format(DateTime.now()).toString())
             .toList();

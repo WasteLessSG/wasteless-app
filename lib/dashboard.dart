@@ -6,6 +6,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:csv_reader/csv_reader.dart';
 import 'package:LessApp/styles.dart';
 import 'dart:math';
+import 'package:intl/intl.dart';
 
 class DashboardPage extends StatefulWidget{
   @override
@@ -14,7 +15,14 @@ class DashboardPage extends StatefulWidget{
 
 class DashboardPageState extends State<DashboardPage> {
 
-  String selectedState = DashboardPageState.stateSelector(0.10, 0.50);
+  NumberFormat nf = NumberFormat("##0.00", "en_US");
+
+  double wasteThisWeek = 21.23;
+  double areaAverageThisWeek = 73.57;
+
+  double recyclablesThisWeek = 7.22;
+  double areaAverageRecyclablesThisWeek = 8.93;
+
   double sizeRelativeVisual = 1.0;
 
   static String stateSelector(double a, double b) {
@@ -168,7 +176,7 @@ class DashboardPageState extends State<DashboardPage> {
                                           )
                                       ),
                                       Expanded(
-                                          child: Text("0.67kg",
+                                          child: Text(nf.format(wasteThisWeek) + "kg",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontSize: 25,
@@ -194,7 +202,7 @@ class DashboardPageState extends State<DashboardPage> {
                                           )
                                       ),
                                       Expanded(
-                                          child: Text("0.51kg",
+                                          child: Text(nf.format(areaAverageThisWeek) + "kg",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontSize: 25,
@@ -230,7 +238,7 @@ class DashboardPageState extends State<DashboardPage> {
                                           )
                                       ),
                                       Expanded(
-                                          child: Text("0.41kg",
+                                          child: Text(nf.format(recyclablesThisWeek) + "kg",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontSize: 25,
@@ -245,7 +253,6 @@ class DashboardPageState extends State<DashboardPage> {
                             Expanded(
                                 child: Column(
                                     children: <Widget>[
-
                                       Expanded(
                                           child: Text("Tembusu average this week:",
                                               style: TextStyle(
@@ -255,7 +262,7 @@ class DashboardPageState extends State<DashboardPage> {
                                               textAlign: TextAlign.center)
                                       ),
                                       Expanded(
-                                          child: Text("0.50kg",
+                                          child: Text(nf.format(areaAverageRecyclablesThisWeek) + "kg",
                                               style: TextStyle(
                                                 fontSize: 25,
                                                 fontWeight: FontWeight.bold,
@@ -282,7 +289,7 @@ class DashboardPageState extends State<DashboardPage> {
                           child: PageView(
                             controller: _controller2,
                             children: [
-                              trashBin(selectedState),
+                              trashBin(stateSelector(this.wasteThisWeek, this.areaAverageThisWeek)),
                               Image.asset('assets/recyclingIsland.png'),
                             ],
                             key: _keyVisual,
@@ -312,7 +319,7 @@ class DashboardPageState extends State<DashboardPage> {
                           height: 15,
                         ),
                         Container(
-                          child: selectionDots(context, selectedState)
+                          child: selectionDots(context, stateSelector(this.wasteThisWeek, this.areaAverageThisWeek))
                         ),
                         SizedBox(
                           height: 15,

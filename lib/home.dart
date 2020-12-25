@@ -25,7 +25,7 @@ class HomePageState extends State<HomePage> {
     new PersonalStatsPage(),
     new DashboardPage(),
     new LeaderboardPage(),
-    new SettingsPage()
+    new SettingsPage(),
     //new DebugPage(),
   ];
 
@@ -62,12 +62,17 @@ class HomePageState extends State<HomePage> {
             icon: Icon(Icons.leaderboard),
             title: Text('Leaderboard'),
           ),
-
-
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             title: Text('Setting'),
           ),
+
+          /*
+          BottomNavigationBarItem(
+            icon: Icon(Icons.warning),
+            title: Text('Debug'),
+          ),
+          */
 
 
         ],
