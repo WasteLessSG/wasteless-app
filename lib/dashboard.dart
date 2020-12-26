@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:http/http.dart' as http;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:csv_reader/csv_reader.dart';
 import 'package:LessApp/styles.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:async/async.dart';
 
 class DashboardPage extends StatefulWidget{
   @override
@@ -25,7 +27,77 @@ class DashboardPageState extends State<DashboardPage> {
 
   double sizeRelativeVisual = 1.0;
 
+
+  final df3 = DateFormat.yMMMd();
+  final dfFilter = DateFormat("yyyy-MM-dd");
+  AsyncMemoizer _memoizer;
+  int userID = 1234;
+  List list = List();
+  Map map = Map();
+
+  _fetchData(String party, String type) async {
+    return this._memoizer.runOnce(() async {
+      String link;
+      if (party == "self") {
+        link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${userID.toString()}?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${type}";
+      } else {
+        link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${type}";
+      }
+
+      final response = await http.get(link, headers: {"x-api-key": "YUgOYw37Yl5tmymEUGG3qaIfVdmten3S1YLAK8dI"});
+      if (response.statusCode == 200) {
+        map = json.decode(response.body) as Map;
+        list = map["data"];
+      } else {
+        throw Exception('Failed to load data');
+      }
+    });
+  }
+
+  Widget _buildStats(String party, String type) {
+    _fetchData(party, type);
+    var now = new DateTime.now();
+    List newList = list.where((entry) => DateTime.parse(dfFilter.format(DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000)).toString())
+        .isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
+        .toList();
+
+    double averageValue = newList.fold(0, (current, entry) => current + entry["weight"]) / 7.0;
+
+    setState(() {
+      if (type == "general") {
+        if (party == "self") {
+          wasteThisWeek = averageValue;
+        } else {
+          areaAverageThisWeek = averageValue;
+        }
+      } else {
+        if (party == "self") {
+          recyclablesThisWeek = averageValue;
+        } else {
+          areaAverageRecyclablesThisWeek = averageValue;
+        }
+      }
+    });
+
+    return Expanded(
+        child: Text(nf.format(averageValue) + "kg",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
+        )
+    );
+  }
+
+
+
+
   static String stateSelector(double a, double b) {
+    if (b == 0) {
+      return "rubbishEmpty";
+    }
+
     double percFill = (a/b)*100;
     if (percFill < 50.0) {
       return "rubbishEmpty";
@@ -66,6 +138,7 @@ class DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
+    _memoizer = AsyncMemoizer();
     _controller1 = PageController(
       initialPage: 0,
       viewportFraction: 1
@@ -160,6 +233,8 @@ class DashboardPageState extends State<DashboardPage> {
                   child: PageView(
                     controller: _controller1,
                     children: [
+
+                      //General waste page
                       Column(
                           children: <Widget>[
                             // This first expanded contains USER WEEKLY TOTAL
@@ -175,15 +250,7 @@ class DashboardPageState extends State<DashboardPage> {
                                             ),
                                           )
                                       ),
-                                      Expanded(
-                                          child: Text(nf.format(wasteThisWeek) + "kg",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          )
-                                      )
+                                      _buildStats("self", "general"),
                                     ]
                                 )
                             ),
@@ -201,22 +268,14 @@ class DashboardPageState extends State<DashboardPage> {
                                             ),
                                           )
                                       ),
-                                      Expanded(
-                                          child: Text(nf.format(areaAverageThisWeek) + "kg",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          )
-                                      )
+                                      _buildStats("tembusu", "general"),
                                     ]
                                 )
                             )
                           ]
                       ),
 
-
+                      //Recyclables waste page
                       Column(
                           children: <Widget>[
                             SizedBox(
@@ -237,18 +296,11 @@ class DashboardPageState extends State<DashboardPage> {
                                             ),
                                           )
                                       ),
-                                      Expanded(
-                                          child: Text(nf.format(recyclablesThisWeek) + "kg",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          )
-                                      )
+                                      _buildStats("self", "all"),
                                     ]
                                 )
                             ),
+
                             // This second expanded contains TEMBUSU WEEKLY TOTAL AVERAGE
                             Expanded(
                                 child: Column(
@@ -261,14 +313,7 @@ class DashboardPageState extends State<DashboardPage> {
                                               ),
                                               textAlign: TextAlign.center)
                                       ),
-                                      Expanded(
-                                          child: Text(nf.format(areaAverageRecyclablesThisWeek) + "kg",
-                                              style: TextStyle(
-                                                fontSize: 25,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              textAlign: TextAlign.center)
-                                      )
+                                      _buildStats("tembusu", "all"),
                                     ]
                                 )
                             ),
@@ -279,8 +324,8 @@ class DashboardPageState extends State<DashboardPage> {
 
               ),
 
-              // The second expanded is for the CHANGING VISUAL
 
+              // The second expanded is for the CHANGING VISUAL
               Expanded(
                   child: Container(
                       child: AspectRatio(
@@ -324,6 +369,7 @@ class DashboardPageState extends State<DashboardPage> {
                         SizedBox(
                           height: 15,
                         ),
+
                   Container(
                       alignment: Alignment.center,
                       padding: new EdgeInsets.only(

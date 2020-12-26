@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'package:async/async.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:LessApp/styles.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class HistoryPage extends StatefulWidget{
   @override
@@ -10,7 +15,10 @@ class HistoryPage extends StatefulWidget{
 
 class HistoryPageState extends  State<HistoryPage> {
 
+  AsyncMemoizer _memoizer;
+
   NumberFormat nf = NumberFormat("###.00", "en_US");
+
   String _selectedType = "General";
   String _selectedTrend = "Week";
 
@@ -19,9 +27,96 @@ class HistoryPageState extends  State<HistoryPage> {
 
   List<bool> _trendChosen = [true, false, false];
   List<String> _trendList = ["Week", "Month", "All Time"];
+  List list = List();
+  Map map = Map();
+
+  final df = new DateFormat('dd-MM-yyyy hh:mm a');
+  final df2 = new DateFormat(DateFormat.YEAR_MONTH_DAY, 'en_US');
+  final df3 = DateFormat.yMMMd();
+  final df4 = new DateFormat('d MMM yyyy');
+  final df5 = new DateFormat('MMM');
+  final dfFilter = DateFormat("yyyy-MM-dd");
+  int userID = 1234;
+
+  @override
+  void initState() {
+    super.initState();
+    _memoizer = AsyncMemoizer();
+  }
+
+  _fetchData() async {
+    return this._memoizer.runOnce(() async {
+      String currentType;
+      if (_typeChosen[0]) {
+        currentType = "general";
+      } else {
+        currentType = "all";
+      }
+
+      String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${userID.toString()}?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${currentType}";
+
+      final response = await http.get(link, headers: {"x-api-key": "YUgOYw37Yl5tmymEUGG3qaIfVdmten3S1YLAK8dI"});
+      if (response.statusCode == 200) {
+        map = json.decode(response.body) as Map;
+        list = map["data"];
+      } else {
+        throw Exception('Failed to load data');
+      }
+    });
+  }
+
+  Widget _buildList() {
+
+    _fetchData();
+    var now = new DateTime.now();
+    List newList;
+
+    switch(_selectedTrend) {
+
+      //month's worth of data
+      case "Month": {
+        newList = list.where((entry)=> DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).month == DateTime.now().month )
+            .toList();
+      }
+      break;
+
+      //all time data
+      case "All Time": {
+        newList = list;
+      }
+      break;
+
+      //week's worth of data
+      default: {
+        newList = list.where((entry) => DateTime.parse(dfFilter.format(DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000)).toString())
+            .isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
+            .toList();
+      }
+
+    }
+
+    return Expanded(
+        child: ListView.builder(
+          itemCount: newList.length,
+          reverse: true,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              contentPadding: EdgeInsets.all(10.0),
+              title: new Text(df4.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["time"] * 1000)).toString()),
+              //title: new Text(DateTime.now().month.toString()),
+              subtitle: new Text(newList[index]["weight"].toString() + "kg"),
+            );
+            },
+        )
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
+
+    //_fetchData();
+    //List filteredList = _chooseList(list, _selectedTrend);
 
     return Scaffold(
         appBar: AppBar(
@@ -100,10 +195,30 @@ class HistoryPageState extends  State<HistoryPage> {
                     ),
                   ],
                 ),
-
-
               ),
 
+              _buildList(),
+
+              /*
+               * the code causing too many calls
+              Expanded(
+                child: ListView.builder(
+                  itemCount: filteredList.length,
+                  reverse: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      contentPadding: EdgeInsets.all(10.0),
+                      title: new Text(df3.format(DateTime.fromMillisecondsSinceEpoch(filteredList[index]["time"] * 1000)).toString()),
+                      subtitle: new Text(filteredList[index]["weight"].toString() + "kg"),
+                    );
+                  },
+                )
+              ),
+              */
+
+
+              /*
+               * Previous Implementation using Firestore
               StreamBuilder(
                 stream: Firestore
                     .instance
@@ -147,6 +262,9 @@ class HistoryPageState extends  State<HistoryPage> {
                   );
                 },
               )
+              */
+
+
             ],
           )
         )

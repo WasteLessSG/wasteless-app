@@ -4,14 +4,15 @@ import 'package:intl/intl.dart';
 class formattedWeekEntry {
   double mass;
   String day;
-  formattedWeekEntry(this.mass,this.day);
+  formattedWeekEntry(this.mass, this.day);
 }
 
 class MassEntry {
 
   double mass;
   final DateTime dateTimeValue;
-  final String timestamp,shortenedTime,day,month,year;
+  final String timestamp, shortenedTime, day, month, year;
+
   MassEntry (
       this.mass,
       this.timestamp,
