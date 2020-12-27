@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,6 +8,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:LessApp/styles.dart';
 import 'package:LessApp/dashboard.dart';
+import 'dart:convert';
+import 'package:async/async.dart';
+import 'package:http/http.dart' as http;
+import 'package:LessApp/wasteless-data.dart';
 
 class PersonalStatsPage extends StatefulWidget{
   @override
@@ -29,10 +32,82 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   List<charts.Series<MassEntry, DateTime>> _timeChartData;
   List<MassEntry> myData, massEntryDay;
   static int pageCounter = 15001;
-  double personalWeekAverage = 0.00;
-  double areaWeekAverage = 0.00;
 
-  NumberFormat nf = NumberFormat("###.00", "en_US");
+
+  double personalWeekAverageGeneral = 0.00;
+  double areaWeekAverageGeneral = 0.00;
+
+  double personalWeekAverageAll = 0.00;
+  double areaWeekAverageAll = 0.00;
+  double personalWeekAveragePlastic = 0.00;
+  double areaWeekAveragePlastic = 0.00;
+  double personalWeekAveragePaper = 0.00;
+  double areaWeekAveragePaper = 0.00;
+
+
+  NumberFormat nf = NumberFormat("#00.00", "en_US");
+  final df3 = DateFormat.yMMMd();
+  final dfFilter = DateFormat("yyyy-MM-dd");
+  int userID = 1234;
+  List list = List();
+  Map map = Map();
+  AsyncMemoizer _memoizer;
+  @override
+  void initState() {
+    _memoizer = AsyncMemoizer();
+  }
+
+  _fetchData(String party, String type) async {
+
+    setState(() {
+      if (isSelectedTypeAll[0]) {
+        selectedType = "general";
+      } else {
+        if (PersonalStatsPageState.pageCounter % 3 == 0) {
+          selectedType = "plastic";
+        } else if (PersonalStatsPageState.pageCounter % 3 == 1) {
+          selectedType = "all";
+        } else {
+          selectedType = "plastic";
+        }
+      }
+    });
+
+    return this._memoizer.runOnce(() async {
+
+      int id = 1234;
+
+      String currentType;
+      if (isSelectedTypeAll[0]) {
+        currentType = "general";
+      } else {
+        if (isSelectedType[0]) {
+          currentType = "all";
+        } else if (isSelectedType[1]) {
+          currentType = "paper";
+        } else {
+          currentType = "plastic";
+        }
+      }
+
+      String link;
+      if (party == "self") {
+        link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${id.toString()}?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${type}";
+      } else {
+        link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${type}";
+      }
+
+      final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
+      if (response.statusCode == 200) {
+        map = json.decode(response.body) as Map;
+        list = map["data"];
+      } else {
+        throw Exception('Failed to load data');
+      }
+    });
+  }
+
+
 
   _generateData(myData) {
     _seriesBarData = List<charts.Series<MassEntry, String>>();
@@ -334,26 +409,30 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             ),
 
             //today trash textbox
-            isSelectedTypeAll[0] ? Container(
+            Container(
               decoration: BoxDecoration(
                 color:  isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
                 borderRadius: BorderRadius.circular(5),
               ),
-              height: 115,
+              height: 90,
               width: MediaQuery.of(context).size.width/1.05,
               padding: EdgeInsets.all(10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+
                   Text("Today you threw away",
                     style: TextStyle(
                       fontSize: 25,
                     ),
                   ),
 
+
                   SizedBox(
                       height:5
                   ),
+
+                  _buildStatsDailyInfo("self"),
 
               /*
               //for week's worth of trash thrown
@@ -391,7 +470,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
               ),
                   */
 
-
+                  /*
                   //for amount thrown today by user
                   StreamBuilder<QuerySnapshot>(
                     stream: Firestore.instance
@@ -428,17 +507,47 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                         //print(jsonEncode(massEntry).toString());
                         double todayMass = massEntry.fold(0, (previousValue, element) => previousValue + element.mass);
                         double weeklyMass = weekData.fold(0, (previousValue, element) => previousValue + element.mass);
-                        personalWeekAverage = weeklyMass / 7.0;
+                        personalWeekAverageGeneral = weeklyMass / 7.0;
                         //return getPersonalWeekTotal("House_A");
                         return Styles.formatNumber(todayMass);
                       }
                     },
                   )
+                  */
 
                 ],
               ),
-            ) : new Container(),
+            ),
 
+            Container(
+              child:  Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+
+                  Container(
+                    child: Text("  Personal \n  Week Average: ",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),),
+                  ),
+                  _buildStatsWeekInfo("self", selectedType, Colors.purple),
+
+                  Container(
+                    child: Text("  Tembusu \n  Week Average: ",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),),
+                  ),
+                  _buildStatsWeekInfo("self", selectedType, Colors.teal[600]),
+                ],
+              ),
+            ),
+
+
+            /*
             //today recyclables textbox
             isSelectedTypeAll[1] ? Container(
               decoration: BoxDecoration(
@@ -492,6 +601,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
               ),
                   */
 
+
                   StreamBuilder<QuerySnapshot>(
                     stream: Firestore.instance
                         .collection('houses')
@@ -520,17 +630,120 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                       }
                     },
                   )
+
                 ],
               ),
             ) : new Container(),
+            */
 
 
             //build the graph
-            isSelectedTypeAll[0] ? _buildBody(context) : new Container(),
+             _buildBody(context),
+
     ]
     )));
   }//, String time
 
+
+  MassEntry massEntryGenerator(int time, int weight) {
+
+    final df4 = new DateFormat('d MMM yyyy');
+    final df5 = new DateFormat('MMM');
+
+    double mass = double.parse(weight.toString());
+    DateTime dateTimeValue = DateTime.fromMillisecondsSinceEpoch(time * 1000);
+    String timestamp = dateTimeValue.toIso8601String();
+    String shortenedTime = df4.format(dateTimeValue).toString();
+    String day = dateTimeValue.day.toString();
+    String month = df5.format(dateTimeValue).toString();
+    String year = dateTimeValue.year.toString();
+
+    return MassEntry(mass, timestamp, shortenedTime, dateTimeValue, day, month, year);
+  }
+
+  Widget _buildBody(BuildContext context) {
+
+    _fetchData("self", selectedType);
+    //WasteLessData data = new WasteLessData();
+    //List retrievedList = data.getListPersonalStats("self", selectedType);
+    //this.list = retrievedList;
+
+    List<MassEntry> nextList = list.map((entry) => massEntryGenerator(entry["time"], entry["weight"])).toList();
+    return _chooseChart(context, nextList, selectedTime);
+  }
+
+  Widget _chooseChart(BuildContext context, List<MassEntry> massdata, String time) {
+
+    switch(time){
+      case "week":{
+
+        myData = massdata.where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
+            .toList();
+        _generateWeeklyData(formatWeekdays(combineDays(myData)));
+        print(DateTime.now().weekday.toString());
+
+        return Expanded(
+          child: charts.BarChart(_weekSeriesBarData,
+            animate: true, behaviors: [
+              new charts.RangeAnnotation([
+                new charts.LineAnnotationSegment(
+                    personalWeekAverageGeneral, charts.RangeAnnotationAxisType.measure,
+                    color: charts.MaterialPalette.purple.shadeDefault),
+
+                new charts.LineAnnotationSegment(
+                    areaWeekAverageGeneral, charts.RangeAnnotationAxisType.measure,
+                    color: charts.MaterialPalette.teal.shadeDefault),
+              ])
+            ],
+          ),
+        );
+      }
+      break;
+
+      case "month": {
+        myData = massdata.where((i)=> i.dateTimeValue.month == DateTime.now().month )
+            .toList();
+        _generateComDayData(fillInDays(combineDays(myData)));
+        return Expanded(
+          child: charts.BarChart(_seriesBarData,
+            animate: true,
+          ),
+        );
+      }
+      break;
+
+      case "allTime":{
+        myData = massdata;
+        _generateTimeChartData(fillInDays(combineDays(myData)));
+        return Expanded(
+          child: charts.TimeSeriesChart(_timeChartData,
+            animate: true,
+            defaultRenderer:
+            new charts.LineRendererConfig(includeArea: true, stacked: true),
+          ),
+        );
+      }
+      break;
+
+      default: {
+        //same as today
+        myData = massdata.where((i)=> i.shortenedTime == DateFormat('d MMM y').format(DateTime.now()).toString())
+            .toList();
+        _generateData(myData);
+        return Expanded(
+          child: charts.BarChart(_seriesBarData,
+            animate: true,),
+        );
+      }
+      break;
+    }
+  }
+
+
+
+
+
+  /*
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance
@@ -551,35 +764,17 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       },
     );
   }
-
-  /*
-  //new graph with data filtered to include type of trash thrown also
-  Widget _buildBody(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance
-          .collection('houses')
-          .document("House_A")
-          .collection("RawData")
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return CircularProgressIndicator();
-        } else {
-          List<MassEntry> massEntryRaw = snapshot.data.documents
-              .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
-              .toList();
-          return _chooseChart(context, massEntryRaw, selectedTime, selectedType);
-          //return _chooseChart(context, massEntryRaw, time);
-        }
-      },
-    );
-  }
   */
+
 
   List<MassEntry> combineDays(List<MassEntry> rawdata){
     List<MassEntry> output = [];
+    if (rawdata.isEmpty) {
+      return rawdata;
+    }
 
-    for ( var i = 0; i <rawdata.length; i++){
+    for (var i = 0; i < rawdata.length; i++) {
+
       if (output.where((element) =>
           element.shortenedTime
               == rawdata[i].shortenedTime).isEmpty){
@@ -598,6 +793,10 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   }
   
   List<MassEntry> fillInDays(List<MassEntry> rawdata) {
+    if (rawdata.isEmpty) {
+      return rawdata;
+    }
+
     var now = new DateTime.now();
     final firstEntryDate = rawdata[0].dateTimeValue;
     var timeFromFirstEntryInSeconds = now.difference(firstEntryDate);
@@ -634,89 +833,127 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       formattedWeekEntry(0,"THU"),
       formattedWeekEntry(0,"FRI"),
       formattedWeekEntry(0,"SAT"),
-      formattedWeekEntry(0,"SUN")
+      formattedWeekEntry(0,"SUN"),
     ];
+
     int currentTime = DateTime.now().weekday;
-    for ( var i = currentTime; i >0; i--){
+
+    for ( var i = currentTime; i > 0; i--){
       var x = rawdata.where((element) =>
       element.dateTimeValue.weekday == i);
+
       if (x.isNotEmpty){
         output[i-1].mass = rawdata[rawdata.indexOf(x.toList()[0])].mass;
       }
-      
     }
-
-
-
     return output;
   }
 
-  Widget _chooseChart(BuildContext context, List<MassEntry> massdata, String time) {
-    switch(time){
-      case "week":{
+  Widget _buildStatsDailyInfo(String party) {
 
-        myData = massdata.where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
-            .toList();
-        _generateWeeklyData(formatWeekdays(combineDays(myData)));
-        print(DateTime.now().weekday.toString());
-        return Expanded(
-          child: charts.BarChart(_weekSeriesBarData,
-            animate: true, behaviors: [
-              new charts.RangeAnnotation([
-                new charts.LineAnnotationSegment(
-                    personalWeekAverage, charts.RangeAnnotationAxisType.measure,
-                    //startLabel: "Your week average: " + nf.format(personalWeekAverage) + "kg",
-                    endLabel: "Your week average: " + nf.format(personalWeekAverage) + "kg",
-                    color: charts.MaterialPalette.gray.shade400),
-                //TODO: NEED TO ADD TEMBUSU'S WEEKLY AVERAGE. SIMILAR IMPLEMENTATION TO ABOVE.
-              ])
-            ],
+    setState(() {
+      if (isSelectedTypeAll[0]) {
+        selectedType = "general";
+      } else {
+        if (PersonalStatsPageState.pageCounter % 3 == 0) {
+          selectedType = "plastic";
+        } else if (PersonalStatsPageState.pageCounter % 3 == 1) {
+          selectedType = "all";
+        } else {
+          selectedType = "plastic";
+        }
+      }
+    });
+
+    //WasteLessData data = new WasteLessData();
+    //List retrievedList = data.getListDashboard(party, selectedType);
+    //this.list = retrievedList;
+
+    var now = new DateTime.now();
+    List newList = list.map((entry) => massEntryGenerator(entry["time"], entry["weight"])).where((i)=> i.shortenedTime == DateFormat('d MMM y').format(DateTime.now()).toString())
+        .toList();
+
+    double totalValue = newList.fold(0, (current, entry) => current + entry["weight"]);
+
+    return Expanded(
+        child: Text(nf.format(totalValue) + "kg",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
           ),
-        );
-      }
-      break;
-
-      case "month":{
-        myData = massdata.where((i)=> i.dateTimeValue.month == DateTime.now().month )
-            .toList();
-        // myData = massdata.where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime.now().subtract(Duration(days: 30)))  )
-        //     .toList();
-        _generateComDayData(fillInDays(combineDays(myData)));
-        return Expanded(
-          child: charts.BarChart(_seriesBarData,
-            animate: true,
-          ),
-        );
-      }
-      break;
-
-      case "allTime":{
-        myData = massdata;
-        _generateTimeChartData(fillInDays(combineDays(myData)));
-        return Expanded(
-          child: charts.TimeSeriesChart(_timeChartData,
-              animate: true,
-            defaultRenderer:
-                new charts.LineRendererConfig(includeArea: true, stacked: true),
-          ),
-        );
-      }
-      break;
-
-      default: {
-        //same as today
-        myData = massdata.where((i)=> i.shortenedTime == DateFormat('d MMM y').format(DateTime.now()).toString())
-            .toList();
-        _generateData(myData);
-        return Expanded(
-          child: charts.BarChart(_seriesBarData,
-            animate: true,),
-        );
-      }
-      break;
-    }
-
+        )
+    );
   }
+
+  Widget _buildStatsWeekInfo(String party, String type, Color color) {
+
+    setState(() {
+      if (isSelectedTypeAll[0]) {
+        selectedType = "general";
+      } else {
+        if (PersonalStatsPageState.pageCounter % 3 == 0) {
+          selectedType = "plastic";
+        } else if (PersonalStatsPageState.pageCounter % 3 == 1) {
+          selectedType = "all";
+        } else {
+          selectedType = "plastic";
+        }
+      }
+    });
+
+    //WasteLessData data = new WasteLessData();
+    //List retrievedList = data.getListDashboard(party, selectedType);
+    //this.list = retrievedList;
+
+    var now = new DateTime.now();
+
+    List newList = list.where((entry) => DateTime.parse(dfFilter.format(DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000)).toString())
+        .isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
+        .toList();
+
+    double averageValue = newList.fold(0, (current, entry) => current + entry["weight"]) / 7.0;
+
+    setState(() {
+      if (type == "general") {
+        if (party == "self") {
+          personalWeekAverageGeneral = averageValue;
+        } else {
+          areaWeekAverageGeneral = averageValue;
+        }
+      } else if (type == "all") {
+        if (party == "self") {
+          personalWeekAverageAll = averageValue;
+        } else {
+          areaWeekAverageAll = averageValue;
+        }
+      } else if (type == "paper") {
+        if (party == "self") {
+          personalWeekAveragePaper = averageValue;
+        } else {
+          areaWeekAveragePaper = averageValue;
+        }
+      } else {
+        if (party == "self") {
+          personalWeekAveragePlastic = averageValue;
+        } else {
+          areaWeekAveragePlastic = averageValue;
+        }
+      }
+    });
+
+    return Expanded(
+        child: Text(nf.format(averageValue) + "kg",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        )
+    );
+  }
+
 
 
 

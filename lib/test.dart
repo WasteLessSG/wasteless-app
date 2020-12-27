@@ -16,7 +16,7 @@ class TestPageState extends State<TestPage>{
   Future<WasteLessData> fetchWaste() async {
     final response = await http.get(
         'https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/waste',
-        headers: {HttpHeaders.authorizationHeader: "jtBSs7AmEX4wSeMR44X5G5IlYWSwfYnn2WgUcz5h"});
+        headers: {HttpHeaders.authorizationHeader: "jtBSs7AmEX4wSeMR44X5G5IlYWSwfYnn2WgUcz5h"}); //not working anymore
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
