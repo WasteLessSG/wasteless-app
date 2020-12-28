@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -14,11 +15,15 @@ import 'package:http/http.dart' as http;
 import 'package:LessApp/wasteless-data.dart';
 
 class PersonalStatsPage extends StatefulWidget{
+  final FirebaseUser user;
+  PersonalStatsPage(this.user);
   @override
-  PersonalStatsPageState createState() => new PersonalStatsPageState();
+  PersonalStatsPageState createState() => new PersonalStatsPageState(this.user);
 }
 
 class PersonalStatsPageState extends State<PersonalStatsPage>{
+  FirebaseUser user;
+  PersonalStatsPageState(this.user);
 
   final now = DateTime.now();
   String selectedTime = "week";
@@ -208,7 +213,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
           borderRadius: BorderRadius.circular(5),
         ),
         height: 50,
-        width: MediaQuery.of(context).size.width/1.05,
+        width: MediaQuery.of(context).size.width/1.5,
         padding: EdgeInsets.all(7),
         child:  Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -226,7 +231,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
             Container(
               child: Text("Tembusu\nWeek Average: ",
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -294,8 +299,9 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     return Scaffold(
       //appBar: Styles.MainStatsPageHeader(title[0], FontWeight.bold, Colors.black),
       appBar: AppBar(
+        centerTitle: true,
         title: ButtonTheme(
-          minWidth: MediaQuery.of(context).size.width/1.05,
+          minWidth: MediaQuery.of(context).size.width/1.3,
           height: 10.0,
           child: RaisedButton(
             elevation: 10.0,
@@ -309,7 +315,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
             child: Text(currentTitle,
               style: TextStyle(
-                //fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.bold,
                 color: Colors.black,
                 fontSize: 20,
               ),
@@ -328,7 +334,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
           ),
         ),
 
-        centerTitle: true,
+
 
         backgroundColor: Colors.white,
         elevation: 0,

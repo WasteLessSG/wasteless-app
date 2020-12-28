@@ -8,13 +8,21 @@ import 'package:LessApp/styles.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:LessApp/wasteless-data.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class HistoryPage extends StatefulWidget{
+
+  final FirebaseUser user;
+  HistoryPage(this.user);
+
   @override
-  HistoryPageState createState() => new HistoryPageState();
+  HistoryPageState createState() => new HistoryPageState(this.user);
 }
 
 class HistoryPageState extends  State<HistoryPage> {
+  FirebaseUser user;
+  HistoryPageState(this.user);
 
   NumberFormat nf = NumberFormat("###.00", "en_US");
 

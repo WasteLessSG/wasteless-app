@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -12,11 +13,15 @@ import 'package:async/async.dart';
 import 'package:LessApp/wasteless-data.dart';
 
 class DashboardPage extends StatefulWidget{
+  final FirebaseUser user;
+  DashboardPage(this.user);
   @override
-  DashboardPageState createState() => new DashboardPageState();
+  DashboardPageState createState() => new DashboardPageState(this.user);
 }
 
 class DashboardPageState extends State<DashboardPage> {
+  FirebaseUser user;
+  DashboardPageState(this.user);
 
   NumberFormat nf = NumberFormat("##0.00", "en_US");
 
@@ -251,11 +256,13 @@ class DashboardPageState extends State<DashboardPage> {
 
       body: Center(
         child: Column(
+
             children: <Widget>[
 
               // The first expanded is for SUMMARY STATISTICS
               Expanded(
                   child: PageView(
+
                     controller: _controller1,
                     children: [
 

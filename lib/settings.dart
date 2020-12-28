@@ -1,4 +1,5 @@
 import 'package:LessApp/wasteless-data.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:LessApp/styles.dart';
 import 'package:http/http.dart' as http;
@@ -6,11 +7,17 @@ import 'package:LessApp/wasteless-data.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 class SettingsPage extends StatefulWidget{
+  final FirebaseUser user;
+  SettingsPage(this.user);
+
   @override
-  SettingsPageState createState() => new SettingsPageState();
+  SettingsPageState createState() => new SettingsPageState(this.user);
 }
 
 class SettingsPageState extends State<SettingsPage>{
+
+  FirebaseUser user;
+  SettingsPageState(this.user);
 
 
   @override

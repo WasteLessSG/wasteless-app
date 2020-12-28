@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:LessApp/styles.dart';
@@ -8,11 +9,16 @@ import 'package:async/async.dart';
 import 'package:LessApp/wasteless-data.dart';
 
 class LeaderboardPage extends StatefulWidget{
+  final FirebaseUser user;
+  LeaderboardPage(this.user);
   @override
-  LeaderboardPageState createState() => new LeaderboardPageState();
+  LeaderboardPageState createState() => new LeaderboardPageState(this.user);
 }
 
 class LeaderboardPageState extends  State<LeaderboardPage> {
+
+  FirebaseUser user;
+  LeaderboardPageState(this.user);
 
   NumberFormat nf = NumberFormat("###.00", "en_US");
 

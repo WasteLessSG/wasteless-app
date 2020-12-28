@@ -2,14 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:validators/validators.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DebugPage extends StatefulWidget {
+
+  final FirebaseUser user;
+  DebugPage(this.user);
+
+
   @override
-  DebugPageState createState() => new DebugPageState();
+  DebugPageState createState() => new DebugPageState(this.user);
 }
 
 class DebugPageState extends State<DebugPage> {
+
+  FirebaseUser user;
+  DebugPageState(this.user);
+
   String massValue,houseValue;
   TextEditingController massController = TextEditingController();
   static var houseNames = [

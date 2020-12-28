@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:LessApp/login/register.dart';
+import 'package:LessApp/login/unused-register.dart';
 import 'package:LessApp/login/login.dart';
 
 class Landing extends StatelessWidget {

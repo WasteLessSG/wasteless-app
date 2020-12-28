@@ -10,83 +10,72 @@ import 'package:LessApp/styles.dart';
 
 class HomePage extends StatefulWidget{
 
+  final FirebaseUser user;
+  HomePage(this.user);
+
   @override
-  HomePageState createState() => new HomePageState();
+  HomePageState createState() => new HomePageState(this.user);
 }
+class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
 
-class HomePageState extends State<HomePage> {
+  FirebaseUser user;
 
-  int _selectedIndex = 2;
-  static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  HomePageState(this.user);
 
-  List<Widget> _widgetOptions = <Widget>[
-    new HistoryPage(),
-    new PersonalStatsPage(),
-    new DashboardPage(),
-    new LeaderboardPage(),
-    new SettingsPage(),
-    //new DebugPage(),
-  ];
+  TabController controller;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  @override
+  void initState() {
+    super.initState();
+    controller = new TabController(vsync: this, length: 5, initialIndex: 2);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+    debugPrint(user.uid);
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
 
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_box),
-            title: Text('Stats'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.trending_down),
-            title: Text('Home'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Summary'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.leaderboard),
-            title: Text('Leaderboard'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            title: Text('Setting'),
+          bottomNavigationBar: new TabBar(
+            labelColor: Colors.black,
+            indicatorColor: Colors.green,
+            controller: controller ,
+            tabs: <Tab> [
+              new Tab(icon: Icon(Icons.account_box),) ,
+              new Tab(icon: Icon(Icons.trending_up),) ,
+              new Tab(icon: Icon(Icons.home),) ,
+              new Tab(icon: Icon(Icons.leaderboard),) ,
+              new Tab(icon: Icon(Icons.settings),) ,
+
+            ],
+
           ),
 
-          /*
-          BottomNavigationBarItem(
-            icon: Icon(Icons.warning),
-            title: Text('Debug'),
-          ),
-          */
 
 
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey[500],
-        type: BottomNavigationBarType.fixed,
-        onTap: _onItemTapped,
+          body: new TabBarView(
+
+              physics: NeverScrollableScrollPhysics(),
+              controller: controller,
+              children: <Widget>[
+                new HistoryPage(user),
+                new PersonalStatsPage(user),
+                new DashboardPage(user),
+                new LeaderboardPage(user),
+                new SettingsPage(user),
+
+            ])
       ),
     );
   }
 }
-
-
 
 
 
