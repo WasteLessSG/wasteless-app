@@ -1,4 +1,7 @@
 # Miscellaneous
+
+lib/wasteless-data.dart
+
 *.class
 *.log
 *.pyc
