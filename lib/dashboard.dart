@@ -31,7 +31,6 @@ class DashboardPageState extends State<DashboardPage> {
 
   final df3 = DateFormat.yMMMd();
   final dfFilter = DateFormat("yyyy-MM-dd");
-  int userID = 1234;
   List list = List();
   Map map = Map();
   AsyncMemoizer _memoizer;
@@ -61,7 +60,7 @@ class DashboardPageState extends State<DashboardPage> {
     return this._memoizer.runOnce(() async {
       String link;
       if (party == "self") {
-        link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${userID.toString()}?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${type}";
+        link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${WasteLessData.userID.toString()}?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${type}";
       } else {
         link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${type}";
       }

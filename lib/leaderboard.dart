@@ -16,32 +16,31 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
 
   NumberFormat nf = NumberFormat("###.00", "en_US");
 
-  String _selectedType = "General";
-  String _selectedTrend = "Week";
+  String _selectedType = "Select Type";
+  String _selectedTrend = "Select Trend";
 
-  List<bool> _typeChosen = [true, false];
-  List<String> _typeList = ["General", "Recyclables"];
+  List<bool> _typeChosen = [true, false, false];
+  List<String> _typeList = ["Select Type", "Trash", "Recyclables"];
 
-  List<bool> _trendChosen = [true, false, false];
-  List<String> _trendList = ["Week", "Month", "All Time"];
+  List<bool> _trendChosen = [true, false, false, false];
+  List<String> _trendList = ["Select Trend", "Week", "Month", "All Time"];
 
   List list = List();
   Map map = Map();
+
+  final dfFilter = DateFormat("yyyy-MM-dd");
+  final df3 = DateFormat('d MMM yyyy');
+
   AsyncMemoizer _memoizer;
   @override
   void initState() {
     _memoizer = AsyncMemoizer();
   }
 
-  final dfFilter = DateFormat("yyyy-MM-dd");
-  final df3 = DateFormat('d MMM yyyy');
-
-
-
   _fetchData() async {
     return this._memoizer.runOnce(() async {
       String currentType;
-      if (_typeChosen[0]) {
+      if (_typeChosen[1]) {
         currentType = "general";
       } else {
         currentType = "all";
@@ -64,11 +63,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
 
   Widget _buildList() {
 
-    _fetchData();
-    //WasteLessData data = new WasteLessData();
-    //List retrievedList = data.getListHistoryAndLeaderboard(_selectedType);
-    //this.list = retrievedList;
-
+    //_fetchData();
 
     var now = new DateTime.now();
     List newList;
@@ -82,41 +77,77 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
       }
       break;
 
-    //all time data
+      //all time data
       case "All Time": {
         newList = list;
       }
       break;
 
-    //week's worth of data
-      default: {
+      //week's worth of data
+      case "Week": {
         newList = list.where((entry) => DateTime.parse(dfFilter.format(DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000)).toString())
             .isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
             .toList();
       }
+      break;
 
+      default: {
+        newList = List();
+      }
     }
 
-    return Expanded(
-        child: ListView.builder(
-          itemCount: newList.length,
-          reverse: true,
-          itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-              contentPadding: EdgeInsets.all(10.0),
-              title: new Text(df3.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["time"] * 1000)).toString()),
-              subtitle: new Text(newList[index]["weight"].toString() + "kg"),
-            );
-          },
-        )
-    );
+    newList = new List.from(newList.reversed);
+
+    if (_typeChosen[0] || _trendChosen[0]) {
+      return Expanded(
+        child: Center(
+          child: Text("Please select your desired \nType and Trend",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 25,
+              //fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+    }
+
+    else if (newList.length == 0) {
+      return Expanded(
+        child: Center(
+          child: Text("NO DATA",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Expanded(
+          child: ListView.builder(
+            itemCount: newList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                  color:   _typeChosen[1] ? ((index % 2 == 0) ? Colors.brown[100] : Colors.white10) : ((index % 2 == 0) ? Colors.lightGreenAccent : Colors.white10),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(10.0),
+                    title: new Text(df3.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["time"] * 1000)).toString()),
+                    //title: new Text(DateTime.now().month.toString()),
+                    subtitle: new Text(newList[index]["weight"].toString() + "kg"),
+                  )
+              );
+            },
+          )
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
 
-    //_fetchData();
-    //List filteredList = _chooseList(list, _selectedTrend);
+    _fetchData();
 
     return Scaffold(
       appBar: AppBar(

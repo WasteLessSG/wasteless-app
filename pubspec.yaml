@@ -38,6 +38,8 @@ dependencies:
   flutter:
     sdk: flutter
   cloud_firestore:
+  provider:
+  firebase_core:
   firebase_auth: 0.15.2
   firebase_storage:
   charts_flutter:

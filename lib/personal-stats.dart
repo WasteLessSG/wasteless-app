@@ -19,20 +19,22 @@ class PersonalStatsPage extends StatefulWidget{
 }
 
 class PersonalStatsPageState extends State<PersonalStatsPage>{
-  final title = ["Personal Trash Stats", "Personal Recycling Stats"];
+
   final now = DateTime.now();
   String selectedTime = "week";
   String selectedType = "general";
   List<bool> isSelectedTrend = [true, false, false];
   List<bool> isSelectedType = [false, true, false];
+
   List<bool> isSelectedTypeAll = [true, false];
+  List<String> title = ["Personal Trash Stats", "Personal Recycling Stats"];
+
   List<Color> colorPalette = [Colors.lightGreen[200], Colors.brown[100]];
   List<charts.Series<MassEntry, String>> _seriesBarData;
   List<charts.Series<formattedWeekEntry, String>> _weekSeriesBarData;
   List<charts.Series<MassEntry, DateTime>> _timeChartData;
   List<MassEntry> myData, massEntryDay;
   static int pageCounter = 15001;
-
 
   double personalWeekAverageGeneral = 0.00;
   double areaWeekAverageGeneral = 0.00;
@@ -75,24 +77,10 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
     return this._memoizer.runOnce(() async {
 
-      int id = 1234;
-
-      String currentType;
-      if (isSelectedTypeAll[0]) {
-        currentType = "general";
-      } else {
-        if (isSelectedType[0]) {
-          currentType = "all";
-        } else if (isSelectedType[1]) {
-          currentType = "paper";
-        } else {
-          currentType = "plastic";
-        }
-      }
-
       String link;
+
       if (party == "self") {
-        link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${id.toString()}?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${type}";
+        link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${WasteLessData.userID.toString()}?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${type}";
       } else {
         link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${type}";
       }
@@ -211,6 +199,84 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     );
   }
 
+  Widget trendAverageBar() {
+    if (isSelectedTrend[0]) {
+      return Container(
+        decoration: BoxDecoration(
+          color: isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
+          //Colors.lightGreen[200],
+          borderRadius: BorderRadius.circular(5),
+        ),
+        height: 50,
+        width: MediaQuery.of(context).size.width/1.05,
+        padding: EdgeInsets.all(7),
+        child:  Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+
+            Container(
+              child: Text("Personal\nWeek Average: ",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            _buildStatsInfo("self", selectedTime, selectedType, Colors.purple),
+
+            Container(
+              child: Text("Tembusu\nWeek Average: ",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            _buildStatsInfo("self", selectedTime, selectedType, Colors.teal.shade900),
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        decoration: BoxDecoration(
+          color: isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
+          //Colors.lightGreen[200],
+          borderRadius: BorderRadius.circular(5),
+        ),
+        height: 50,
+        width: MediaQuery.of(context).size.width/1.05,
+        padding: EdgeInsets.all(7),
+        child:  Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+
+            Container(
+              child: Text("Personal\nMonth Average: ",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            _buildStatsInfo("self", selectedType, selectedTime, Colors.purple),
+
+            Container(
+              child: Text("Tembusu\nMonth Average: ",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            _buildStatsInfo("self", selectedType, selectedTime, Colors.teal.shade900),
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -218,8 +284,57 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     bool allVisible = PersonalStatsPageState.pageCounter % 3 == 1;
     bool plasticVisible = PersonalStatsPageState.pageCounter % 3 == 2;
 
+    String currentTitle;
+    if (isSelectedTypeAll[0]) {
+      currentTitle = title[0];
+    } else {
+      currentTitle = title[1];
+    }
+
     return Scaffold(
-      appBar: Styles.MainStatsPageHeader(title[0], FontWeight.bold, Colors.black),
+      //appBar: Styles.MainStatsPageHeader(title[0], FontWeight.bold, Colors.black),
+      appBar: AppBar(
+        title: ButtonTheme(
+          minWidth: MediaQuery.of(context).size.width/1.05,
+          height: 10.0,
+          child: RaisedButton(
+            elevation: 10.0,
+            color: isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+              //side: BorderSide(color: Colors.white),
+            ),
+            padding: EdgeInsets.all(10.0),
+
+
+            child: Text(currentTitle,
+              style: TextStyle(
+                //fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 20,
+              ),
+            ),
+            onPressed: () {
+              setState(() {
+                for (int i = 0; i < isSelectedTypeAll.length; i++) {
+                  if (isSelectedTypeAll[i]) {
+                    isSelectedTypeAll[i] = false;
+                  } else {
+                    isSelectedTypeAll[i] = true;
+                  }
+                }
+              });
+            },
+          ),
+        ),
+
+        centerTitle: true,
+
+        backgroundColor: Colors.white,
+        elevation: 0,
+
+      ),
+
 
       body: Container(
         alignment: Alignment.center,
@@ -228,6 +343,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
         child: Column(
           children: <Widget>[
 
+            /*
             Container(
                 decoration: BoxDecoration(
                   color: isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
@@ -236,8 +352,9 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                 height: 40,
                 width: MediaQuery.of(context).size.width/1.05,
                 padding: EdgeInsets.all(7),
-                child: Center(
+                child:
 
+                Center(
                   child: ToggleButtons(
                     renderBorder: false,
                     children: <Widget>[
@@ -276,9 +393,10 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                     },
                     isSelected: isSelectedTypeAll,
                   ),
-
                 )
             ),
+
+            */
 
             isSelectedTypeAll[1] ? SizedBox(
               height: 10,
@@ -427,7 +545,6 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                     ),
                   ),
 
-
                   SizedBox(
                       height:5
                   ),
@@ -519,33 +636,11 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
               ),
             ),
 
-            Container(
-              child:  Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-
-                  Container(
-                    child: Text("  Personal \n  Week Average: ",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),),
-                  ),
-                  _buildStatsWeekInfo("self", selectedType, Colors.purple),
-
-                  Container(
-                    child: Text("  Tembusu \n  Week Average: ",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),),
-                  ),
-                  _buildStatsWeekInfo("self", selectedType, Colors.teal[600]),
-                ],
-              ),
+            SizedBox(
+                height: 10,
             ),
 
+            (isSelectedTrend[0] || isSelectedTrend[1] ) ? trendAverageBar() : new Container(),
 
             /*
             //today recyclables textbox
@@ -870,6 +965,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     //this.list = retrievedList;
 
     var now = new DateTime.now();
+
     List newList = list.map((entry) => massEntryGenerator(entry["time"], entry["weight"])).where((i)=> i.shortenedTime == DateFormat('d MMM y').format(DateTime.now()).toString())
         .toList();
 
@@ -886,7 +982,9 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     );
   }
 
-  Widget _buildStatsWeekInfo(String party, String type, Color color) {
+  Widget _buildStatsInfo(String party, String trend, String type, Color color) {
+
+    var now = new DateTime.now();
 
     setState(() {
       if (isSelectedTypeAll[0]) {
@@ -902,17 +1000,26 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       }
     });
 
-    //WasteLessData data = new WasteLessData();
-    //List retrievedList = data.getListDashboard(party, selectedType);
-    //this.list = retrievedList;
+    List newList;
+    double averageValue;
 
-    var now = new DateTime.now();
+    switch(trend) {
 
-    List newList = list.where((entry) => DateTime.parse(dfFilter.format(DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000)).toString())
-        .isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
-        .toList();
+      case "week": {
+        newList = list.where((entry) => DateTime.parse(dfFilter.format(DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000)).toString())
+            .isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
+            .toList();
+        averageValue = newList.fold(0, (current, entry) => current + entry["weight"]) / 7.0;
+      }
+      break;
 
-    double averageValue = newList.fold(0, (current, entry) => current + entry["weight"]) / 7.0;
+      //for month data
+      default: {
+        newList = list.where((entry)=> DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).month == DateTime.now().month )
+            .toList();
+        averageValue = newList.fold(0, (current, entry) => current + entry["weight"]) / 31.0;
+      }
+    }
 
     setState(() {
       if (type == "general") {

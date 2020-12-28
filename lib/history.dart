@@ -18,17 +18,16 @@ class HistoryPageState extends  State<HistoryPage> {
 
   NumberFormat nf = NumberFormat("###.00", "en_US");
 
-  String _selectedType = "General";
-  String _selectedTrend = "Week";
+  String _selectedType = "Select Type";
+  String _selectedTrend = "Select Trend";
 
-  List<bool> _typeChosen = [true, false];
-  List<String> _typeList = ["General", "Recyclables"];
+  List<bool> _typeChosen = [true, false, false];
+  List<String> _typeList = ["Select Type", "Trash", "Recyclables"];
 
-  List<bool> _trendChosen = [true, false, false];
-  List<String> _trendList = ["Week", "Month", "All Time"];
+  List<bool> _trendChosen = [true, false, false, false];
+  List<String> _trendList = ["Select Trend", "Week", "Month", "All Time"];
   List list = List();
   Map map = Map();
-  WasteLessData data = new WasteLessData();
 
   final df = new DateFormat('dd-MM-yyyy hh:mm a');
   final df2 = new DateFormat(DateFormat.YEAR_MONTH_DAY, 'en_US');
@@ -36,8 +35,6 @@ class HistoryPageState extends  State<HistoryPage> {
   final df4 = new DateFormat('d MMM yyyy');
   final df5 = new DateFormat('MMM');
   final dfFilter = DateFormat("yyyy-MM-dd");
-
-
 
   AsyncMemoizer _memoizer;
   @override
@@ -47,17 +44,14 @@ class HistoryPageState extends  State<HistoryPage> {
 
   _fetchData() async {
     return this._memoizer.runOnce(() async {
-
-      int userID = 1234;
-
       String currentType;
-      if (_typeChosen[0]) {
+      if (_typeChosen[1]) {
         currentType = "general";
       } else {
         currentType = "all";
       }
 
-      String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${userID.toString()}?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${currentType}";
+      String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${WasteLessData.userID.toString()}?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${currentType}";
 
       final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
       if (response.statusCode == 200) {
@@ -71,12 +65,11 @@ class HistoryPageState extends  State<HistoryPage> {
 
 
 
-
-
   Widget _buildList() {
 
     var now = new DateTime.now();
     List newList;
+    //_fetchData();
 
     switch(_selectedTrend) {
 
@@ -94,28 +87,64 @@ class HistoryPageState extends  State<HistoryPage> {
       break;
 
       //week's worth of data
-      default: {
+      case "Week": {
         newList = list.where((entry) => DateTime.parse(dfFilter.format(DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000)).toString())
             .isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
             .toList();
       }
+      break;
 
+      default: {
+        newList = List();
+      }
     }
 
-    return Expanded(
-        child: ListView.builder(
-          itemCount: newList.length,
-          reverse: true,
-          itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-              contentPadding: EdgeInsets.all(10.0),
-              title: new Text(df4.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["time"] * 1000)).toString()),
-              //title: new Text(DateTime.now().month.toString()),
-              subtitle: new Text(newList[index]["weight"].toString() + "kg"),
-            );
+    newList = new List.from(newList.reversed);
+
+    if (_typeChosen[0] || _trendChosen[0]) {
+      return Expanded(
+        child: Center(
+          child: Text("Please select your desired \nType and Trend",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 25,
+              //fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+    }
+
+    else if (newList.length == 0) {
+      return Expanded(
+        child: Center(
+          child: Text("NO DATA",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Expanded(
+          child: ListView.builder(
+            itemCount: newList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                  color:   _typeChosen[1] ? ((index % 2 == 0) ? Colors.brown[100] : Colors.white10) : ((index % 2 == 0) ? Colors.lightGreenAccent : Colors.white10),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(10.0),
+                    title: new Text(df4.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["time"] * 1000)).toString()),
+                    //title: new Text(DateTime.now().month.toString()),
+                    subtitle: new Text(newList[index]["weight"].toString() + "kg"),
+                  )
+              );
             },
-        )
-    );
+          )
+      );
+    }
   }
 
 
@@ -151,6 +180,7 @@ class HistoryPageState extends  State<HistoryPage> {
                   children: <Widget>[
                      DropdownButton<String>(
                        value: _selectedType,
+                       //dropdownColor: Colors.green[100],
                        items: _typeList.map((String value) {
                         return new DropdownMenuItem<String>(
                           value: value,
@@ -158,6 +188,7 @@ class HistoryPageState extends  State<HistoryPage> {
                         );
                       }).toList(),
                       onChanged: (String newValue) {
+
                          setState(() {
                            for (int i = 0; i < _typeList.length; i++) {
                              String currType = _typeList[i];
@@ -188,7 +219,9 @@ class HistoryPageState extends  State<HistoryPage> {
                       onChanged: (String newValue) {
                         setState(() {
                           for (int i = 0; i < _trendList.length; i++) {
+
                             String currType = _trendList[i];
+
                             if (newValue == currType) {
                               _trendChosen[i] = true;
                             } else {
