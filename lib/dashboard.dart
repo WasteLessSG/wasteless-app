@@ -11,6 +11,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:async/async.dart';
 import 'package:LessApp/wasteless-data.dart';
+import 'dart:io';
+import 'package:csv/csv.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class DashboardPage extends StatefulWidget{
   final FirebaseUser user;
@@ -25,20 +28,35 @@ class DashboardPageState extends State<DashboardPage> {
 
   NumberFormat nf = NumberFormat("##0.00", "en_US");
 
-  double wasteThisWeek = 21.23;
-  double areaAverageThisWeek = 73.57;
+  double wasteThisWeek = 0.00;
+  double areaAverageThisWeek = 0.00;
 
-  double recyclablesThisWeek = 7.22;
-  double areaAverageRecyclablesThisWeek = 8.93;
+  double recyclablesThisWeek = 0.00;
+  double areaAverageRecyclablesThisWeek = 0.00;
+
+  List<bool> titleSelect = [true, false];
+  List<String> title = ["Trash Dashboard", "Recycling Dashboard"];
+  List<Color> colorPalette = [Colors.lightGreen[200], Colors.brown[100]];
 
   double sizeRelativeVisual = 1.0;
-
 
   final df3 = DateFormat.yMMMd();
   final dfFilter = DateFormat("yyyy-MM-dd");
   List list = List();
   Map map = Map();
   AsyncMemoizer _memoizer;
+
+  List<List<dynamic>> dailyMessages = List();
+
+  @override
+  void initState() {
+    super.initState();
+    _memoizer = AsyncMemoizer();
+    loadAsset();
+  }
+
+  /*
+   * previous initialize statement where it supports swiping panels for body
   @override
   void initState() {
     super.initState();
@@ -58,6 +76,95 @@ class DashboardPageState extends State<DashboardPage> {
 
     WidgetsBinding.instance
         .addPostFrameCallback((_) => _getVisualSize());
+  }
+  */
+
+  loadAsset() async {
+    var myData = await rootBundle.loadString("assets/dailyMessages.csv");
+
+    List<List<dynamic>> csvTable = CsvToListConverter().convert(myData);
+    setState(() {
+      dailyMessages = csvTable;
+    });
+  }
+
+  Widget _buildDailyMessage() {
+    var now = DateTime.now();
+    return Container(
+      alignment: Alignment.center,
+      padding: new EdgeInsets.only(
+          top:10,
+          right: 20.0,
+          left: 20.0),
+      child: new Container(
+        height: MediaQuery.of(context).size.height *.18,
+        width: MediaQuery.of(context).size.width,
+        child: new Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          color: Colors.green,
+          child:  Text("\nDaily Tip: \n" + dailyMessages[now.day][0].toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.white,
+            ),
+          ),
+
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGraphic() {
+    return Container(
+        width: MediaQuery.of(context).size.width/2,
+        child: Column(
+          children: <Widget>[
+            titleSelect[0] ? trashBin(stateSelector(this.wasteThisWeek, this.areaAverageThisWeek)) : Image.asset('assets/recyclingIsland.png'),
+          ],
+        ),
+      );
+  }
+
+  Widget _buildText(String type) {
+
+    return Container(
+      decoration: BoxDecoration(
+        color: titleSelect[0] ? colorPalette[1]: colorPalette[0],
+        borderRadius: BorderRadius.circular(5),
+      ),
+
+      height: MediaQuery.of(context).size.height / 5,
+      width: MediaQuery.of(context).size.width / 1.05,
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 50,
+          ),
+          Container(
+              child: Text("Your waste this week:",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.normal,
+                ),
+              )
+          ),
+          _buildStats("self", type),
+
+          Container(
+              child: Text("Tembusu average this week:",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.normal,
+                ),
+              )
+          ),
+          _buildStats("tembusu", type),
+        ],
+      ),
+    );
   }
 
 
@@ -83,7 +190,6 @@ class DashboardPageState extends State<DashboardPage> {
   Widget _buildStats(String party, String type) {
 
     _fetchData(party, type);
-
     //WasteLessData data = new WasteLessData();
     //List retrievedList = data.getListDashboard(party, type);
     //this.list = retrievedList;
@@ -236,7 +342,19 @@ class DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    String currentTitle, currentType;
+    if (titleSelect[0]) {
+      currentTitle = title[0];
+      currentType = "general";
+    } else {
+      currentTitle = title[1];
+      currentType = "all";
+    }
+
     return Scaffold(
+      /*
+       * previous plain appBar
       appBar: AppBar(
         title: Text("Dashboard",
           style: TextStyle(
@@ -251,9 +369,79 @@ class DashboardPageState extends State<DashboardPage> {
           //tipLightBulb(context),
         ]
       ),
+      */
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: ButtonTheme(
+          minWidth: MediaQuery.of(context).size.width/1.05,
+          height: 10.0,
+          child: RaisedButton(
+            elevation: 10.0,
+            color: titleSelect[0] ? colorPalette[1]: colorPalette[0],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+              //side: BorderSide(color: Colors.white),
+            ),
+            padding: EdgeInsets.all(10.0),
 
+
+            child: Text(currentTitle,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 20,
+              ),
+            ),
+            onPressed: () {
+              setState(() {
+                for (int i = 0; i < titleSelect.length; i++) {
+                  if (titleSelect[i]) {
+                    titleSelect[i] = false;
+                  } else {
+                    titleSelect[i] = true;
+                  }
+                }
+              });
+            },
+          ),
+        ),
+
+
+
+        backgroundColor: Colors.white,
+        elevation: 0,
+
+      ),
+
+      body: Container(
+        alignment: Alignment.center,
+
+        child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 20,
+            ),
+            _buildText(currentType),
+
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 20,
+            ),
+            _buildGraphic(),
+
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 20,
+            ),
+            _buildDailyMessage(),
+
+          ],
+        ),
+      ),
+
+
+      /*
+       * swiping version
       // BODY OF THE APP
-
       body: Center(
         child: Column(
 
@@ -303,7 +491,7 @@ class DashboardPageState extends State<DashboardPage> {
                                       _buildStats("tembusu", "general"),
                                     ]
                                 )
-                            )
+                            ),
                           ]
                       ),
 
@@ -355,7 +543,6 @@ class DashboardPageState extends State<DashboardPage> {
                   )
 
               ),
-
 
               // The second expanded is for the CHANGING VISUAL
               Expanded(
@@ -435,6 +622,7 @@ class DashboardPageState extends State<DashboardPage> {
             ]
         ),
       ),
+      */
 
       // End of appBody
 
