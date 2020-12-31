@@ -213,7 +213,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
           borderRadius: BorderRadius.circular(5),
         ),
         height: 50,
-        width: MediaQuery.of(context).size.width/1.5,
+        width: MediaQuery.of(context).size.width/1.05,
         padding: EdgeInsets.all(7),
         child:  Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -299,9 +299,10 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     return Scaffold(
       //appBar: Styles.MainStatsPageHeader(title[0], FontWeight.bold, Colors.black),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
         title: ButtonTheme(
-          minWidth: MediaQuery.of(context).size.width/1.3,
+          minWidth: MediaQuery.of(context).size.width/1.05,
           height: 10.0,
           child: RaisedButton(
             elevation: 10.0,
