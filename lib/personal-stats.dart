@@ -227,7 +227,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                 ),
               ),
             ),
-            _buildStatsInfo("self", selectedTime, selectedType, Colors.purple),
+            _buildStatsInfo("self", selectedTime, selectedTime, Colors.purple),
 
             Container(
               child: Text("Tembusu\nWeek Average: ",
@@ -238,7 +238,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                 ),
               ),
             ),
-            _buildStatsInfo("self", selectedTime, selectedType, Colors.teal.shade900),
+            _buildStatsInfo("self", selectedTime, selectedTime, Colors.teal.shade900),
           ],
         ),
       );
@@ -264,7 +264,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                 ),
               ),
             ),
-            _buildStatsInfo("self", selectedType, selectedTime, Colors.purple),
+            _buildStatsInfo("self", selectedTime, selectedType, Colors.purple),
 
             Container(
               child: Text("Tembusu\nMonth Average: ",
@@ -275,7 +275,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                 ),
               ),
             ),
-            _buildStatsInfo("self", selectedType, selectedTime, Colors.teal.shade900),
+            _buildStatsInfo("self", selectedTime, selectedType, Colors.teal.shade900),
           ],
         ),
       );
@@ -803,7 +803,8 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       break;
 
       case "month": {
-        myData = massdata.where((i)=> i.dateTimeValue.month == DateTime.now().month )
+        myData = massdata.where((i)=> (i.dateTimeValue.month == DateTime.now().month)
+        && (i.dateTimeValue.year == DateTime.now().year))
             .toList();
         _generateComDayData(fillInDays(combineDays(myData)));
         return Expanded(
@@ -1022,7 +1023,8 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
       //for month data
       default: {
-        newList = list.where((entry)=> DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).month == DateTime.now().month )
+        newList = list.where((entry)=> (DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).month == DateTime.now().month)
+        && (DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).year == DateTime.now().year))
             .toList();
         averageValue = newList.fold(0, (current, entry) => current + entry["weight"]) / 31.0;
       }

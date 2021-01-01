@@ -16,13 +16,19 @@ import 'package:csv/csv.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class DashboardPage extends StatefulWidget{
-  final FirebaseUser user;
-  DashboardPage(this.user);
+
+  FirebaseUser user;
+  DashboardPage(FirebaseUser user) {
+    this.user = user;
+  }
+
   @override
   DashboardPageState createState() => new DashboardPageState(this.user);
+
 }
 
 class DashboardPageState extends State<DashboardPage> {
+
   FirebaseUser user;
   DashboardPageState(this.user);
 
@@ -81,7 +87,6 @@ class DashboardPageState extends State<DashboardPage> {
 
   loadAsset() async {
     var myData = await rootBundle.loadString("assets/dailyMessages.csv");
-
     List<List<dynamic>> csvTable = CsvToListConverter().convert(myData);
     setState(() {
       dailyMessages = csvTable;
@@ -90,14 +95,50 @@ class DashboardPageState extends State<DashboardPage> {
 
   Widget _buildDailyMessage() {
     var now = DateTime.now();
+
+    return Container(
+        decoration: BoxDecoration(
+          color: titleSelect[0] ? colorPalette[1]: colorPalette[0],
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(
+            color: Colors.black,
+          ),
+        ),
+
+        height: MediaQuery.of(context).size.height / 5,
+        width: MediaQuery.of(context).size.width / 1.05,
+
+      child: Column(
+        children: <Widget>[
+          Text("\nDaily Tip",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+
+          Text("\n" + dailyMessages[now.day][0].toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20,
+              fontStyle: FontStyle.italic,
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
     return Container(
       alignment: Alignment.center,
       padding: new EdgeInsets.only(
-          top:10,
+          top:10.0,
           right: 20.0,
           left: 20.0),
+
       child: new Container(
-        height: MediaQuery.of(context).size.height *.18,
+        height: MediaQuery.of(context).size.height *.15,
         width: MediaQuery.of(context).size.width,
         child: new Card(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -106,7 +147,8 @@ class DashboardPageState extends State<DashboardPage> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20,
-              color: Colors.white,
+              fontStyle: FontStyle.italic,
+              color: Colors.black,
             ),
           ),
 
@@ -252,6 +294,7 @@ class DashboardPageState extends State<DashboardPage> {
 
   // For determining container sizes
 
+  /*
   GlobalKey _keyVisual = GlobalKey();
 
   _getVisualSize() {
@@ -270,7 +313,7 @@ class DashboardPageState extends State<DashboardPage> {
   PageController _controller1;
   PageController _controller2;
 
-  /*
+
   @override
   void initState() {
     super.initState();
@@ -290,7 +333,7 @@ class DashboardPageState extends State<DashboardPage> {
     WidgetsBinding.instance
         .addPostFrameCallback((_) => _getVisualSize());
   }
-  */
+
 
   void resetMoveInfo(){
     _isController1 = false;
@@ -331,14 +374,29 @@ class DashboardPageState extends State<DashboardPage> {
         .jumpToWithoutSettling(_controller2.position.pixels / sizeRelativeVisual);
   }
 
+
   @override
   void dispose() {
     _controller1.dispose();
     _controller2.dispose();
     super.dispose();
   }
-
   // End of PageController initialisation
+
+
+  // selectionDots
+  Widget selectionDots(BuildContext context, selectedState) {
+    return SmoothPageIndicator(
+        controller: _controller2,  // PageController
+        count:  2,
+        effect:  WormEffect(),  // your preferred effect
+        onDotClicked: (index){
+
+        }
+    );
+  }
+  // End of selectionDots
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -644,25 +702,6 @@ class DashboardPageState extends State<DashboardPage> {
     }
   }
   // End of trashBin
-
-
-
-  // selectionDots
-
-  Widget selectionDots(BuildContext context, selectedState) {
-    return SmoothPageIndicator(
-        controller: _controller2,  // PageController
-        count:  2,
-        effect:  WormEffect(),  // your preferred effect
-        onDotClicked: (index){
-
-        }
-    );
-  }
-
-  // End of selectionDots
-
-
 
   // tipLightBulb
 
