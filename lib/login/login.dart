@@ -15,6 +15,9 @@ class LoginState extends State<Login> {
 //Firebase doesnt support custom usernames, username must be in form of email
 //final GlobalKey<FormState> _formkey = GlobalKey<FormState> ();
 
+
+
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -33,10 +36,14 @@ class LoginState extends State<Login> {
           alignment: Alignment.center,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
+
+
             children: <Widget>[
+              SizedBox(height:  MediaQuery.of(context).size.height *0.08),
               Text("WasteLess",
+               textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 60,
+                  fontSize: 55,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
@@ -44,7 +51,14 @@ class LoginState extends State<Login> {
               SizedBox(
                 height: 50,
               ),
-
+              Text("Email",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
               TextField(
                 keyboardType: TextInputType.emailAddress,
                 onChanged: (value) => email = value.trim(),
@@ -60,6 +74,14 @@ class LoginState extends State<Login> {
                 height: 20,
               ),
 
+              Text("Password",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
               TextField(
                 autocorrect: false,
                 obscureText: true,

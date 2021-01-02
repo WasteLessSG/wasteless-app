@@ -1,3 +1,4 @@
+import 'package:LessApp/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:LessApp/personal-stats.dart';
@@ -18,6 +19,8 @@ class HomePage extends StatefulWidget{
 }
 class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
 
+
+
   FirebaseUser user;
 
   HomePageState(this.user);
@@ -28,6 +31,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
   @override
   void initState() {
     super.initState();
+    print(user.uid);
     controller = new TabController(vsync: this, length: 5, initialIndex: 2);
   }
 
@@ -78,6 +82,9 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
       ),
     );
   }
+
+
+
 }
 
 

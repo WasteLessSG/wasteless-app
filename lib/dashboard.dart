@@ -95,6 +95,7 @@ class DashboardPageState extends State<DashboardPage> {
 
   Widget _buildDailyMessage() {
     var now = DateTime.now();
+    print(dailyMessages);
 
     return Container(
         decoration: BoxDecoration(
@@ -118,8 +119,8 @@ class DashboardPageState extends State<DashboardPage> {
               color: Colors.black,
             ),
           ),
-
-          Text("\n" + dailyMessages[now.day][0].toString(),
+          //TODO:FIX DAILYMESSAGES BUG
+          Text("\n" + dailyMessages[0][0].toString(),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20,

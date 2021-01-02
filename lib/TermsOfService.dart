@@ -7,7 +7,8 @@ class TermsOfService extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Terms of Service"),
+        title: Text("Terms of Service",
+              ),
       ),
 
       body: Container(
