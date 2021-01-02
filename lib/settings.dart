@@ -2,6 +2,7 @@ import 'package:LessApp/wasteless-data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:LessApp/styles.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:LessApp/wasteless-data.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -81,7 +82,19 @@ class SettingsPageState extends State<SettingsPage>{
                 SettingsTile(
                   title: 'Licences',
                   leading: Icon(Icons.copyright),
-                  onPressed: (BuildContext context) {},
+                  onPressed: (BuildContext context) {
+                    showAboutDialog(
+                        context: context,
+                        applicationVersion: 'WasteLess v1.0',
+                        applicationIcon: Image(
+                          image: AssetImage('assets/icon.png'),
+                          width: 50,
+                          height: 50,
+                        ),
+                        //applicationIcon: Icon(Icons.copyright),
+                        applicationLegalese: 'This app credits the following licenses. We thank them as without them, this app would not exist.'
+                    );
+                  },
                 ),
               ],
             ),
