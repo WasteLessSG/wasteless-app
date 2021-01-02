@@ -5,6 +5,7 @@ import 'package:LessApp/styles.dart';
 import 'package:http/http.dart' as http;
 import 'package:LessApp/wasteless-data.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:LessApp/TermsOfService.dart';
 
 class SettingsPage extends StatefulWidget{
   final FirebaseUser user;
@@ -71,7 +72,11 @@ class SettingsPageState extends State<SettingsPage>{
                 SettingsTile(
                   title: 'Terms of Services',
                   leading: Icon(Icons.article_outlined),
-                  onPressed: (BuildContext context) {},
+                  onPressed: (BuildContext context) {
+                    Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => new TermsOfService())
+                    );
+                  },
                 ),
                 SettingsTile(
                   title: 'Licences',
