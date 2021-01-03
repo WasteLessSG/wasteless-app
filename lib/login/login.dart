@@ -11,14 +11,23 @@ class Login extends StatefulWidget {
 
 class LoginState extends State<Login> {
   String email, password;
+  final TextEditingController passwordController = TextEditingController();
 //Firebase doesnt support custom usernames, username must be in form of email
   bool _obscureText = true;
 
   @override
   void initState() {
     _obscureText = true;
+    super.initState();
   }
 
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the
+    // widget tree.
+    passwordController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -91,9 +100,10 @@ class LoginState extends State<Login> {
             ),
 
             child: TextField(
+              controller: passwordController,
               autocorrect: false,
               obscureText: _obscureText,
-              onChanged: (value) => password = value,
+              // onChanged: (value) => password = value,
               cursorColor: Color.fromRGBO(32, 95, 38, 1) ,
               decoration: InputDecoration(
                 icon: Icon(Icons.lock, color: Color.fromRGBO(32, 95, 38, 1),),
@@ -103,8 +113,8 @@ class LoginState extends State<Login> {
                   icon: Icon(
                     // Based on passwordVisible state choose the icon
                     _obscureText
-                        ? Icons.visibility
-                        : Icons.visibility_off,
+                        ? Icons.visibility_off
+                        : Icons.visibility,
                     color: Color.fromRGBO(32, 95, 38, 1) ,
                   ),
                   onPressed: () {
@@ -133,11 +143,15 @@ class LoginState extends State<Login> {
   }
 
   Future<void> signIn() async{
+    password = passwordController.text;
+    print(password);
     try {
       FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password)).user;
       Navigator.push(context, MaterialPageRoute(builder: (context)=> new HomePage(user)));
     } catch (e) {
+
       _showAlertDialog("ERROR",e.message);
+      passwordController.clear();
     }
 
   }
