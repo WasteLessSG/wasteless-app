@@ -31,6 +31,9 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
   List<bool> _trendChosen = [true, false, false, false];
   List<String> _trendList = ["Select Trend", "Week", "Month", "All Time"];
 
+  static String staticType = "Select Trend";
+  static String staticTrend = "Select Type";
+
   List list = List();
   Map map = Map();
 
@@ -44,25 +47,27 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
   }
 
 
-  _fetchData() async {
+
+  _fetchData(String type, String time) async {
     return this._memoizer.runOnce(() async {
 
       String currentType;
       String currentTrend;
 
+
       //trash selected
-      if (_typeChosen[1]) {
+      if (type == "Trash") {
         currentType = "general";
       } else {
         currentType = "all";
       }
 
-      if (_trendChosen[3]) {
+      if (time == "All Time") {
         currentTrend = "allTime";
-      } else if (_trendChosen[2]) {
+      } else if (time == "Month") {
         currentTrend = "month";
       } else {
-        currentTrend = "allTime";
+        currentTrend = "week";
       }
 
       //String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard?aggregateBy=week&type=general";
@@ -80,43 +85,51 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
   }
 
 
-  Widget _buildList() {
+  /*
+  _fetchData(String type, String time) async {
+    String currentType;
+    String currentTrend;
+
+    //trash selected
+    if (type == "Trash") {
+      currentType = "general";
+    } else {
+      currentType = "all";
+    }
+
+    if (time == "All Time") {
+      currentTrend = "allTime";
+    } else if (time == "Month") {
+      currentTrend = "month";
+    } else {
+      currentTrend = "week";
+    }
+
+    //String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard?aggregateBy=week&type=general";
+    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard?type=${currentType}&aggregateBy=${currentTrend}";
+
+    final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
+
+    if (response.statusCode == 200) {
+      map = json.decode(response.body) as Map;
+      list = map["data"];
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+  */
+
+
+  Widget _buildList(String type, String trend) {
+
+    print(type);
+    print(trend);
+
     var now = new DateTime.now();
     List newList = list;
     print(list);
 
-    /*
-     * no need for the manual filtering below since the API has already done it
-    switch(_selectedTrend) {
 
-    //month's worth of data
-      case "Month": {
-        newList = list.where((entry)=> (DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).month == DateTime.now().month)
-        && (DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).year == DateTime.now().year))
-            .toList();
-      }
-      break;
-
-      //all time data
-      case "All Time": {
-        newList = list;
-      }
-      break;
-
-      //week's worth of data
-      case "Week": {
-        newList = list.where((entry) => DateTime.parse(dfFilter.format(DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000)).toString())
-            .isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
-            .toList();
-      }
-      break;
-
-      //if no filter is selected
-      default: {
-        newList = List();
-      }
-    }
-    */
 
     newList = new List.from(newList.reversed);
 
@@ -180,10 +193,10 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-
-    _fetchData();
 
     return Scaffold(
       appBar: AppBar(
@@ -228,7 +241,6 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
                             _typeChosen[i] = false;
                           }
                         }
-
                         _selectedType = newValue;
                       });
                     },
@@ -265,7 +277,18 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
               ),
             ),
 
-            _buildList(),
+            //_buildList(_selectedType, _selectedTrend),
+
+            FutureBuilder(
+              future: _fetchData(_selectedType, _selectedTrend),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return _buildList(_selectedType, _selectedTrend);
+                } else {
+                  return CircularProgressIndicator();
+                }
+              }
+            ),
 
             /*
              * Previous implementation using Firestore
