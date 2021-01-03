@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:LessApp/login/unused-register.dart';
+import 'package:LessApp/login/change-password.dart';
 import 'package:LessApp/login/login.dart';
 
 class Landing extends StatelessWidget {
@@ -47,7 +47,7 @@ class Landing extends StatelessWidget {
                   callback: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Register()),
+                      MaterialPageRoute(builder: (context) => Login()),
                     );
                   },
                 ),

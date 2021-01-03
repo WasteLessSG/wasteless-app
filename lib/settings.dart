@@ -1,3 +1,4 @@
+import 'package:LessApp/login/change-password.dart';
 import 'package:LessApp/login/login.dart';
 import 'package:LessApp/wasteless-data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -60,7 +61,11 @@ class SettingsPageState extends State<SettingsPage>{
                 SettingsTile(
                   title: 'Change Password ',
                   leading: Icon(Icons.lock_outlined),
-                  onPressed: (BuildContext context) {},
+                  onPressed: (BuildContext context) {
+                    Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => new ChangePassword(user))
+                    );
+                  },
                 ),
 
                 SettingsTile(
@@ -80,7 +85,51 @@ class SettingsPageState extends State<SettingsPage>{
                 SettingsTile(
                   title: 'About Us',
                   leading: Icon(Icons.info_outlined),
-                  onPressed: (BuildContext context) {},
+                  onPressed:  (BuildContext context){
+                    showDialog(context: context,
+                        builder: (context){
+                          return new AlertDialog(
+
+                            title: Text('About Us'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+
+                                  RichText(
+                                    text: TextSpan(
+                                      style: defaultStyle,
+                                      children: <TextSpan>[
+                                        TextSpan(text: 'To find out more about WasteLess and the WasteLess solution, visit our website  '),
+                                        TextSpan(
+                                            text: 'wastelesssg@github.io.',
+                                            style: linkStyle,
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () {
+
+                                                _launchURL('wastelesssg@github.io');
+                                                print('wasteless website');
+                                              }),
+
+                                      ],
+                                    ),
+                                  )
+
+
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('Close'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        });
+
+                  },
                 ),
 
                 SettingsTile(
@@ -106,8 +155,8 @@ class SettingsPageState extends State<SettingsPage>{
                               style: linkStyle,
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  _launchURL();
-                                  print('email"');
+                                  _launchURL('mailto:sgwasteless@gmail.com');
+                                  print('email');
                                 }),
 
                         ],
@@ -184,9 +233,8 @@ class SettingsPageState extends State<SettingsPage>{
   }
 }
 
-_launchURL() async {
+_launchURL(url) async {
   print("launching url");
-  const url = 'mailto:sgwasteless@gmail.com';
   if (await canLaunch(url)) {
     await launch(url);
   } else {

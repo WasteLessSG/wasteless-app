@@ -87,25 +87,29 @@ class DashboardPageState extends State<DashboardPage> {
 
   loadAsset() async {
     final myData = await rootBundle.loadString("assets/dailyMessages.csv");
+    print('csv in string'+myData);
     List<List<dynamic>> csvTable = CsvToListConverter().convert(myData);
     dailyMessages = csvTable;
+    print('next line  supposed converted');
+    print(dailyMessages);
   }
 
   Widget _buildDailyMessage() {
     var now = DateTime.now();
     //loadAsset();
 
-    return Container(
-        decoration: BoxDecoration(
-          color: titleSelect[0] ? colorPalette[1]: colorPalette[0],
-          borderRadius: BorderRadius.circular(5),
-          border: Border.all(
-            color: Colors.black,
-          ),
+    return Expanded(
+        child: Container(
+      decoration: BoxDecoration(
+        color: titleSelect[0] ? colorPalette[1]: colorPalette[0],
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(
+          color: Colors.black,
         ),
+      ),
 
-        height: MediaQuery.of(context).size.height / 5,
-        width: MediaQuery.of(context).size.width / 1.05,
+      height: MediaQuery.of(context).size.height / 4,
+      width: MediaQuery.of(context).size.width / 1.05,
 
       child: Column(
         children: <Widget>[
@@ -118,7 +122,9 @@ class DashboardPageState extends State<DashboardPage> {
             ),
           ),
 
-          Text("\n" + dailyMessages[now.day][0].toString(),
+          Text("\n" +
+              // "Daily Message",
+            dailyMessages[now.day][0].toString(),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20,
@@ -128,7 +134,8 @@ class DashboardPageState extends State<DashboardPage> {
           ),
         ],
       ),
-    );
+    )
+        );
 
     return Container(
       alignment: Alignment.center,
@@ -483,26 +490,27 @@ class DashboardPageState extends State<DashboardPage> {
             _buildText(currentType),
 
             SizedBox(
-              height: MediaQuery.of(context).size.height / 20,
+              height: MediaQuery.of(context).size.height / 30,
             ),
             _buildGraphic(),
 
             SizedBox(
-              height: MediaQuery.of(context).size.height / 20,
+              height: MediaQuery.of(context).size.height / 30,
             ),
 
-            //_buildDailyMessage(),
-
-
-            FutureBuilder(
-              future: loadAsset(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return _buildDailyMessage();
-                } else {
-                  return CircularProgressIndicator();
-                }
-              }
+            // FutureBuilder(
+            //   future: loadAsset(),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.connectionState == ConnectionState.done) {
+            //       return
+            //         _buildDailyMessage();
+            //     } else {
+            //       return CircularProgressIndicator();
+            //     }
+            //   }
+            // ),
+            SizedBox(
+              height: 10,
             ),
 
 
