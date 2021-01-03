@@ -491,7 +491,7 @@ class DashboardPageState extends State<DashboardPage> {
             SizedBox(
               height: MediaQuery.of(context).size.height / 20,
             ),
-            _buildDailyMessage(),
+            //_buildDailyMessage(),
 
           ],
         ),

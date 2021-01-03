@@ -43,16 +43,30 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     _memoizer = AsyncMemoizer();
   }
 
+
   _fetchData() async {
     return this._memoizer.runOnce(() async {
+
       String currentType;
+      String currentTrend;
+
+      //trash selected
       if (_typeChosen[1]) {
         currentType = "general";
       } else {
         currentType = "all";
       }
 
-      String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${currentType}";
+      if (_trendChosen[3]) {
+        currentTrend = "allTime";
+      } else if (_trendChosen[2]) {
+        currentTrend = "month";
+      } else {
+        currentTrend = "allTime";
+      }
+
+      //String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard?aggregateBy=week&type=general";
+      String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard?type=${currentType}&aggregateBy=${currentTrend}";
 
       final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
 
@@ -66,19 +80,19 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
   }
 
 
-
   Widget _buildList() {
-
-    //_fetchData();
-
     var now = new DateTime.now();
-    List newList;
+    List newList = list;
+    print(list);
 
+    /*
+     * no need for the manual filtering below since the API has already done it
     switch(_selectedTrend) {
 
     //month's worth of data
       case "Month": {
-        newList = list.where((entry)=> DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).month == DateTime.now().month )
+        newList = list.where((entry)=> (DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).month == DateTime.now().month)
+        && (DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).year == DateTime.now().year))
             .toList();
       }
       break;
@@ -97,10 +111,12 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
       }
       break;
 
+      //if no filter is selected
       default: {
         newList = List();
       }
     }
+    */
 
     newList = new List.from(newList.reversed);
 
@@ -136,13 +152,27 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
             itemCount: newList.length,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-                  color:   _typeChosen[1] ? ((index % 2 == 0) ? Colors.brown[100] : Colors.white10) : ((index % 2 == 0) ? Colors.lightGreenAccent : Colors.white10),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.all(10.0),
-                    title: new Text(df3.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["time"] * 1000)).toString()),
+                color:   _typeChosen[1] ? ((index % 2 == 0) ? Colors.brown[100] : Colors.white10) : ((index % 2 == 0) ? Colors.lightGreen[200] : Colors.white10),
+                child: ListTile(
+                  leading: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding:  EdgeInsets.fromLTRB(10,0,0,0),
+                        child: Text((index+1).toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  contentPadding: EdgeInsets.all(10.0),
+                  title: new Text("UserID is: " + newList[index]["userId"].toString()),
+                    //title: new Text(df3.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["userId"] * 1000)).toString()),
                     //title: new Text(DateTime.now().month.toString()),
-                    subtitle: new Text(newList[index]["weight"].toString() + "kg"),
-                  )
+                  subtitle: new Text("${_selectedType} thrown ${_selectedTrend}: " + newList[index]["weight"].toString() + "kg"),
+                  ),
               );
             },
           )
@@ -236,23 +266,6 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
             ),
 
             _buildList(),
-
-            /*
-             * This is the impl that fires a lot of calls
-            Expanded(
-                child: ListView.builder(
-                  itemCount: filteredList.length,
-                  reverse: true,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      contentPadding: EdgeInsets.all(10.0),
-                      title: new Text(df3.format(DateTime.fromMillisecondsSinceEpoch(filteredList[index]["time"] * 1000)).toString()),
-                      subtitle: new Text(filteredList[index]["weight"].toString() + "kg"),
-                    );
-                  },
-                )
-            ),
-            */
 
             /*
              * Previous implementation using Firestore

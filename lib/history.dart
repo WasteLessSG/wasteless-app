@@ -83,7 +83,8 @@ class HistoryPageState extends  State<HistoryPage> {
 
       //month's worth of data
       case "Month": {
-        newList = list.where((entry)=> DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).month == DateTime.now().month )
+        newList = list.where((entry)=> (DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).month == DateTime.now().month)
+        && (DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).year == DateTime.now().year))
             .toList();
       }
       break;
@@ -141,7 +142,7 @@ class HistoryPageState extends  State<HistoryPage> {
             itemCount: newList.length,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-                  color:   _typeChosen[1] ? ((index % 2 == 0) ? Colors.brown[100] : Colors.white10) : ((index % 2 == 0) ? Colors.lightGreenAccent : Colors.white10),
+                  color:   _typeChosen[1] ? ((index % 2 == 0) ? Colors.brown[100] : Colors.white10) : ((index % 2 == 0) ? Colors.lightGreen[200] : Colors.white10),
                   child: ListTile(
                     contentPadding: EdgeInsets.all(10.0),
                     title: new Text(df4.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["time"] * 1000)).toString()),
