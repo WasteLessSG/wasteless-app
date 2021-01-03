@@ -95,7 +95,7 @@ class ChangePasswordState extends State<ChangePassword> {
               SizedBox(
                 height: 20,
               ),
-              PageButton(
+              LoginButton(
                 title: "Confirm",
                 callback: changePassword,
               ),
