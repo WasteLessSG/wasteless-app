@@ -58,7 +58,7 @@ class DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     _memoizer = AsyncMemoizer();
-    loadAsset();
+    //loadAsset();
   }
 
   /*
@@ -86,16 +86,14 @@ class DashboardPageState extends State<DashboardPage> {
   */
 
   loadAsset() async {
-    var myData = await rootBundle.loadString("assets/dailyMessages.csv");
+    final myData = await rootBundle.loadString("assets/dailyMessages.csv");
     List<List<dynamic>> csvTable = CsvToListConverter().convert(myData);
-    setState(() {
-      dailyMessages = csvTable;
-    });
+    dailyMessages = csvTable;
   }
 
   Widget _buildDailyMessage() {
     var now = DateTime.now();
-    print(dailyMessages);
+    //loadAsset();
 
     return Container(
         decoration: BoxDecoration(
@@ -119,8 +117,8 @@ class DashboardPageState extends State<DashboardPage> {
               color: Colors.black,
             ),
           ),
-          //TODO:FIX DAILYMESSAGES BUG
-          Text("\n" + dailyMessages[0][0].toString(),
+
+          Text("\n" + dailyMessages[now.day][0].toString(),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20,
@@ -131,6 +129,7 @@ class DashboardPageState extends State<DashboardPage> {
         ],
       ),
     );
+
     return Container(
       alignment: Alignment.center,
       padding: new EdgeInsets.only(
@@ -491,7 +490,21 @@ class DashboardPageState extends State<DashboardPage> {
             SizedBox(
               height: MediaQuery.of(context).size.height / 20,
             ),
+
             //_buildDailyMessage(),
+
+
+            FutureBuilder(
+              future: loadAsset(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return _buildDailyMessage();
+                } else {
+                  return CircularProgressIndicator();
+                }
+              }
+            ),
+
 
           ],
         ),

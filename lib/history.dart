@@ -50,16 +50,33 @@ class HistoryPageState extends  State<HistoryPage> {
     _memoizer = AsyncMemoizer();
   }
 
+  /*
   _fetchData() async {
     return this._memoizer.runOnce(() async {
+
+      var now = new DateTime.now();
+      var prevMonth = new DateTime(now.year, now.month - 1, now.day);
+      var prevWeek = new DateTime(now.year, now.month, now.day - 6);
+
       String currentType;
+      String timeRangeStartValue;
+      String timeRangeEndValue = (now.millisecondsSinceEpoch * 1000).toString();
+
       if (_typeChosen[1]) {
         currentType = "general";
       } else {
         currentType = "all";
       }
 
-      String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${WasteLessData.userID.toString()}?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${currentType}";
+      if (_selectedTrend == "All Time") {
+        timeRangeStartValue = "0";
+      } else if (_selectedTrend == "Month") {
+        timeRangeStartValue = (prevMonth.millisecondsSinceEpoch * 1000).toString();
+      } else {
+        timeRangeStartValue = (prevWeek.millisecondsSinceEpoch * 1000).toString();
+      }
+
+      String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${WasteLessData.userID.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${currentType}";
 
       final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
       if (response.statusCode == 200) {
@@ -70,15 +87,51 @@ class HistoryPageState extends  State<HistoryPage> {
       }
     });
   }
+  */
 
+  _fetchData() async {
+    var now = new DateTime.now();
+    var prevMonth = new DateTime(now.year, now.month - 1, now.day);
+    var prevWeek = new DateTime(now.year, now.month, now.day - 6);
+
+    String currentType;
+    String timeRangeStartValue;
+    String timeRangeEndValue = (now.millisecondsSinceEpoch * 1000).toString();
+
+    if (_typeChosen[1]) {
+      currentType = "general";
+    } else {
+      currentType = "all";
+    }
+
+    if (_selectedTrend == "All Time") {
+      timeRangeStartValue = "0";
+    } else if (_selectedTrend == "Month") {
+      timeRangeStartValue = (prevMonth.millisecondsSinceEpoch * 1000).toString();
+    } else {
+      timeRangeStartValue = (prevWeek.millisecondsSinceEpoch * 1000).toString();
+    }
+
+    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${WasteLessData.userID.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${currentType}";
+
+    final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
+    if (response.statusCode == 200) {
+      map = json.decode(response.body) as Map;
+      list = map["data"];
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
 
 
   Widget _buildList() {
 
     var now = new DateTime.now();
-    List newList;
+    List newList = list;
     //_fetchData();
 
+
+    /*
     switch(_selectedTrend) {
 
       //month's worth of data
@@ -107,6 +160,8 @@ class HistoryPageState extends  State<HistoryPage> {
         newList = List();
       }
     }
+    */
+
 
     newList = new List.from(newList.reversed);
 
@@ -159,9 +214,6 @@ class HistoryPageState extends  State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    _fetchData();
-
     return Scaffold(
         appBar: AppBar(
             title: Text("History",
@@ -245,8 +297,16 @@ class HistoryPageState extends  State<HistoryPage> {
                 ),
               ),
 
-              _buildList(),
-
+              FutureBuilder(
+                future: _fetchData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return _buildList();
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                }
+              ),
 
 
               /*
