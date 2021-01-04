@@ -42,6 +42,7 @@ class LoginState extends State<Login> {
           ),
           backgroundColor: Colors.white,
           elevation: 0,
+          automaticallyImplyLeading: false,
         ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(

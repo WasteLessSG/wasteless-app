@@ -100,6 +100,12 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage>{
     try {
       await firebaseAuth.sendPasswordResetEmail(email:email);
       Navigator.push(context, MaterialPageRoute(builder: (context)=> new Login()));
+      showDialog(
+          context: context,
+          builder: (_) =>AlertDialog(
+            title: Text("Success"),
+            content: Text("Reset password email sent."),
+          ));
     } catch (e) {
 
       showDialog(
