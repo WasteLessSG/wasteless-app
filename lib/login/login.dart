@@ -1,3 +1,4 @@
+import 'package:LessApp/login/forgot-password.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:LessApp/home.dart';
@@ -133,6 +134,24 @@ class LoginState extends State<Login> {
             title: "LOGIN",
             callback: signIn,
           ),
+                  SizedBox(height: size.height * 0.03),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text("Forget your password? ",
+                      style: TextStyle(color: Color.fromRGBO(32, 95, 38, 1) ),),
+                      GestureDetector(
+                        onTap: _forgetPassword,
+                        child: Text(
+                          "Get help signing in.",
+                          style: TextStyle(
+                            color: Color.fromRGBO(32, 95, 38, 1),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    ],
+                  )
 
 
                 ], ),
@@ -150,13 +169,25 @@ class LoginState extends State<Login> {
       Navigator.push(context, MaterialPageRoute(builder: (context)=> new HomePage(user)));
     } catch (e) {
 
-      _showAlertDialog("ERROR",e.message);
+      _showAlertDialog("ERROR",e.message );
       passwordController.clear();
     }
 
   }
 
-  void _showAlertDialog(String title, String message) {
+  void _forgetPassword(){
+
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation1, animation2) => new ForgotPasswordPage(),
+        transitionDuration: Duration(seconds: 0),
+      ),
+    );
+
+
+  }
+  void _showAlertDialog( String title, String message ) {
     AlertDialog alertDialog = AlertDialog(
       title: Text(title),
       content: Text(message),
@@ -166,7 +197,10 @@ class LoginState extends State<Login> {
         builder: (_) => alertDialog
     );
   }
+
 }
+
+
 
 class LoginButton extends StatelessWidget {
   final String title;
@@ -180,7 +214,7 @@ class LoginButton extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(10.0),
       child: Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
+      // margin: EdgeInsets.symmetric(vertical: 10),
     width: size.width * 0.8,
     child: ClipRRect(
     borderRadius: BorderRadius.circular(29),
