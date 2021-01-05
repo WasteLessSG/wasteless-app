@@ -54,7 +54,7 @@ class LoginState extends State<Login> {
 
                 Container(
 
-                  height: size.height *0.53,
+                  height: size.height *0.50,
                   width: size.width * 0.9,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -65,25 +65,29 @@ class LoginState extends State<Login> {
                     children: <Widget>[
 
                       SizedBox(
-                        height: size.height *0.03 ,
+                        height: size.height *0.040 ,
                       ),
 
-                      Text("WasteLess",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
+                      RichText(text: TextSpan(
+                          text: "WasteLess ",
+                          style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
-                      Text("Beta 0.5",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.black,
-                        ),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: "Beta 0.5",
+                              style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            )
+
+                          ]),
                       ),
+
+
                       SizedBox(
                         height: size.height *0.03 ,
                       ),
@@ -175,7 +179,7 @@ class LoginState extends State<Login> {
                         ],
                       ),
                       SizedBox(
-                        height: size.height *0.03 ,
+                        height: size.height *0.02 ,
                       ),
 
 
