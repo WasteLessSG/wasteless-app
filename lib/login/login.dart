@@ -32,127 +32,159 @@ class LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    print(size.height);
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
-          iconTheme: IconThemeData(
-            color: Colors.black, //change your color here
-          ),
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.green[900],
           elevation: 0,
           automaticallyImplyLeading: false,
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green[900],
         body: SingleChildScrollView(
             child: Center(
               child: Column(
 
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(
-                    height: size.height *0.17 ,
+                    height: size.height *0.1 ,
                   ),
 
-                Text("WasteLess",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-              fontSize: 55,
-              fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-          SizedBox(
-            height: size.height *0.03 ,
-          ),
+                Container(
 
-
-
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 10),
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            width: size.width * 0.8,
-            decoration: BoxDecoration(
-              color: Colors.lightGreen[200],
-              borderRadius: BorderRadius.circular(29),
-            ),
-            child: TextField(
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (value) => email = value.trim(),
-              cursorColor: Color.fromRGBO(32, 95, 38, 1) ,
-              decoration: InputDecoration(
-                icon: Icon(
-                  Icons.email,
-                  color: Color.fromRGBO(32, 95, 38, 1) ,
-                ),
-                hintText: 'Enter your email',
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 10),
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            width: size.width * 0.8,
-            decoration: BoxDecoration(
-              color: Colors.lightGreen[200],
-              borderRadius: BorderRadius.circular(29),
-            ),
-
-            child: TextField(
-              controller: passwordController,
-              autocorrect: false,
-              obscureText: _obscureText,
-              // onChanged: (value) => password = value,
-              cursorColor: Color.fromRGBO(32, 95, 38, 1) ,
-              decoration: InputDecoration(
-                icon: Icon(Icons.lock, color: Color.fromRGBO(32, 95, 38, 1),),
-                hintText: "Enter your password",
-                border: InputBorder.none,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    // Based on passwordVisible state choose the icon
-                    _obscureText
-                        ? Icons.visibility_off
-                        : Icons.visibility,
-                    color: Color.fromRGBO(32, 95, 38, 1) ,
+                  height: size.height *0.53,
+                  width: size.width * 0.9,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(30))
                   ),
-                  onPressed: () {
-                    // Update the state i.e. toogle the state of passwordVisible variable
-                    setState(() {
-                      _obscureText = !_obscureText;
-                    });
-                  },
-                ),
-              ),
-              ),
-            ),
-
-
-          LoginButton(
-            title: "LOGIN",
-            callback: signIn,
-          ),
-                  SizedBox(height: size.height * 0.03),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Text("Forget your password? ",
-                      style: TextStyle(color: Color.fromRGBO(32, 95, 38, 1) ),),
-                      GestureDetector(
-                        onTap: _forgetPassword,
-                        child: Text(
-                          "Get help signing in.",
-                          style: TextStyle(
-                            color: Color.fromRGBO(32, 95, 38, 1),
-                            fontWeight: FontWeight.bold,
+
+                      SizedBox(
+                        height: size.height *0.03 ,
+                      ),
+
+                      Text("WasteLess",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text("Beta 0.5",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(
+                        height: size.height *0.03 ,
+                      ),
+
+
+
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                        width: size.width * 0.8,
+                        decoration: BoxDecoration(
+                          color: Colors.lightGreen[200],
+                          borderRadius: BorderRadius.circular(29),
+                        ),
+                        child: TextField(
+                          keyboardType: TextInputType.emailAddress,
+                          onChanged: (value) => email = value.trim(),
+                          cursorColor: Color.fromRGBO(32, 95, 38, 1) ,
+                          decoration: InputDecoration(
+                            icon: Icon(
+                              Icons.email,
+                              color: Color.fromRGBO(32, 95, 38, 1) ,
+                            ),
+                            hintText: 'Enter your email',
+                            border: InputBorder.none,
                           ),
                         ),
-                      )
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                        width: size.width * 0.8,
+                        decoration: BoxDecoration(
+                          color: Colors.lightGreen[200],
+                          borderRadius: BorderRadius.circular(29),
+                        ),
+
+                        child: TextField(
+                          controller: passwordController,
+                          autocorrect: false,
+                          obscureText: _obscureText,
+                          // onChanged: (value) => password = value,
+                          cursorColor: Color.fromRGBO(32, 95, 38, 1) ,
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.lock, color: Color.fromRGBO(32, 95, 38, 1),),
+                            hintText: "Enter your password",
+                            border: InputBorder.none,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                // Based on passwordVisible state choose the icon
+                                _obscureText
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                color: Color.fromRGBO(32, 95, 38, 1) ,
+                              ),
+                              onPressed: () {
+                                // Update the state i.e. toogle the state of passwordVisible variable
+                                setState(() {
+                                  _obscureText = !_obscureText;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+
+
+                      LoginButton(
+                        title: "LOGIN",
+                        callback: signIn,
+                      ),
+                      SizedBox(height: size.height * 0.03),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("Forget your password? ",
+                            style: TextStyle(color: Color.fromRGBO(32, 95, 38, 1) ),),
+                          GestureDetector(
+                            onTap: _forgetPassword,
+                            child: Text(
+                              "Get help signing in.",
+                              style: TextStyle(
+                                color: Color.fromRGBO(32, 95, 38, 1),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: size.height *0.03 ,
+                      ),
+
+
+
                     ],
-                  )
+                  ),
+                ),
+
+
 
 
                 ], ),
