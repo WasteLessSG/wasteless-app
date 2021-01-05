@@ -74,7 +74,7 @@ class ChangePasswordState extends State<ChangePassword> {
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white70,
-                  hintText: "Enter your password",
+                  hintText: "Enter your new password",
                   border: const OutlineInputBorder(),
                 ),
               ),
