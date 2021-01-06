@@ -584,7 +584,7 @@ class DashboardPageState extends State<DashboardPage> {
           children: <Widget>[
             Text("Dashboard",
               style: TextStyle(
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
 
@@ -636,7 +636,7 @@ class DashboardPageState extends State<DashboardPage> {
 
 
 
-        backgroundColor: Colors.lightGreen[200],
+        backgroundColor:  Colors.green[900],
         elevation: 0,
 
       ),

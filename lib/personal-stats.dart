@@ -385,7 +385,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
           children: <Widget>[
             Text(currentTitle,
               style: TextStyle(
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
 
@@ -435,7 +435,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
 
 
-        backgroundColor: Colors.lightGreen[200],
+        backgroundColor: Colors.green[900],
         elevation: 0,
 
       ),

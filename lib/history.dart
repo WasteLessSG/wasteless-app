@@ -141,12 +141,13 @@ class HistoryPageState extends  State<HistoryPage> {
             title: Text("History",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           centerTitle: true,
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.green[900],
           elevation: 0,
+          automaticallyImplyLeading: false,
         ),
 
         body: Container(
