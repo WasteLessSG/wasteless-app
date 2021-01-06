@@ -48,44 +48,8 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
 
 
 
-  _fetchData(String type, String time) async {
-    return this._memoizer.runOnce(() async {
-
-      String currentType;
-      String currentTrend;
 
 
-      //trash selected
-      if (type == "Trash") {
-        currentType = "general";
-      } else {
-        currentType = "all";
-      }
-
-      if (time == "All Time") {
-        currentTrend = "allTime";
-      } else if (time == "Month") {
-        currentTrend = "month";
-      } else {
-        currentTrend = "week";
-      }
-
-      //String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard?aggregateBy=week&type=general";
-      String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard?type=${currentType}&aggregateBy=${currentTrend}";
-
-      final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
-
-      if (response.statusCode == 200) {
-        map = json.decode(response.body) as Map;
-        list = map["data"];
-      } else {
-        throw Exception('Failed to load data');
-      }
-    });
-  }
-
-
-  /*
   _fetchData(String type, String time) async {
     String currentType;
     String currentTrend;
@@ -117,7 +81,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
       throw Exception('Failed to load data');
     }
   }
-  */
+
 
 
   Widget _buildList(String type, String trend) {
@@ -128,7 +92,6 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     var now = new DateTime.now();
     List newList = list;
     print(list);
-
 
 
     newList = new List.from(newList.reversed);
@@ -181,7 +144,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
                     ],
                   ),
                   contentPadding: EdgeInsets.all(10.0),
-                  title: new Text("UserID is: " + newList[index]["userId"].toString()),
+                  title: new Text("UserID is: " + newList[index]["username"].toString()),
                     //title: new Text(df3.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["userId"] * 1000)).toString()),
                     //title: new Text(DateTime.now().month.toString()),
                   subtitle: new Text("${_selectedType} thrown ${_selectedTrend}: " + newList[index]["weight"].toString() + "kg"),

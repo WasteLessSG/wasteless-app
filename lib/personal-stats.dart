@@ -59,11 +59,14 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   List list = List();
   Map map = Map();
   AsyncMemoizer _memoizer;
+  bool isSelected = false;
+
   @override
   void initState() {
     _memoizer = AsyncMemoizer();
   }
 
+  /*
   _fetchData(String party, String type) async {
 
     setState(() {
@@ -98,6 +101,80 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
         throw Exception('Failed to load data');
       }
     });
+  }
+  */
+
+  _fetchData(String party, String type) async {
+
+    var now = new DateTime.now();
+    var prevMonth = new DateTime(now.year, now.month - 1, now.day);
+    var prevWeek = new DateTime(now.year, now.month, now.day - 6);
+
+    setState(() {
+      if (isSelectedTypeAll[0]) {
+        selectedType = "general";
+      } else {
+        if (PersonalStatsPageState.pageCounter % 3 == 0) {
+          selectedType = "plastic";
+        } else if (PersonalStatsPageState.pageCounter % 3 == 1) {
+          selectedType = "all";
+        } else {
+          selectedType = "plastic";
+        }
+      }
+    });
+
+
+    String timeRangeStartValue;
+    String timeRangeEndValue = (now.millisecondsSinceEpoch * 1000).toString();
+
+    if (selectedTime == "allTime") {
+      //TODO: AFTER TESTING, CHANGE THIS VALUE. should at least be 1609926000
+      timeRangeStartValue = "0"; //6th Jan, 2021, 5.53pm
+    } else if (selectedTime == "month") {
+      timeRangeStartValue = (prevMonth.millisecondsSinceEpoch * 1000).toString();
+    } else {
+      timeRangeStartValue = (prevWeek.millisecondsSinceEpoch * 1000).toString();
+    }
+
+    String link;
+
+    if (party == "self") {
+      link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${type}";
+    } else {
+      link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${type}";
+    }
+
+    final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
+    if (response.statusCode == 200) {
+      map = json.decode(response.body) as Map;
+      list = map["data"];
+    } else {
+      throw Exception('Failed to load data');
+    }
+
+  }
+
+  _buildSwitch() {
+    return Switch(
+        activeColor: Colors.green,
+        inactiveThumbColor: Colors.brown,
+        activeTrackColor: Colors.greenAccent,
+        inactiveTrackColor: Colors.redAccent,
+        value: isSelected,
+        onChanged: (value) {
+          setState(() {
+            for (int i = 0; i < isSelectedTypeAll.length; i++) {
+              if (isSelectedTypeAll[i]) {
+                isSelectedTypeAll[i] = false;
+              } else {
+                isSelectedTypeAll[i] = true;
+              }
+            }
+            isSelected = value;
+          });
+        }
+    );
   }
 
 
@@ -301,7 +378,27 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: ButtonTheme(
+        title:
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Text(currentTitle,
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 10,
+            ),
+
+            _buildSwitch(),
+          ],
+        ),
+
+        /*
+        ButtonTheme(
           minWidth: MediaQuery.of(context).size.width/1.05,
           height: 10.0,
           child: RaisedButton(
@@ -334,10 +431,11 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             },
           ),
         ),
+        */
 
 
 
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.lightGreen[200],
         elevation: 0,
 
       ),
@@ -649,98 +747,18 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
             (isSelectedTrend[0] || isSelectedTrend[1] ) ? trendAverageBar() : new Container(),
 
-            /*
-            //today recyclables textbox
-            isSelectedTypeAll[1] ? Container(
-              decoration: BoxDecoration(
-                color:  isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
-                borderRadius: BorderRadius.circular(5),
-              ),
-              height: 115,
-              width: MediaQuery.of(context).size.width/1.05,
-              padding: EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("Today you threw away",
-                    style: TextStyle(
-                      fontSize: 25,
-                    ),
-                  ),
-
-                  SizedBox(
-                      height:5
-                  ),
-
-                  /*
-              //for week's worth of trash thrown
-              StreamBuilder<QuerySnapshot>(
-                  stream: Firestore.instance
-                      .collection('houses')
-                      .document("House_A")
-                      .collection("RawData")
-                      .snapshots(),
-
-                  builder: (context, snapshot) {
-
-                    if (!snapshot.hasData) {
-                      return Styles.formatNumber(0.00);
-                    }
-                    else {
-                      List<MassEntry> weekData = snapshot.data.documents
-                          .map((documentSnapshot) =>
-                          MassEntry.fromMap(documentSnapshot.data))
-                          .toList()
-                          .where((i) =>
-                          DateTime.parse(i.timestamp).isAfter(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-                              .subtract(Duration(days: 6))))
-                          .toList();
-                      double weeklyMass = weekData.fold(0, (previousValue, element) => previousValue + element.mass);
-                      //debugPrint(weeklyMass.toString());
-                      return Styles.formatNumber(weeklyMass);
-                    }
-                  }
-              ),
-                  */
-
-
-                  StreamBuilder<QuerySnapshot>(
-                    stream: Firestore.instance
-                        .collection('houses')
-                        .document("House_A")
-                        .collection("RawData")
-                        .where("timestamp2", isEqualTo: DateFormat('d MMM y').format(DateTime.now()).toString() )
-                        .snapshots(),
-
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return CircularProgressIndicator();
-                      } else if (snapshot.data.documents.length == 0) {
-                        return Text("0.00 kg",
-                          style: TextStyle(
-                              fontSize: 50,
-                              fontWeight: FontWeight.bold
-                          ),);
-                      } else {
-                        List<MassEntry> massEntry = snapshot.data.documents
-                            .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
-                            .toList();
-                        //print(jsonEncode(massEntry).toString());
-                        double todayMass = massEntry.fold(0, (previousValue, element) => previousValue + element.mass);
-                        //return getPersonalWeekTotal("House_A");
-                        return Styles.formatNumber(todayMass);
-                      }
-                    },
-                  )
-
-                ],
-              ),
-            ) : new Container(),
-            */
-
-
             //build the graph
-             _buildBody(context),
+            FutureBuilder(
+              future: _fetchData("self", selectedType),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return _buildBody(context);
+                } else {
+                  return CircularProgressIndicator();
+                }
+              }
+            ),
+             //_buildBody(context),
 
     ]
     )));
@@ -765,7 +783,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
   Widget _buildBody(BuildContext context) {
 
-    _fetchData("self", selectedType);
+    //_fetchData("self", selectedType);
     //WasteLessData data = new WasteLessData();
     //List retrievedList = data.getListPersonalStats("self", selectedType);
     //this.list = retrievedList;

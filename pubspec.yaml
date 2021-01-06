@@ -48,6 +48,9 @@ dependencies:
   firebase_storage:
   charts_flutter:
   intl:
+  custom_switch:
+  lite_rolling_switch:
+  flutter_icons:
 
 
   # The following adds the Cupertino Icons font to your application.

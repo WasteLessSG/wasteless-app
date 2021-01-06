@@ -44,51 +44,6 @@ class HistoryPageState extends  State<HistoryPage> {
   final df5 = new DateFormat('MMM');
   final dfFilter = DateFormat("yyyy-MM-dd");
 
-  AsyncMemoizer _memoizer;
-  @override
-  void initState() {
-    _memoizer = AsyncMemoizer();
-  }
-
-  /*
-  _fetchData() async {
-    return this._memoizer.runOnce(() async {
-
-      var now = new DateTime.now();
-      var prevMonth = new DateTime(now.year, now.month - 1, now.day);
-      var prevWeek = new DateTime(now.year, now.month, now.day - 6);
-
-      String currentType;
-      String timeRangeStartValue;
-      String timeRangeEndValue = (now.millisecondsSinceEpoch * 1000).toString();
-
-      if (_typeChosen[1]) {
-        currentType = "general";
-      } else {
-        currentType = "all";
-      }
-
-      if (_selectedTrend == "All Time") {
-        timeRangeStartValue = "0";
-      } else if (_selectedTrend == "Month") {
-        timeRangeStartValue = (prevMonth.millisecondsSinceEpoch * 1000).toString();
-      } else {
-        timeRangeStartValue = (prevWeek.millisecondsSinceEpoch * 1000).toString();
-      }
-
-      String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${WasteLessData.userID.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${currentType}";
-
-      final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
-      if (response.statusCode == 200) {
-        map = json.decode(response.body) as Map;
-        list = map["data"];
-      } else {
-        throw Exception('Failed to load data');
-      }
-    });
-  }
-  */
-
   _fetchData() async {
     var now = new DateTime.now();
     var prevMonth = new DateTime(now.year, now.month - 1, now.day);
@@ -105,6 +60,7 @@ class HistoryPageState extends  State<HistoryPage> {
     }
 
     if (_selectedTrend == "All Time") {
+      //TODO: AFTER TESTING, CHANGE THIS VALUE. should at least be 1609926000
       timeRangeStartValue = "0";
     } else if (_selectedTrend == "Month") {
       timeRangeStartValue = (prevMonth.millisecondsSinceEpoch * 1000).toString();
@@ -112,7 +68,7 @@ class HistoryPageState extends  State<HistoryPage> {
       timeRangeStartValue = (prevWeek.millisecondsSinceEpoch * 1000).toString();
     }
 
-    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${WasteLessData.userID.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${currentType}";
+    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${currentType}";
 
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
     if (response.statusCode == 200) {
@@ -128,40 +84,6 @@ class HistoryPageState extends  State<HistoryPage> {
 
     var now = new DateTime.now();
     List newList = list;
-    //_fetchData();
-
-
-    /*
-    switch(_selectedTrend) {
-
-      //month's worth of data
-      case "Month": {
-        newList = list.where((entry)=> (DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).month == DateTime.now().month)
-        && (DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000).year == DateTime.now().year))
-            .toList();
-      }
-      break;
-
-      //all time data
-      case "All Time": {
-        newList = list;
-      }
-      break;
-
-      //week's worth of data
-      case "Week": {
-        newList = list.where((entry) => DateTime.parse(dfFilter.format(DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000)).toString())
-            .isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
-            .toList();
-      }
-      break;
-
-      default: {
-        newList = List();
-      }
-    }
-    */
-
 
     newList = new List.from(newList.reversed);
 
