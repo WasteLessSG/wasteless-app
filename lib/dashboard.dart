@@ -17,6 +17,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:custom_switch/custom_switch.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class DashboardPage extends StatefulWidget{
 
@@ -55,6 +56,7 @@ class DashboardPageState extends State<DashboardPage> {
   Map map = Map();
   AsyncMemoizer _memoizer;
   bool isSelected = false;
+  int isSelectedIndex = 0;
 
   List<List<dynamic>> dailyMessages = List();
 
@@ -304,6 +306,33 @@ class DashboardPageState extends State<DashboardPage> {
             isSelected = value;
           });
         }
+    );
+  }
+
+  _buildToggleSwitch() {
+    return ToggleSwitch(
+      minWidth: MediaQuery.of(context).size.width / 10,
+      minHeight: MediaQuery.of(context).size.height / 30,
+      labels: ['G', 'R'],
+      //icons: [Octicons.trashcan, FontAwesome.recycle],
+      initialLabelIndex: isSelectedIndex,
+      cornerRadius: 20.00,
+      activeFgColor: Colors.white,
+      inactiveBgColor: Colors.grey,
+      inactiveFgColor: Colors.white,
+      activeBgColors: [Colors.brown, Colors.green],
+      onToggle: (index) {
+        setState(() {
+          for (int i = 0; i < titleSelect.length; i++) {
+            if (titleSelect[i]) {
+              titleSelect[i] = false;
+            } else {
+              titleSelect[i] = true;
+            }
+          }
+          isSelectedIndex = index;
+        });
+      },
     );
   }
 
@@ -589,10 +618,11 @@ class DashboardPageState extends State<DashboardPage> {
             ),
 
             SizedBox(
-              width: MediaQuery.of(context).size.width / 5,
+              width: MediaQuery.of(context).size.width / 7,
             ),
 
-            _buildSwitch(),
+            //_buildSwitch(),
+            _buildToggleSwitch(),
           ],
         ),
 

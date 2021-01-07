@@ -13,6 +13,8 @@ import 'dart:convert';
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 import 'package:LessApp/wasteless-data.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class PersonalStatsPage extends StatefulWidget{
   final FirebaseUser user;
@@ -60,6 +62,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   Map map = Map();
   AsyncMemoizer _memoizer;
   bool isSelected = false;
+  int isSelectedIndex = 0;
 
   @override
   void initState() {
@@ -174,6 +177,33 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             isSelected = value;
           });
         }
+    );
+  }
+
+  _buildToggleSwitch() {
+    return ToggleSwitch(
+      minWidth: MediaQuery.of(context).size.width / 10,
+      minHeight: MediaQuery.of(context).size.height / 30,
+      labels: ['G', 'R'],
+      //icons: [Octicons.trashcan, FontAwesome.recycle],
+      initialLabelIndex: isSelectedIndex,
+      cornerRadius: 20.00,
+      activeFgColor: Colors.white,
+      inactiveBgColor: Colors.grey,
+      inactiveFgColor: Colors.white,
+      activeBgColors: [Colors.brown, Colors.green],
+      onToggle: (index) {
+        setState(() {
+          for (int i = 0; i < isSelectedTypeAll.length; i++) {
+            if (isSelectedTypeAll[i]) {
+              isSelectedTypeAll[i] = false;
+            } else {
+              isSelectedTypeAll[i] = true;
+            }
+          }
+          isSelectedIndex = index;
+        });
+      },
     );
   }
 
@@ -390,10 +420,11 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             ),
 
             SizedBox(
-              width: MediaQuery.of(context).size.width / 10,
+              width: MediaQuery.of(context).size.width / 15,
             ),
 
-            _buildSwitch(),
+            //_buildSwitch(),
+            _buildToggleSwitch(),
           ],
         ),
 

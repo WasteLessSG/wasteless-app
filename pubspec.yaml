@@ -51,6 +51,7 @@ dependencies:
   custom_switch:
   lite_rolling_switch:
   flutter_icons:
+  toggle_switch:
 
 
   # The following adds the Cupertino Icons font to your application.
