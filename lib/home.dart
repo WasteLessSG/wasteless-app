@@ -5,7 +5,7 @@ import 'package:LessApp/personal-stats.dart';
 import 'package:LessApp/debug.dart';
 import 'package:LessApp/leaderboard.dart';
 import 'package:LessApp/history.dart';
-import 'package:LessApp/dashboard.dart';
+import 'package:LessApp/dashboard-new.dart';
 import 'package:LessApp/settings.dart';
 import 'package:LessApp/styles.dart';
 
