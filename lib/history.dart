@@ -165,23 +165,64 @@ class HistoryPageState extends  State<HistoryPage> {
               padding: EdgeInsets.zero,
                 children: <Widget>[
                   DrawerHeader(
-                    child: Text('Drawer Header'),
+                    child: Text("You Selected"),
+
+                    // RichText(
+                    //   text: TextSpan(
+                    //     text: "You selected\n",
+                    //     style: TextStyle(
+                    //         fontSize: 10,
+                    //         color: Colors.white30
+                    //     ),
+                    //     children: <TextSpan>[
+                    //       TextSpan(
+                    //           text: _selectedType + "\n",
+                    //           style: TextStyle(
+                    //             fontSize: 25,
+                    //             color: Colors.white,
+                    //           )
+                    //       ),
+                    //       TextSpan(
+                    //           text: _selectedTrend,
+                    //           style: TextStyle(
+                    //             fontSize: 25,
+                    //             color: Colors.white,
+                    //           )
+                    //       ),
+                    //
+                    //     ],
+                    //
+                    //   ),
+                    //
+                    // ),
+
                     decoration: BoxDecoration(
-                      color: Colors.blue,
+                      color: Colors.green[800],
                     ),
                   ),
-                  ListTile(
-                    title: Text("asds"),
+
+
+                Container(
+                  color: Colors.blue,
+                  height: 200,
+                  child: ListView.builder(
+                    itemCount: 3,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: Text(_typeList[index]),
+                      );
+                    },),),
+
+                  Container(
+                    height:100,
+                    child: ListView.builder(
+                      itemCount: 4,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Text(_trendList[index]),
+                        );
+                      },),
                   ),
-
-
-                // ListView.builder(
-                //     itemCount: 3,
-                //     itemBuilder: (BuildContext context, int index) {
-                //       return ListTile(
-                //         title: Text(_typeList[index]),
-                //       );
-                //       },)
 
               ],
             ),

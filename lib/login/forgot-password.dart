@@ -22,7 +22,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
     return  Scaffold(
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
-          backgroundColor: Colors.green[900],
+          backgroundColor:  Color.fromRGBO(0, 81, 40, 1),
           elevation: 0,
               leading: IconButton(
                 icon: Icon(
@@ -34,7 +34,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 }),
 
           ),
-        backgroundColor: Colors.green[900],
+          backgroundColor: Color.fromRGBO(0, 81, 40, 1),
         body: SingleChildScrollView(
             child: Center(
               child: Column(
@@ -115,9 +115,15 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           callback: resetPassword,
                         ),
 
+
                       ],
                     ),
                   ),
+                  SizedBox(
+                    height: size.height *0.2 ,
+                  ),
+
+                  Image.asset('assets/tembusuLogo.png'),
 
 
                 ],),

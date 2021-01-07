@@ -152,7 +152,7 @@ class DashboardPageState extends State<DashboardPage> {
     print("height: " + size.height.toString());
 
     // String name = user.uid;
-    String name = "Ryan";
+    String name = "Ryan Wong";
 
     return Scaffold(
 
