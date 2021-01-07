@@ -373,6 +373,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   @override
   Widget build(BuildContext context) {
 
+
     bool paperVisible = PersonalStatsPageState.pageCounter % 3 == 0;
     bool allVisible = PersonalStatsPageState.pageCounter % 3 == 1;
     bool plasticVisible = PersonalStatsPageState.pageCounter % 3 == 2;
@@ -403,9 +404,8 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             ),
         backgroundColor: Colors.green[900],
         elevation: 0,
+
       ),
-
-
       body: Container(
         alignment: Alignment.center,
         color: Colors.white,

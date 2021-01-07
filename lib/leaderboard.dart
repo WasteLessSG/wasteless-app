@@ -186,7 +186,11 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
             onPressed: () {
               Navigator.pop(context);
             }),
-          title: Text((_selectedTrend == "All Time" ? _selectedTrend : _selectedTrend + "ly" ) + " " +chosenType + " Leaderboard",
+          title: Text(
+            (_selectedTrend == "All Time" ? _selectedTrend : _selectedTrend + "ly" )
+              + " "
+              + (chosenType == "Trash" ? chosenType : "Recycle")
+              + " Leaderboard",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.white,

@@ -3,8 +3,6 @@ import 'package:async/async.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:LessApp/styles.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:LessApp/wasteless-data.dart';
@@ -43,7 +41,7 @@ class HistoryPageState extends  State<HistoryPage> {
   final df4 = new DateFormat('d MMM yyyy');
   final df5 = new DateFormat('MMM');
   final dfFilter = DateFormat("yyyy-MM-dd");
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   _fetchData() async {
     var now = new DateTime.now();
     var prevMonth = new DateTime(now.year, now.month - 1, now.day);
@@ -136,7 +134,9 @@ class HistoryPageState extends  State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
             title: Text("History",
               style: TextStyle(
@@ -148,8 +148,46 @@ class HistoryPageState extends  State<HistoryPage> {
           backgroundColor: Colors.green[900],
           elevation: 0,
           automaticallyImplyLeading: false,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.filter_alt),
+              onPressed: (){
+                _scaffoldKey.currentState.openEndDrawer();
+              },
+            )
+          ],
         ),
 
+        endDrawer: Container(
+          width: size.width * 0.5,
+          child: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+                children: <Widget>[
+                  DrawerHeader(
+                    child: Text('Drawer Header'),
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                    ),
+                  ),
+                  ListTile(
+                    title: Text("asds"),
+                  ),
+
+
+                // ListView.builder(
+                //     itemCount: 3,
+                //     itemBuilder: (BuildContext context, int index) {
+                //       return ListTile(
+                //         title: Text(_typeList[index]),
+                //       );
+                //       },)
+
+              ],
+            ),
+          ),
+        )
+        ,
         body: Container(
           alignment: Alignment.center,
           color: Colors.white,
