@@ -2,22 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:csv_reader/csv_reader.dart';
-import 'package:LessApp/styles.dart';
-import 'dart:math';
+import 'package:LessApp/personal-stats.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:async/async.dart';
 import 'package:LessApp/wasteless-data.dart';
-import 'dart:io';
-import 'package:csv/csv.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:custom_switch/custom_switch.dart';
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:toggle_switch/toggle_switch.dart';
+import 'package:LessApp/leaderboard.dart';
 
 class DashboardPage extends StatefulWidget{
 
@@ -44,10 +35,6 @@ class DashboardPageState extends State<DashboardPage> {
 
   double recyclablesThisWeek = 0.00;
   double areaAverageRecyclablesThisWeek = 0.00;
-
-  List<bool> titleSelect = [true, false];
-  List<String> title = ["Trash Dashboard", "Recycling Dashboard"];
-  List<Color> colorPalette = [Colors.lightGreen[200], Colors.brown[100]];
 
   double sizeRelativeVisual = 1.0;
 
@@ -162,8 +149,10 @@ class DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    print("height: " + size.height.toString());
 
-    String name = user.uid;
+    // String name = user.uid;
+    String name = "Ryan";
 
     return Scaffold(
 
@@ -180,7 +169,7 @@ class DashboardPageState extends State<DashboardPage> {
                             child: Text("Welcome,",
                               textAlign: TextAlign.left,
                               style: TextStyle(
-                                fontSize: 25,
+                                fontSize: 20,
                                 color: Colors.black45
                               ),
                             ),
@@ -192,116 +181,216 @@ class DashboardPageState extends State<DashboardPage> {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 65
+                                  fontSize: 60
                               ),
                             ),
                           ),
 
-                          Container(
-                            padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                            width: size.width*0.95,
-                            height: 200,
-                            decoration: BoxDecoration(
-                                gradient: new LinearGradient(
-                                    colors: [Colors.brown,Colors.brown[200]],
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight
-                                ),
-                                borderRadius: BorderRadius.all(Radius.circular(20)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.brown[100],
-                                    blurRadius: 10,
-                                    offset: Offset(10.0,10.0),
-
+                          InkWell(
+                            onTap:  () => {
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => new PersonalStatsPage(user,true)))
+                            },
+                            child: Ink(
+                              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                              width: size.width*0.95,
+                              height: size.height*0.25,
+                              decoration: BoxDecoration(
+                                  gradient: new LinearGradient(
+                                      colors: [Colors.brown,Colors.brown[200]],
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight
                                   ),
-                                ]
-                            ),
-                            child: Row(
-                              children: <Widget>[
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.brown[200],
+                                      blurRadius: 10,
 
-                                trashBin(stateSelector(this.wasteThisWeek, this.areaAverageThisWeek)),
-                                Spacer(),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
+                                    ),
+                                  ]
+                              ),
+                              child: Row(
+                                children: <Widget>[
 
-                                    Text("This week you threw",
-                                      style: TextStyle(
-                                        fontSize: MediaQuery.of(context).size.height / 50,
+                                  trashBin(stateSelector(this.wasteThisWeek, this.areaAverageThisWeek)),
+                                  Spacer(),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+
+                                      Text("This week you threw",
+                                        style: TextStyle(
+                                          fontSize: MediaQuery.of(context).size.height / 41,
+                                        ),
                                       ),
-                                    ),
 
-                                    SizedBox(
-                                      height: MediaQuery.of(context).size.height / 50,
-                                    ),
+                                      SizedBox(
+                                        height: MediaQuery.of(context).size.height / 97,
+                                      ),
 
-                                    _buildStats("self", "general"),
+                                      _buildStats("self", "general"),
 
 
-                                  ],
-                                )
+                                    ],
+                                  )
 
-                              ],
+                                ],
 
+                              ),
                             ),
                           ),
 
                           SizedBox(
-                              height: size.height * 0.02,
+                            height: 15,
                           ),
-
-                          Container(
-                            padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                            width: size.width*0.95,
-                            height: 200,
-                            decoration: BoxDecoration(
-                                gradient: new LinearGradient(
-                                    colors: [Colors.green[700],Colors.green[200]],
-                                    begin: Alignment.centerRight,
-                                    end: Alignment.centerLeft
-                                ),
-                                borderRadius: BorderRadius.all(Radius.circular(20)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.green[100],
-                                    blurRadius: 10,
-                                    offset: Offset(10.0,10.0),
-
-                                  ),
-                                ]
-                            ),
-                            child: Row(
-
-                              children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-
-                                    Text("This week you recycled",
-                                        style: TextStyle(
-                                            fontSize: MediaQuery.of(context).size.height / 50,
-                                        )),
-                                    SizedBox(
-                                      height: MediaQuery.of(context).size.height / 50,
+                          InkWell(
+                            onTap:  () => {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => new LeaderboardPage(user,"Trash")))
+                            },
+                            child: Ink(
+                              padding: EdgeInsets.fromLTRB(15, 0, 15,0),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.brown[200],
+                                      blurRadius: 10,
                                     ),
-                                    _buildStats("self", "all"),
-
-
-                                  ],
+                                  ]
+                              ),
+                              width: size.width * 0.95,
+                              height: size.height*0.07,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    text: "",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.brown[800]
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(text: "5th",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          )),
+                                      TextSpan(text: " lowest thrash at Tembusu"),
+                                    ],
+                                  ),
                                 ),
-                                Spacer(),
-                                Image.asset('assets/recyclingIsland.png',
-                                  height: MediaQuery.of(context).size.height / 6,
-                                  width: MediaQuery.of(context).size.height / 6,
-                                ),
-
-                              ],
-
+                              ),
                             ),
                           ),
+                          SizedBox(
+                            height: 15,
+                          ),
+
+                         InkWell(
+                           onTap:  () => {
+                             Navigator.push(context, MaterialPageRoute(
+                                 builder: (context) => new PersonalStatsPage(user,false)))
+                           },
+
+                           child:  Ink(
+                             padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                             width: size.width*0.95,
+                             height: size.height*0.25,
+                             decoration: BoxDecoration(
+                                 gradient: new LinearGradient(
+                                     colors: [Colors.green[700],Colors.green[200]],
+                                     begin: Alignment.centerRight,
+                                     end: Alignment.centerLeft
+                                 ),
+                                 borderRadius: BorderRadius.all(Radius.circular(20)),
+                                 boxShadow: [
+                                   BoxShadow(
+                                     color: Colors.green[200],
+                                     blurRadius: 10,
+
+                                   ),
+                                 ]
+                             ),
+                             child: Row(
+
+                               children: <Widget>[
+                                 Column(
+                                   crossAxisAlignment: CrossAxisAlignment.center,
+                                   mainAxisAlignment: MainAxisAlignment.center,
+                                   children: <Widget>[
+
+                                     Text("This week you recycled",
+                                         style: TextStyle(
+                                           fontSize: MediaQuery.of(context).size.height / 41,
+                                         )),
+                                     SizedBox(
+                                       height: MediaQuery.of(context).size.height / 79,
+                                     ),
+                                     _buildStats("self", "all"),
+
+
+                                   ],
+                                 ),
+                                 Spacer(),
+                                 Image.asset('assets/recyclingIsland.png',
+                                   height: MediaQuery.of(context).size.height * 0.188,
+                                   width: MediaQuery.of(context).size.height * 0.188,
+                                 ),
+
+                               ],
+
+                             ),
+                           ),
+                         ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          InkWell(
+                            onTap:  () => {
+                                Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => new LeaderboardPage(user,"Recyclables")))
+                                },
+
+                            child: Ink(
+                              padding: EdgeInsets.fromLTRB(15, 0, 15,0),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.green[200],
+                                      blurRadius: 10,
+                                    ),
+                                  ]
+                              ),
+                              width: size.width * 0.95,
+                              height: size.height*0.07,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    text: "",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.green[900]
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(text: "5th",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          )),
+                                      TextSpan(text: " in recycling at Tembusu"),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
 
                         ],
                       ),
@@ -317,18 +406,18 @@ class DashboardPageState extends State<DashboardPage> {
   Widget trashBin(String selectedState) {
     if (selectedState == "rubbishEmpty") {
       return Image.asset('assets/rubbishEmptyIsland.png',
-      height: MediaQuery.of(context).size.height / 6,
-      width: MediaQuery.of(context).size.height / 6,
+      height: MediaQuery.of(context).size.height * 0.188,
+      width: MediaQuery.of(context).size.height * 0.188,
       );
     } else if (selectedState == 'rubbishFilled') {
       return Image.asset('assets/rubbishFilledIsland.png',
-        height: MediaQuery.of(context).size.height / 6,
-        width: MediaQuery.of(context).size.height / 6,
+        height: MediaQuery.of(context).size.height * 0.188,
+        width: MediaQuery.of(context).size.height * 0.188,
       );
     } else if (selectedState == 'rubbishOverflow') {
       return Image.asset('assets/rubbishOverflowIsland.png',
-        height: MediaQuery.of(context).size.height / 6,
-        width: MediaQuery.of(context).size.height / 6,
+        height: MediaQuery.of(context).size.height * 0.188,
+        width: MediaQuery.of(context).size.height * 0.188,
       );
     }
   }

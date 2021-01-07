@@ -32,7 +32,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
   void initState() {
     super.initState();
     print(user.uid);
-    controller = new TabController(vsync: this, length: 5, initialIndex: 2);
+    controller = new TabController(vsync: this, length: 3, initialIndex: 1);
   }
 
 
@@ -56,9 +56,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
             controller: controller ,
             tabs: <Tab> [
               new Tab(icon: Icon(Icons.account_box),) ,
-              new Tab(icon: Icon(Icons.trending_up),) ,
               new Tab(icon: Icon(Icons.home),) ,
-              new Tab(icon: Icon(Icons.leaderboard),) ,
               new Tab(icon: Icon(Icons.settings),) ,
 
             ],
@@ -73,9 +71,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
               controller: controller,
               children: <Widget>[
                 new HistoryPage(user),
-                new PersonalStatsPage(user),
                 new DashboardPage(user),
-                new LeaderboardPage(user),
                 new SettingsPage(user),
 
             ])

@@ -27,16 +27,16 @@ class ChangePasswordState extends State<ChangePassword> {
         title: Text("Change Password",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green[900],
         elevation: 0,
         leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
-              color: Colors.black,
+              color: Colors.white,
             ),
             onPressed: () {
               Navigator.pop(context, true);

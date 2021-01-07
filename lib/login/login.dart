@@ -38,11 +38,11 @@ class LoginState extends State<Login> {
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
-          backgroundColor: Colors.green[900],
+          backgroundColor: Color.fromRGBO(0, 81, 40, 1),
           elevation: 0,
           automaticallyImplyLeading: false,
         ),
-        backgroundColor: Colors.green[900],
+        backgroundColor: Color.fromRGBO(0, 81, 40, 1),
         body: SingleChildScrollView(
             child: Center(
               child: Column(
@@ -187,7 +187,11 @@ class LoginState extends State<Login> {
                     ],
                   ),
                 ),
+                  SizedBox(
+                    height: size.height *0.05 ,
+                  ),
 
+                  Image.asset('assets/tembusuLogo.png'),
 
 
 

@@ -10,15 +10,16 @@ import 'package:LessApp/wasteless-data.dart';
 
 class LeaderboardPage extends StatefulWidget{
   final FirebaseUser user;
-  LeaderboardPage(this.user);
+  String chosenType;
+  LeaderboardPage(this.user, this.chosenType);
   @override
-  LeaderboardPageState createState() => new LeaderboardPageState(this.user);
+  LeaderboardPageState createState() => new LeaderboardPageState(this.user, this.chosenType);
 }
 
 class LeaderboardPageState extends  State<LeaderboardPage> {
-
+  String chosenType;
   FirebaseUser user;
-  LeaderboardPageState(this.user);
+  LeaderboardPageState(this.user, this.chosenType);
 
   NumberFormat nf = NumberFormat("###.00", "en_US");
 
@@ -41,13 +42,25 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
   final df3 = DateFormat('d MMM yyyy');
 
   AsyncMemoizer _memoizer;
+
   @override
   void initState() {
     _memoizer = AsyncMemoizer();
+    _selectedTrend = "Week";
+    _selectedType = chosenType;
+    _trendChosen = [false, true, false, false];
+    switch (chosenType){
+      case "Trash":{
+        _typeChosen = [false,true,false];
+        break;
+      }
+      case "Recyclables":{
+        _typeChosen = [false,true,true];
+        break;
+      }
+
+    }
   }
-
-
-
 
 
   _fetchData(String type, String time) async {
@@ -161,9 +174,19 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
   @override
   Widget build(BuildContext context) {
 
+
+
     return Scaffold(
       appBar: AppBar(
-          title: Text("Community Leaderboard",
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+          title: Text((_selectedTrend == "All Time" ? _selectedTrend : _selectedTrend + "ly" ) + " " +chosenType + " Leaderboard",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -172,58 +195,19 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
           centerTitle: true,
           backgroundColor: Colors.green[900],
           elevation: 0,
-          automaticallyImplyLeading: false,
-      ),
-
-      body: Container(
-          alignment: Alignment.center,
-          color: Colors.white,
-
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  DropdownButton<String>(
-                    value: _selectedType,
-                    items: _typeList.map((String value) {
-                      return new DropdownMenuItem<String>(
-                        value: value,
-                        child: new Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (String newValue) {
-                      setState(() {
-                        for (int i = 0; i < _typeList.length; i++) {
-                          String currType = _typeList[i];
-                          if (newValue == currType) {
-                            _typeChosen[i] = true;
-                          } else {
-                            _typeChosen[i] = false;
-                          }
-                        }
-                        _selectedType = newValue;
-                      });
-                    },
-                  ),
-
-                  SizedBox(
-                    height: 10,
-                    width: 50,
-                  ),
-
-                  DropdownButton<String>(
-                    value: _selectedTrend,
-                    items: _trendList.map((String value) {
-                      return new DropdownMenuItem<String>(
-                        value: value,
-                        child: new Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (String newValue) {
+        actions: <Widget>[
+          PopupMenuButton(
+              icon: Icon(Icons.filter_list_outlined, color: Colors.white),
+              tooltip: "Filter",
+              itemBuilder: (context) {
+                return _trendList.map((String value) {
+                  return new PopupMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList();
+              },
+            onSelected: (String newValue) {
                       setState(() {
                         for (int i = 0; i < _trendList.length; i++) {
                           String currType = _trendList[i];
@@ -236,12 +220,76 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
                         _selectedTrend = newValue;
                       });
                     },
-                  ),
-                ],
-              ),
-            ),
+          ),
+        ],
 
-            //_buildList(_selectedType, _selectedTrend),
+      ),
+
+      body: Container(
+          alignment: Alignment.center,
+          color: Colors.white,
+
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+
+            // Container(
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: <Widget>[
+            //       DropdownButton<String>(
+            //         value: _selectedType,
+            //         items: _typeList.map((String value) {
+            //           return new DropdownMenuItem<String>(
+            //             value: value,
+            //             child: new Text(value),
+            //           );
+            //         }).toList(),
+            //         onChanged: (String newValue) {
+            //           setState(() {
+            //             for (int i = 0; i < _typeList.length; i++) {
+            //               String currType = _typeList[i];
+            //               if (newValue == currType) {
+            //                 _typeChosen[i] = true;
+            //               } else {
+            //                 _typeChosen[i] = false;
+            //               }
+            //             }
+            //             _selectedType = newValue;
+            //           });
+            //         },
+            //       ),
+            //
+            //       SizedBox(
+            //         height: 10,
+            //         width: 50,
+            //       ),
+            //
+            //       // DropdownButton<String>(
+            //       //   value: _selectedTrend,
+            //       //   items: _trendList.map((String value) {
+            //       //     return new DropdownMenuItem<String>(
+            //       //       value: value,
+            //       //       child: new Text(value),
+            //       //     );
+            //       //   }).toList(),
+            //       //   onChanged: (String newValue) {
+            //       //     setState(() {
+            //       //       for (int i = 0; i < _trendList.length; i++) {
+            //       //         String currType = _trendList[i];
+            //       //         if (newValue == currType) {
+            //       //           _trendChosen[i] = true;
+            //       //         } else {
+            //       //           _trendChosen[i] = false;
+            //       //         }
+            //       //       }
+            //       //       _selectedTrend = newValue;
+            //       //     });
+            //       //   },
+            //       // ),
+            //     ],
+            //   ),
+            // ),
 
             FutureBuilder(
               future: _fetchData(_selectedType, _selectedTrend),
@@ -253,59 +301,6 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
                 }
               }
             ),
-
-            /*
-             * Previous implementation using Firestore
-            StreamBuilder(
-              stream:  Firestore
-                  .instance
-                  .collection("houses")
-                  .orderBy('alltime', descending: false)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else
-
-                  //  List<MassEntry> massEntryRaw = snapshot.data.documents
-                  //               .map((documentSnapshot) => MassEntry.fromMap(documentSnapshot.data))
-                  //               .toList();
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: snapshot.data.documents.length,
-                      itemBuilder: (context,int index){
-                        return Container(
-                          color: Colors.white,
-                          child: ListTile(
-                            leading: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  padding:  EdgeInsets.fromLTRB(10,0,0,0),
-                                  child: Text((index+1).toString(),
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,),),
-                                )
-                              ],
-                            ),
-                            title: Text(snapshot.data.documents[index].documentID),
-                            subtitle: Text("All Time Mass Thrown: " + nf.format(snapshot.data.documents[index]['alltime']).toString() + " kg"),
-                          ),
-                        );}, //itemBuilder
-                    )
-                  );
-              },
-            )
-            */
-
-
-
-
-
-
-
           ],
         ),
       )

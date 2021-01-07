@@ -8,24 +8,25 @@ import 'package:LessApp/massEntry.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:LessApp/styles.dart';
-import 'package:LessApp/dashboard.dart';
 import 'dart:convert';
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 import 'package:LessApp/wasteless-data.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class PersonalStatsPage extends StatefulWidget{
+  final bool userSelectedChoice ;
   final FirebaseUser user;
-  PersonalStatsPage(this.user);
+  PersonalStatsPage(this.user,this.userSelectedChoice);
+
   @override
-  PersonalStatsPageState createState() => new PersonalStatsPageState(this.user);
+  PersonalStatsPageState createState() => new PersonalStatsPageState(this.user,this.userSelectedChoice);
 }
 
 class PersonalStatsPageState extends State<PersonalStatsPage>{
   FirebaseUser user;
-  PersonalStatsPageState(this.user);
+  bool userSelectedChoice;
+  PersonalStatsPageState(this.user,this.userSelectedChoice);
 
   final now = DateTime.now();
   String selectedTime = "week";
@@ -62,10 +63,12 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   Map map = Map();
   AsyncMemoizer _memoizer;
   bool isSelected = false;
-  int isSelectedIndex = 0;
+  // int isSelectedIndex = 0;
+
 
   @override
   void initState() {
+    isSelectedTypeAll[0] = userSelectedChoice;
     _memoizer = AsyncMemoizer();
   }
 
@@ -158,54 +161,32 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
   }
 
-  _buildSwitch() {
-    return Switch(
-        activeColor: Colors.green,
-        inactiveThumbColor: Colors.brown,
-        activeTrackColor: Colors.greenAccent,
-        inactiveTrackColor: Colors.redAccent,
-        value: isSelected,
-        onChanged: (value) {
-          setState(() {
-            for (int i = 0; i < isSelectedTypeAll.length; i++) {
-              if (isSelectedTypeAll[i]) {
-                isSelectedTypeAll[i] = false;
-              } else {
-                isSelectedTypeAll[i] = true;
-              }
-            }
-            isSelected = value;
-          });
-        }
-    );
-  }
-
-  _buildToggleSwitch() {
-    return ToggleSwitch(
-      minWidth: MediaQuery.of(context).size.width / 10,
-      minHeight: MediaQuery.of(context).size.height / 30,
-      labels: ['G', 'R'],
-      //icons: [Octicons.trashcan, FontAwesome.recycle],
-      initialLabelIndex: isSelectedIndex,
-      cornerRadius: 20.00,
-      activeFgColor: Colors.white,
-      inactiveBgColor: Colors.grey,
-      inactiveFgColor: Colors.white,
-      activeBgColors: [Colors.brown, Colors.green],
-      onToggle: (index) {
-        setState(() {
-          for (int i = 0; i < isSelectedTypeAll.length; i++) {
-            if (isSelectedTypeAll[i]) {
-              isSelectedTypeAll[i] = false;
-            } else {
-              isSelectedTypeAll[i] = true;
-            }
-          }
-          isSelectedIndex = index;
-        });
-      },
-    );
-  }
+  // _buildToggleSwitch() {
+  //   return ToggleSwitch(
+  //     minWidth: MediaQuery.of(context).size.width / 10,
+  //     minHeight: MediaQuery.of(context).size.height / 30,
+  //     labels: ['G', 'R'],
+  //     //icons: [Octicons.trashcan, FontAwesome.recycle],
+  //     initialLabelIndex: isSelectedIndex,
+  //     cornerRadius: 20.00,
+  //     activeFgColor: Colors.white,
+  //     inactiveBgColor: Colors.grey,
+  //     inactiveFgColor: Colors.white,
+  //     activeBgColors: [Colors.brown, Colors.green],
+  //     onToggle: (index) {
+  //       setState(() {
+  //         for (int i = 0; i < isSelectedTypeAll.length; i++) {
+  //           if (isSelectedTypeAll[i]) {
+  //             isSelectedTypeAll[i] = false;
+  //           } else {
+  //             isSelectedTypeAll[i] = true;
+  //           }
+  //         }
+  //         isSelectedIndex = index;
+  //       });
+  //     },
+  //   );
+  // }
 
 
 
@@ -406,69 +387,22 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     return Scaffold(
       //appBar: Styles.MainStatsPageHeader(title[0], FontWeight.bold, Colors.black),
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(context, true);
+            }),
         centerTitle: true,
-        title:
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Text(currentTitle,
+        title: Text(currentTitle,
               style: TextStyle(
                 color: Colors.white,
               ),
             ),
-
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 15,
-            ),
-
-            //_buildSwitch(),
-            _buildToggleSwitch(),
-          ],
-        ),
-
-        /*
-        ButtonTheme(
-          minWidth: MediaQuery.of(context).size.width/1.05,
-          height: 10.0,
-          child: RaisedButton(
-            elevation: 10.0,
-            color: isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-              //side: BorderSide(color: Colors.white),
-            ),
-            padding: EdgeInsets.all(10.0),
-
-
-            child: Text(currentTitle,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontSize: 20,
-              ),
-            ),
-            onPressed: () {
-              setState(() {
-                for (int i = 0; i < isSelectedTypeAll.length; i++) {
-                  if (isSelectedTypeAll[i]) {
-                    isSelectedTypeAll[i] = false;
-                  } else {
-                    isSelectedTypeAll[i] = true;
-                  }
-                }
-              });
-            },
-          ),
-        ),
-        */
-
-
-
         backgroundColor: Colors.green[900],
         elevation: 0,
-
       ),
 
 
