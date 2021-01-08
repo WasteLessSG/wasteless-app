@@ -325,7 +325,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                 ),
               ),
             ),
-            _buildStatsInfo("self", selectedTime, selectedTime, Colors.teal.shade900),
+            _buildStatsInfo("Tembusu", selectedTime, selectedTime, Colors.teal.shade900),
           ],
         ),
       );
