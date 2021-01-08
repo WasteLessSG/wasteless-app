@@ -120,7 +120,7 @@ class DashboardPageState extends State<DashboardPage> {
             return Text(nf.format(averageValue) + "kg",
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 50,
+                fontSize: MediaQuery.of(context).size.height * 0.053,
                 fontWeight: FontWeight.bold,
               ),
             );
@@ -222,7 +222,7 @@ class DashboardPageState extends State<DashboardPage> {
 
                                       Text("This week you threw",
                                         style: TextStyle(
-                                          fontSize: MediaQuery.of(context).size.height / 41,
+                                          fontSize: MediaQuery.of(context).size.height / 50,
                                         ),
                                       ),
 
@@ -325,7 +325,7 @@ class DashboardPageState extends State<DashboardPage> {
 
                                      Text("This week you recycled",
                                          style: TextStyle(
-                                           fontSize: MediaQuery.of(context).size.height / 41,
+                                           fontSize: MediaQuery.of(context).size.height / 50,
                                          )),
                                      SizedBox(
                                        height: MediaQuery.of(context).size.height / 79,
@@ -337,8 +337,8 @@ class DashboardPageState extends State<DashboardPage> {
                                  ),
                                  Spacer(),
                                  Image.asset('assets/recyclingIsland.png',
-                                   height: MediaQuery.of(context).size.height * 0.188,
-                                   width: MediaQuery.of(context).size.height * 0.188,
+                                   height: MediaQuery.of(context).size.height * 0.178,
+                                   width: MediaQuery.of(context).size.height * 0.178,
                                  ),
 
                                ],
@@ -406,18 +406,18 @@ class DashboardPageState extends State<DashboardPage> {
   Widget trashBin(String selectedState) {
     if (selectedState == "rubbishEmpty") {
       return Image.asset('assets/rubbishEmptyIsland.png',
-      height: MediaQuery.of(context).size.height * 0.188,
-      width: MediaQuery.of(context).size.height * 0.188,
+      height: MediaQuery.of(context).size.height * 0.178,
+      width: MediaQuery.of(context).size.height * 0.178,
       );
     } else if (selectedState == 'rubbishFilled') {
       return Image.asset('assets/rubbishFilledIsland.png',
-        height: MediaQuery.of(context).size.height * 0.188,
-        width: MediaQuery.of(context).size.height * 0.188,
+        height: MediaQuery.of(context).size.height * 0.178,
+        width: MediaQuery.of(context).size.height * 0.178,
       );
     } else if (selectedState == 'rubbishOverflow') {
       return Image.asset('assets/rubbishOverflowIsland.png',
-        height: MediaQuery.of(context).size.height * 0.188,
-        width: MediaQuery.of(context).size.height * 0.188,
+        height: MediaQuery.of(context).size.height * 0.178,
+        width: MediaQuery.of(context).size.height * 0.178,
       );
     }
   }
