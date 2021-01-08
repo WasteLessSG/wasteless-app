@@ -1,3 +1,4 @@
+import 'package:LessApp/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -55,7 +56,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
         break;
       }
       case "Recyclables":{
-        _typeChosen = [false,true,true];
+        _typeChosen = [false,false,true];
         break;
       }
 
@@ -94,8 +95,6 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
       throw Exception('Failed to load data');
     }
   }
-
-
 
   Widget _buildList(String type, String trend) {
 
@@ -141,7 +140,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
             itemCount: newList.length,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-                color:   _typeChosen[1] ? ((index % 2 == 0) ? Colors.brown[100] : Colors.white10) : ((index % 2 == 0) ? Colors.lightGreen[200] : Colors.white10),
+                color: _typeChosen[1] ? ((index % 2 == 0) ? Colors.brown[100] : Colors.white10) : ((index % 2 == 0) ? Colors.lightGreen[200] : Colors.white10),
                 child: ListTile(
                   leading: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -151,16 +150,24 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
                         child: Text((index+1).toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
+                            fontSize: 20
                           ),
                         ),
                       )
                     ],
                   ),
                   contentPadding: EdgeInsets.all(10.0),
-                  title: new Text("UserID is: " + newList[index]["username"].toString()),
+                  title: new Text(newList[index]["username"].toString(),
+                  style: TextStyle(
+                    fontSize: 25,
+                  ),),
                     //title: new Text(df3.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["userId"] * 1000)).toString()),
                     //title: new Text(DateTime.now().month.toString()),
-                  subtitle: new Text("${_selectedType} thrown ${_selectedTrend}: " + newList[index]["weight"].toString() + "kg"),
+                  trailing: new Text(newList[index]["weight"].toString() + " kg",
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold
+                    ),),
                   ),
               );
             },
@@ -237,67 +244,10 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
 
-            // Container(
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: <Widget>[
-            //       DropdownButton<String>(
-            //         value: _selectedType,
-            //         items: _typeList.map((String value) {
-            //           return new DropdownMenuItem<String>(
-            //             value: value,
-            //             child: new Text(value),
-            //           );
-            //         }).toList(),
-            //         onChanged: (String newValue) {
-            //           setState(() {
-            //             for (int i = 0; i < _typeList.length; i++) {
-            //               String currType = _typeList[i];
-            //               if (newValue == currType) {
-            //                 _typeChosen[i] = true;
-            //               } else {
-            //                 _typeChosen[i] = false;
-            //               }
-            //             }
-            //             _selectedType = newValue;
-            //           });
-            //         },
-            //       ),
-            //
-            //       SizedBox(
-            //         height: 10,
-            //         width: 50,
-            //       ),
-            //
-            //       // DropdownButton<String>(
-            //       //   value: _selectedTrend,
-            //       //   items: _trendList.map((String value) {
-            //       //     return new DropdownMenuItem<String>(
-            //       //       value: value,
-            //       //       child: new Text(value),
-            //       //     );
-            //       //   }).toList(),
-            //       //   onChanged: (String newValue) {
-            //       //     setState(() {
-            //       //       for (int i = 0; i < _trendList.length; i++) {
-            //       //         String currType = _trendList[i];
-            //       //         if (newValue == currType) {
-            //       //           _trendChosen[i] = true;
-            //       //         } else {
-            //       //           _trendChosen[i] = false;
-            //       //         }
-            //       //       }
-            //       //       _selectedTrend = newValue;
-            //       //     });
-            //       //   },
-            //       // ),
-            //     ],
-            //   ),
-            // ),
-
             FutureBuilder(
               future: _fetchData(_selectedType, _selectedTrend),
               builder: (context, snapshot) {
+                print("Future obtained: " + _selectedType + "and " + _selectedTrend);
                 if (snapshot.connectionState == ConnectionState.done) {
                   return _buildList(_selectedType, _selectedTrend);
                 } else {
