@@ -4,15 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:LessApp/massEntry.dart';
+import 'package:WasteLess/massEntry.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:LessApp/styles.dart';
+import 'package:WasteLess/styles.dart';
 import 'dart:convert';
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
-import 'package:LessApp/wasteless-data.dart';
-import 'package:toggle_switch/toggle_switch.dart';
+import 'package:WasteLess/wasteless-data.dart';
 
 class PersonalStatsPage extends StatefulWidget{
   final bool userSelectedChoice ;

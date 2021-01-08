@@ -1,16 +1,10 @@
-import 'package:LessApp/login/change-password.dart';
-import 'package:LessApp/login/login.dart';
-import 'package:LessApp/wasteless-data.dart';
+import 'package:WasteLess/login/change-password.dart';
+import 'package:WasteLess/login/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:LessApp/styles.dart';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'package:LessApp/wasteless-data.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:LessApp/TermsOfService.dart';
-import 'package:flutter/services.dart';
+import 'package:WasteLess/TermsOfService.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 

@@ -1,13 +1,10 @@
-import 'package:LessApp/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:LessApp/styles.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:async/async.dart';
-import 'package:LessApp/wasteless-data.dart';
+import 'package:WasteLess/wasteless-data.dart';
 
 class LeaderboardPage extends StatefulWidget{
   final FirebaseUser user;

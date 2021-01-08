@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:LessApp/login/change-password.dart';
-import 'package:LessApp/login/login.dart';
+import 'package:WasteLess/login/login.dart';
 
 class Landing extends StatelessWidget {
   @override

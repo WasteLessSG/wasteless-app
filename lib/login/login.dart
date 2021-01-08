@@ -1,7 +1,7 @@
-import 'package:LessApp/login/forgot-password.dart';
+import 'package:WasteLess/login/forgot-password.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:LessApp/home.dart';
+import 'package:WasteLess/home.dart';
 
 
 class Login extends StatefulWidget {

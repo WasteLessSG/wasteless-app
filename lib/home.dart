@@ -1,13 +1,8 @@
-import 'package:LessApp/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:LessApp/personal-stats.dart';
-import 'package:LessApp/debug.dart';
-import 'package:LessApp/leaderboard.dart';
-import 'package:LessApp/history.dart';
-import 'package:LessApp/dashboard-new.dart';
-import 'package:LessApp/settings.dart';
-import 'package:LessApp/styles.dart';
+import 'package:WasteLess/history.dart';
+import 'package:WasteLess/dashboard-new.dart';
+import 'package:WasteLess/settings.dart';
 
 class HomePage extends StatefulWidget{
 

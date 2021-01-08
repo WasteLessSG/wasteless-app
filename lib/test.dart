@@ -1,6 +1,6 @@
-import 'package:LessApp/wasteless-data.dart';
+import 'package:WasteLess/wasteless-data.dart';
 import 'package:flutter/material.dart';
-import 'package:LessApp/styles.dart';
+import 'package:WasteLess/styles.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';

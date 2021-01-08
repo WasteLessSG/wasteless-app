@@ -2,13 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:LessApp/personal-stats.dart';
+import 'package:WasteLess/personal-stats.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:async/async.dart';
-import 'package:LessApp/wasteless-data.dart';
-import 'package:LessApp/leaderboard.dart';
+import 'package:WasteLess/wasteless-data.dart';
+import 'package:WasteLess/leaderboard.dart';
 
 class DashboardPage extends StatefulWidget{
 
