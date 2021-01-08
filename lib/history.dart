@@ -1,7 +1,4 @@
 import 'dart:convert';
-import 'package:async/async.dart';
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -117,12 +114,20 @@ class HistoryPageState extends  State<HistoryPage> {
             itemCount: newList.length,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-                  color:   _typeChosen[1] ? ((index % 2 == 0) ? Colors.brown[100] : Colors.white10) : ((index % 2 == 0) ? Colors.lightGreen[200] : Colors.white10),
+                  color:   _typeChosen[1] ? ((index % 2 == 0) ? Colors.brown[50] : Colors.white10) : ((index % 2 == 0) ? Colors.lightGreen[50] : Colors.white10),
                   child: ListTile(
-                    contentPadding: EdgeInsets.all(10.0),
-                    title: new Text(df4.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["time"] * 1000)).toString()),
+                    dense: true,
+                    contentPadding: EdgeInsets.fromLTRB(20,10.0,20,10),
+                    title: new Text(df4.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["time"] * 1000)).toString(),
+                    style: TextStyle(
+                      fontSize: 25,
+                    ),),
                     //title: new Text(DateTime.now().month.toString()),
-                    subtitle: new Text(newList[index]["weight"].toString() + "kg"),
+                   trailing: new Text(newList[index]["weight"].toString() + "kg",
+                     style: TextStyle(
+                       fontSize: 25,
+                       fontWeight: FontWeight.bold
+                     ),),
                   )
               );
             },
@@ -138,7 +143,7 @@ class HistoryPageState extends  State<HistoryPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-            title: Text("History",
+            title: Text((_selectedType == "Select Type" ? "": _selectedType +" ")+"History",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -164,119 +169,77 @@ class HistoryPageState extends  State<HistoryPage> {
             child: ListView(
               padding: EdgeInsets.zero,
                 children: <Widget>[
-                  DrawerHeader(
-                    child: Text("You Selected"),
+                  SizedBox(
+                    height:size.height * 0.15,
+                    child:  DrawerHeader(
+                      decoration: BoxDecoration(
+                        color: Colors.green[800],
+                      ),
+                      child: Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text("You Selected",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color:Colors.white30,
+                              ),),
 
-                    // RichText(
-                    //   text: TextSpan(
-                    //     text: "You selected\n",
-                    //     style: TextStyle(
-                    //         fontSize: 10,
-                    //         color: Colors.white30
-                    //     ),
-                    //     children: <TextSpan>[
-                    //       TextSpan(
-                    //           text: _selectedType + "\n",
-                    //           style: TextStyle(
-                    //             fontSize: 25,
-                    //             color: Colors.white,
-                    //           )
-                    //       ),
-                    //       TextSpan(
-                    //           text: _selectedTrend,
-                    //           style: TextStyle(
-                    //             fontSize: 25,
-                    //             color: Colors.white,
-                    //           )
-                    //       ),
-                    //
-                    //     ],
-                    //
-                    //   ),
-                    //
-                    // ),
+                          ],
+                        ),
 
-                    decoration: BoxDecoration(
-                      color: Colors.green[800],
+                      ),
                     ),
                   ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: _selectedType,
+                        items: _typeList.map((String value) {
+                          return new DropdownMenuItem<String>(
+                            value: value,
+                            child: new Text(value,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold
+                              ),),
+                          );
+                        }).toList(),
+                        onChanged: (String newValue) {
 
-
-                Container(
-                  color: Colors.blue,
-                  height: 200,
-                  child: ListView.builder(
-                    itemCount: 3,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: Text(_typeList[index]),
-                      );
-                    },),),
-
-                  Container(
-                    height:100,
-                    child: ListView.builder(
-                      itemCount: 4,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          title: Text(_trendList[index]),
-                        );
-                      },),
+                          setState(() {
+                            for (int i = 0; i < _typeList.length; i++) {
+                              String currType = _typeList[i];
+                              if (newValue == currType) {
+                                _typeChosen[i] = true;
+                              } else {
+                                _typeChosen[i] = false;
+                              }
+                            }
+                            _selectedType = newValue;
+                          });
+                        },
+                      ),
+                    ),
                   ),
-
-              ],
-            ),
-          ),
-        )
-        ,
-        body: Container(
-          alignment: Alignment.center,
-          color: Colors.white,
-
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                     DropdownButton<String>(
-                       value: _selectedType,
-                       //dropdownColor: Colors.green[100],
-                       items: _typeList.map((String value) {
-                        return new DropdownMenuItem<String>(
-                          value: value,
-                          child: new Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String newValue) {
-
-                         setState(() {
-                           for (int i = 0; i < _typeList.length; i++) {
-                             String currType = _typeList[i];
-                             if (newValue == currType) {
-                               _typeChosen[i] = true;
-                             } else {
-                               _typeChosen[i] = false;
-                             }
-                           }
-                           _selectedType = newValue;
-                         });
-                      },
-                    ),
-
-                    SizedBox(
-                      height: 10,
-                      width: 50,
-                    ),
-
-                    DropdownButton<String>(
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                  child: ButtonTheme(
+                    alignedDropdown: true,
+                    child: DropdownButton<String>(
+                      isExpanded: true,
                       value: _selectedTrend,
                       items: _trendList.map((String value) {
                         return new DropdownMenuItem<String>(
                           value: value,
-                          child: new Text(value),
+                          child: new Text(value,
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold
+                            ),),
                         );
                       }).toList(),
                       onChanged: (String newValue) {
@@ -295,10 +258,20 @@ class HistoryPageState extends  State<HistoryPage> {
                         });
                       },
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                  )
+              ],
+            ),
+          ),
+        )
+        ,
+        body: Container(
+          alignment: Alignment.center,
+          color: Colors.white,
 
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
               FutureBuilder(
                 future: _fetchData(),
                 builder: (context, snapshot) {
@@ -309,56 +282,6 @@ class HistoryPageState extends  State<HistoryPage> {
                   }
                 }
               ),
-
-
-              /*
-               * Previous Implementation using Firestore
-              StreamBuilder(
-                stream: Firestore
-                    .instance
-                    .collection("houses")
-                    .document("House_A")
-                    .collection("RawData")
-                    .orderBy('timestamp', descending: true)
-                    .snapshots(),
-
-
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else return Expanded(
-                    child: ListView.builder(
-                        itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                            color:   _typeChosen[0] ? ((index % 2 == 0) ? Colors.brown[100] : Colors.white10) : ((index % 2 == 0) ? Colors.lightGreenAccent : Colors.white10),
-                            child: ListTile(
-                              leading: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Padding(
-                                    padding:  EdgeInsets.fromLTRB(10,0,0,0),
-                                    child: Text((index+1).toString(),
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                              title: Text(snapshot.data.documents[index]['timestamp2']),
-                              subtitle: Text("Mass Thrown: " + snapshot.data.documents[index]['mass'].toString() + " kg"),
-                            ),
-                          );
-                        }
-                    )
-                  );
-                },
-              )
-              */
-
-
             ],
           )
         )

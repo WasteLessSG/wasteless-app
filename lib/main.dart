@@ -1,3 +1,4 @@
+import 'package:LessApp/history.dart';
 import 'package:LessApp/leaderboard.dart';
 import 'package:flutter/material.dart';
 import 'package:LessApp/home.dart';
