@@ -206,7 +206,7 @@ class SettingsPageState extends State<SettingsPage>{
                               context: context,
                               applicationVersion: 'WasteLess v1.0',
                               applicationIcon: Image(
-                                image: AssetImage('assets/icon.png'),
+                                image: AssetImage('assets/logo.png'),
                                 width: 50,
                                 height: 50,
                               ),

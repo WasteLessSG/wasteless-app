@@ -8,9 +8,67 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:518132584074:android:9c1690504cef17ace62773",
+        "android_client_info": {
+          "package_name": "com.WasteLessApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "518132584074-vhpim3je51rfd6eo8p5evlaqrdhooqub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCN7d9mAGkK70GN8htRdNiNfiBfJ9tJKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "518132584074-vhpim3je51rfd6eo8p5evlaqrdhooqub.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:518132584074:android:f30223f4e7be4d35e62773",
         "android_client_info": {
           "package_name": "com.example.LessApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "518132584074-vhpim3je51rfd6eo8p5evlaqrdhooqub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCN7d9mAGkK70GN8htRdNiNfiBfJ9tJKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "518132584074-vhpim3je51rfd6eo8p5evlaqrdhooqub.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:518132584074:android:9c45ca80a1f5e97ce62773",
+        "android_client_info": {
+          "package_name": "wasteLessApp.beta.trial"
         }
       },
       "oauth_client": [
