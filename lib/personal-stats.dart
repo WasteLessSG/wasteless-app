@@ -356,7 +356,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
             Container(
               child: Text("Tembusu\nMonth Average: ",
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
