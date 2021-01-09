@@ -117,11 +117,20 @@ class DashboardPageState extends State<DashboardPage> {
         future: _fetchData("self", type),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return Text(nf.format(averageValue) + "kg",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: MediaQuery.of(context).size.height * 0.053,
-                fontWeight: FontWeight.bold,
+            return Container(
+              alignment: Alignment.center,
+
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  // "100.00" + "kg",
+                  nf.format(averageValue) + "kg",
+                  // textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.05,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             );
           } else {
@@ -164,8 +173,8 @@ class DashboardPageState extends State<DashboardPage> {
                     Column(
                         children: <Widget>[
                           Container(
-                            padding: EdgeInsets.fromLTRB(15, 15, 15,0),
-                            width: size.width,
+                            padding: EdgeInsets.fromLTRB(0, 10, 15,0),
+                            width: size.width * 0.93,
                             child: Text("Welcome,",
                               textAlign: TextAlign.left,
                               style: TextStyle(
@@ -175,14 +184,19 @@ class DashboardPageState extends State<DashboardPage> {
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.fromLTRB(15, 5, 15,15),
-                            width: size.width,
-                            child: Text(name,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 60
-                              ),
+                            padding: EdgeInsets.fromLTRB(0, 5, 15,10),
+                            width: size.width * 0.93,
+                            height: size.height * 0.12,
+                              alignment: Alignment.centerLeft,
+                              child: FittedBox(
+                                fit:BoxFit.scaleDown,
+                                child: Text("Ryan",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 50,
+                                  ),
+                                ),
                             ),
                           ),
 
@@ -192,9 +206,9 @@ class DashboardPageState extends State<DashboardPage> {
                                 builder: (context) => new PersonalStatsPage(user,true)))
                             },
                             child: Ink(
-                              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                              width: size.width*0.95,
-                              height: size.height*0.25,
+                              padding: EdgeInsets.fromLTRB(20, 0, 25, 0),
+                              width: size.width*0.93,
+                              height: size.height*0.23,
                               decoration: BoxDecoration(
                                   gradient: new LinearGradient(
                                       colors: [Colors.brown,Colors.brown[200]],
@@ -220,11 +234,15 @@ class DashboardPageState extends State<DashboardPage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
 
-                                      Text("This week you threw",
-                                        style: TextStyle(
-                                          fontSize: MediaQuery.of(context).size.height / 50,
-                                        ),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        child:
+                                        Text("This week you threw",
+                                            style: TextStyle(
+                                              fontSize:   MediaQuery.of(context).size.height * 0.022,
+                                            )),
                                       ),
+
 
                                       SizedBox(
                                         height: MediaQuery.of(context).size.height / 97,
@@ -262,7 +280,7 @@ class DashboardPageState extends State<DashboardPage> {
                                     ),
                                   ]
                               ),
-                              width: size.width * 0.95,
+                              width: size.width * 0.93,
                               height: size.height*0.07,
                               child: Container(
                                 alignment: Alignment.center,
@@ -297,9 +315,9 @@ class DashboardPageState extends State<DashboardPage> {
                            },
 
                            child:  Ink(
-                             padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                             width: size.width*0.95,
-                             height: size.height*0.25,
+                             padding: EdgeInsets.fromLTRB(25, 0, 20, 0),
+                             width: size.width*0.93,
+                             height: size.height*0.23,
                              decoration: BoxDecoration(
                                  gradient: new LinearGradient(
                                      colors: [Colors.green[700],Colors.green[200]],
@@ -323,10 +341,16 @@ class DashboardPageState extends State<DashboardPage> {
                                    mainAxisAlignment: MainAxisAlignment.center,
                                    children: <Widget>[
 
-                                     Text("This week you recycled",
-                                         style: TextStyle(
-                                           fontSize: MediaQuery.of(context).size.height / 50,
-                                         )),
+                                     Container(
+                                       alignment: Alignment.centerLeft,
+                                       child:
+                                         Text("This week you recycled",
+                                             style: TextStyle(
+                                               fontSize:   MediaQuery.of(context).size.height * 0.022,
+                                             )),
+                                       ),
+
+
                                      SizedBox(
                                        height: MediaQuery.of(context).size.height / 79,
                                      ),
@@ -359,7 +383,7 @@ class DashboardPageState extends State<DashboardPage> {
                               padding: EdgeInsets.fromLTRB(15, 0, 15,0),
                               decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  borderRadius: BorderRadius.all(Radius.circular(15)),
                                   boxShadow: [
                                     BoxShadow(
                                       color: Colors.green[200],
@@ -367,7 +391,7 @@ class DashboardPageState extends State<DashboardPage> {
                                     ),
                                   ]
                               ),
-                              width: size.width * 0.95,
+                              width: size.width * 0.93,
                               height: size.height*0.07,
                               child: Container(
                                 alignment: Alignment.center,

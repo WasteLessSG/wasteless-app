@@ -40,12 +40,12 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
                 children: <Widget>[
                   SizedBox(
-                    height: size.height * 0.1,
+                    height: size.height * 0.05,
                   ),
 
                   Container(
 
-                    height: size.height * 0.35,
+                    height: size.height * 0.4,
                     width: size.width * 0.9,
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -119,10 +119,10 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
                   ),
                   SizedBox(
-                    height: size.height *0.2 ,
+                    height: size.height *0.225 ,
                   ),
 
-                  Image.asset('assets/tembusuLogo.png'),
+                  Image.asset('assets/tembusuLogo.png', scale: 1.35),
 
 
                 ],),

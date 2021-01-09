@@ -49,12 +49,12 @@ class LoginState extends State<Login> {
 
                 children: <Widget>[
                   SizedBox(
-                    height: size.height *0.1 ,
+                    height: size.height *0.05 ,
                   ),
 
                 Container(
 
-                  height: size.height *0.50,
+                  height: size.height *0.575,
                   width: size.width * 0.9,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -188,7 +188,7 @@ class LoginState extends State<Login> {
                     height: size.height *0.05 ,
                   ),
 
-                  Image.asset('assets/tembusuLogo.png'),
+                  Image.asset('assets/tembusuLogo.png', scale: 1.35),
 
 
 

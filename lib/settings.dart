@@ -110,12 +110,12 @@ class SettingsPageState extends State<SettingsPage>{
                                             children: <TextSpan>[
                                               TextSpan(text: 'To find out more about WasteLess and the WasteLess solution, visit our website  '),
                                               TextSpan(
-                                                  text: 'wastelesssg@github.io.',
+                                                  text: 'wastelesssg.github.io.',
                                                   style: linkStyle,
                                                   recognizer: TapGestureRecognizer()
                                                     ..onTap = () {
 
-                                                      _launchURL('wastelesssg@github.io');
+                                                      _launchURL('https://wastelesssg.github.io/#/');
                                                       print('wasteless website');
                                                     }),
 
