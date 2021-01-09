@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 //
 //   runApp(
 //     new MaterialApp(
-//     // home: Login(),
+//     home: Login(),
 //     debugShowCheckedModeBanner: false,
 //   ));
 //
@@ -17,9 +17,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+// Test User Account
   try {
-    FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: "user@a.com", password: "password1")).user;
+    FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: "user@c.com", password: "password")).user;
     runApp(
     new MaterialApp(
         home: HomePage(user),

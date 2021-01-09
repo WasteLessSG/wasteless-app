@@ -40,35 +40,78 @@ class HistoryPageState extends  State<HistoryPage> {
   final dfFilter = DateFormat("yyyy-MM-dd");
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   _fetchData() async {
+
+
+    int numOfDays ;
     var now = new DateTime.now();
-    var prevMonth = new DateTime(now.year, now.month - 1, now.day);
-    var prevWeek = new DateTime(now.year, now.month, now.day - 6);
+    switch (DateFormat('E').format(DateTime.now())) {
+
+      case 'Mon' : {
+        numOfDays = 0;
+        break;
+      }
+      case 'Tue' : {
+        numOfDays = 1;
+        break;
+      }
+      case 'Wed' : {
+        numOfDays = 2;
+        break;
+      }
+      case 'Thu' : {
+        numOfDays = 3;
+        break;
+      }
+      case 'Fri' : {
+        numOfDays = 4;
+        break;
+      }
+      case 'Sat' : {
+        numOfDays = 5;
+        break;
+      }
+      case 'Sun' : {
+        numOfDays = 6;
+        break;
+      }
+
+    }
+    var prevMonth = new DateTime(now.year, now.month, 1);
+    var prevWeek = new DateTime(now.year, now.month, now.day - numOfDays);
+
 
     String currentType;
+    String currentTypeNum;
     String timeRangeStartValue;
     String timeRangeEndValue = (now.millisecondsSinceEpoch * 1000).toString();
 
     if (_typeChosen[1]) {
       currentType = "general";
+      currentTypeNum = "1";
     } else {
       currentType = "all";
+      //TODO: Fix once end pt for all trash is up
+      currentTypeNum = "2";
     }
 
     if (_selectedTrend == "All Time") {
       //TODO: AFTER TESTING, CHANGE THIS VALUE. should at least be 1609926000
       timeRangeStartValue = "0";
     } else if (_selectedTrend == "Month") {
-      timeRangeStartValue = (prevMonth.millisecondsSinceEpoch * 1000).toString();
+      timeRangeStartValue = (prevMonth.millisecondsSinceEpoch ~/ 1000).toString();
     } else {
-      timeRangeStartValue = (prevWeek.millisecondsSinceEpoch * 1000).toString();
+      timeRangeStartValue = (prevWeek.millisecondsSinceEpoch ~/ 1000).toString();
     }
 
-    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${currentType}";
 
+
+    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${currentTypeNum}";
+    print(link);
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
     if (response.statusCode == 200) {
       map = json.decode(response.body) as Map;
       list = map["data"];
+      print(list);
     } else {
       throw Exception('Failed to load data');
     }

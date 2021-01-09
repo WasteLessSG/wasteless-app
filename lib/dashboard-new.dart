@@ -30,93 +30,144 @@ class DashboardPageState extends State<DashboardPage> {
 
   NumberFormat nf = NumberFormat("##0.00", "en_US");
 
-  double wasteThisWeek = 0.00;
-  double areaAverageThisWeek = 0.00;
-
-  double recyclablesThisWeek = 0.00;
-  double areaAverageRecyclablesThisWeek = 0.00;
-
-  double sizeRelativeVisual = 1.0;
 
   final df3 = DateFormat.yMMMd();
   final dfFilter = DateFormat("yyyy-MM-dd");
-  List list = List();
-  Map map = Map();
-  AsyncMemoizer _memoizer;
-  bool isSelected = false;
-  int isSelectedIndex = 0;
 
-  List<List<dynamic>> dailyMessages = List();
+  Future<int> _fetchLeaderBoardData(String type) async{
 
-  _fetchData(String party, String type) async {
+    //TODO: FIX END POINT ONCE RECYCLING ENDPOINT IS UP
+    String currentTypeNum = type == "general" ? '1': '2';
 
-    var now = new DateTime.now();
-    var prevMonth = new DateTime(now.year, now.month - 1, now.day);
-    var prevWeek = new DateTime(now.year, now.month, now.day - 6);
-
-    String timeRangeStartValue = (prevWeek.millisecondsSinceEpoch * 1000).toString();
-    String timeRangeEndValue = (now.millisecondsSinceEpoch * 1000).toString();
-
-
-    String link;
-    if (party == "self") {
-      link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${type}";
-    } else {
-      link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste?aggregateBy=day&timeRangeStart=0&timeRangeEnd=1608364825&type=${type}";
-    }
+    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard/${user.uid.toString()}?type=${currentTypeNum}&aggregateBy=week";
+    print(link);
 
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
     if (response.statusCode == 200) {
-      map = json.decode(response.body) as Map;
-      list = map["data"];
+      Map map = json.decode(response.body) as Map;
+      return map["data"][0]['rank'];
+
+    } else {
+      throw Exception('Failed to load data');
+    }
+
+  }
+
+  Widget _rankingText(String type) {
+    return FutureBuilder(
+    future: _fetchLeaderBoardData(type),
+    builder: (context, snapshot) {
+      if (snapshot.hasData){
+        int initialDay = snapshot.data;
+        String formattedRankingText;
+
+        if (initialDay == 11 || initialDay == 12 || initialDay == 13) {
+        formattedRankingText =  '${initialDay}th';
+        } else if (initialDay % 10 == 1) {
+          formattedRankingText =  '${initialDay}st';
+        } else if (initialDay % 10 == 2) {
+          formattedRankingText =  '${initialDay}nd';
+        } else if (initialDay % 10 == 3) {
+          formattedRankingText ='${initialDay}rd';
+        } else {
+          formattedRankingText = '${initialDay}th';
+        }
+
+        return RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            text: "",
+            style: TextStyle(
+                fontSize: 20,
+                color: Colors.brown[800]
+            ),
+            children: <TextSpan>[
+              TextSpan(text: formattedRankingText,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  )),
+              TextSpan(text: " lowest thrash at Tembusu"),
+            ],
+          ),
+        );
+
+      } else {return CircularProgressIndicator();}
+    }
+    );
+}
+
+
+  Future<List> _fetchTrashOrRecycleData(String type) async {
+
+    //TODO FIX WHEN NEW END POINT FOR RECYCALBLES ARE UP
+    String typeNum = type == "general" ? "1" : "2";
+    int numOfDays;
+    var now = new DateTime.now();
+    switch (DateFormat('E').format(DateTime.now())) {
+
+      case 'Mon' : {
+        numOfDays = 0;
+        break;
+      }
+      case 'Tue' : {
+        numOfDays = 1;
+        break;
+      }
+      case 'Wed' : {
+        numOfDays = 2;
+        break;
+      }
+      case 'Thu' : {
+        numOfDays = 3;
+        break;
+      }
+      case 'Fri' : {
+        numOfDays = 4;
+        break;
+      }
+      case 'Sat' : {
+        numOfDays = 5;
+        break;
+      }
+      case 'Sun' : {
+        numOfDays = 6;
+        break;
+      }
+
+    }
+    var prevWeek = new DateTime(now.year, now.month, now.day - numOfDays);
+
+    String timeRangeStartValue = (prevWeek.millisecondsSinceEpoch ~/ 1000).toString();
+    String timeRangeEndValue = (now.millisecondsSinceEpoch ~/ 1000).toString();
+
+    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${typeNum}";
+    print(link);
+    final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
+    if (response.statusCode == 200) {
+      Map map = json.decode(response.body) as Map;
+      return map["data"];
+
     } else {
       throw Exception('Failed to load data');
     }
   }
 
+
+
   Widget _buildStats(String party, String type) {
 
-    var now = new DateTime.now();
-    List newList = list.where((entry) => DateTime.parse(dfFilter.format(DateTime.fromMillisecondsSinceEpoch(entry["time"] * 1000)).toString())
-        .isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
-        .toList();
-
-    double averageValue = newList.fold(0, (current, entry) => current + entry["weight"]) / 7.0;
-
-    if (type == "general") {
-      if (party == "self") {
-        wasteThisWeek = averageValue;
-      } else {
-        areaAverageThisWeek = averageValue;
-      }
-    } else {
-      if (party == "self") {
-        recyclablesThisWeek = averageValue;
-      } else {
-        areaAverageRecyclablesThisWeek = averageValue;
-      }
-    }
-
-    setState(() {
-      if (type == "general") {
-        if (party == "self") {
-          wasteThisWeek = averageValue;
-        } else {
-          areaAverageThisWeek = averageValue;
-        }
-      } else {
-        if (party == "self") {
-          recyclablesThisWeek = averageValue;
-        } else {
-          areaAverageRecyclablesThisWeek = averageValue;
-        }
-      }
-    });
 
     return FutureBuilder(
-        future: _fetchData("self", type),
+        future: _fetchTrashOrRecycleData(type),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) {
+            double totalValue = snapshot.data.fold(0, (current, entry) => current + entry["weight"]).toDouble() ;
+            print("vvvv");
+            print(snapshot.data);
+            print("^^^^");
+
+
+
             return Container(
               alignment: Alignment.center,
 
@@ -124,36 +175,26 @@ class DashboardPageState extends State<DashboardPage> {
                 fit: BoxFit.fitWidth,
                 child: Text(
                   // "100.00" + "kg",
-                  nf.format(averageValue) + "kg",
+                  nf.format(totalValue) + "kg",
                   // textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height * 0.05,
+                    fontSize: MediaQuery.of(context).size.height * 0.045,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             );
           } else {
-            return CircularProgressIndicator();
+            return Padding(
+              padding: EdgeInsets.only(top:10),
+              child:  CircularProgressIndicator(),
+            );
           }
         }
     );
   }
 
-  static String stateSelector(double a, double b) {
-    if (b == 0) {
-      return "rubbishEmpty";
-    }
 
-    double percFill = (a/b)*100;
-    if (percFill < 50.0) {
-      return "rubbishEmpty";
-    } else if (50.0 <= percFill && percFill < 80.0) {
-      return "rubbishFilled";
-    } else {
-      return "rubbishOverflow";
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -227,7 +268,7 @@ class DashboardPageState extends State<DashboardPage> {
                               child: Row(
                                 children: <Widget>[
 
-                                  trashBin(stateSelector(this.wasteThisWeek, this.areaAverageThisWeek)),
+                                  makeTrashBin(),
                                   Spacer(),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -239,7 +280,7 @@ class DashboardPageState extends State<DashboardPage> {
                                         child:
                                         Text("This week you threw",
                                             style: TextStyle(
-                                              fontSize:   MediaQuery.of(context).size.height * 0.022,
+                                              fontSize:   MediaQuery.of(context).size.height * 0.018,
                                             )),
                                       ),
 
@@ -284,23 +325,7 @@ class DashboardPageState extends State<DashboardPage> {
                               height: size.height*0.07,
                               child: Container(
                                 alignment: Alignment.center,
-                                child: RichText(
-                                  textAlign: TextAlign.center,
-                                  text: TextSpan(
-                                    text: "",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.brown[800]
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(text: "5th",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          )),
-                                      TextSpan(text: " lowest thrash at Tembusu"),
-                                    ],
-                                  ),
-                                ),
+                                child: _rankingText("general"),
                               ),
                             ),
                           ),
@@ -346,7 +371,7 @@ class DashboardPageState extends State<DashboardPage> {
                                        child:
                                          Text("This week you recycled",
                                              style: TextStyle(
-                                               fontSize:   MediaQuery.of(context).size.height * 0.022,
+                                               fontSize:   MediaQuery.of(context).size.height * 0.018,
                                              )),
                                        ),
 
@@ -361,8 +386,8 @@ class DashboardPageState extends State<DashboardPage> {
                                  ),
                                  Spacer(),
                                  Image.asset('assets/recyclingIsland.png',
-                                   height: MediaQuery.of(context).size.height * 0.178,
-                                   width: MediaQuery.of(context).size.height * 0.178,
+                                   height: MediaQuery.of(context).size.height * 0.177,
+                                   width: MediaQuery.of(context).size.height * 0.177,
                                  ),
 
                                ],
@@ -395,23 +420,8 @@ class DashboardPageState extends State<DashboardPage> {
                               height: size.height*0.07,
                               child: Container(
                                 alignment: Alignment.center,
-                                child: RichText(
-                                  textAlign: TextAlign.center,
-                                  text: TextSpan(
-                                    text: "",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.green[900]
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(text: "5th",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          )),
-                                      TextSpan(text: " in recycling at Tembusu"),
-                                    ],
-                                  ),
-                                ),
+                                //TODO: FIX BELOW ONCE OUT
+                                child: _rankingText("recycling"),
                               ),
                             ),
                           )
@@ -427,23 +437,62 @@ class DashboardPageState extends State<DashboardPage> {
       );
   }
 
-  Widget trashBin(String selectedState) {
-    if (selectedState == "rubbishEmpty") {
-      return Image.asset('assets/rubbishEmptyIsland.png',
-      height: MediaQuery.of(context).size.height * 0.178,
-      width: MediaQuery.of(context).size.height * 0.178,
-      );
-    } else if (selectedState == 'rubbishFilled') {
-      return Image.asset('assets/rubbishFilledIsland.png',
-        height: MediaQuery.of(context).size.height * 0.178,
-        width: MediaQuery.of(context).size.height * 0.178,
-      );
-    } else if (selectedState == 'rubbishOverflow') {
-      return Image.asset('assets/rubbishOverflowIsland.png',
-        height: MediaQuery.of(context).size.height * 0.178,
-        width: MediaQuery.of(context).size.height * 0.178,
-      );
-    }
+  Widget makeTrashBin() {
+
+
+    return FutureBuilder(
+      future: _fetchTrashOrRecycleData("general"),
+      builder: (context,snapshot) {
+        if (snapshot.hasData){
+          String selectedState;
+          // double avgHouseWaste = 1.5;
+          // double avgHouseSize = 3.16;
+          double avgPersonWaste = 1.5/3.16;
+          double totalValue = snapshot.data.fold(0, (current, entry) => current + entry["weight"]).toDouble() ;
+
+          double percFill = ((totalValue-avgPersonWaste)/avgPersonWaste)*100;
+
+          if (percFill < 50.0) {
+
+            selectedState = "rubbishEmpty";
+
+          } else if (50.0 <= percFill && percFill < 80.0) {
+
+            selectedState = "rubbishFilled";
+
+          } else {
+            selectedState = "rubbishOverflow";
+          }
+
+
+          if (selectedState == "rubbishEmpty") {
+            return Image.asset('assets/rubbishEmptyIsland.png',
+              height: MediaQuery.of(context).size.height * 0.177,
+              width: MediaQuery.of(context).size.height * 0.177,
+            );
+          } else if (selectedState == 'rubbishFilled') {
+            return Image.asset('assets/rubbishFilledIsland.png',
+              height: MediaQuery.of(context).size.height * 0.177,
+              width: MediaQuery.of(context).size.height * 0.177,
+            );
+          } else if (selectedState == 'rubbishOverflow') {
+            return Image.asset('assets/rubbishOverflowIsland.png',
+              height: MediaQuery.of(context).size.height * 0.177,
+              width: MediaQuery.of(context).size.height * 0.177,
+            );
+          }
+
+        } else {return Padding(
+            padding: EdgeInsets.only(top:10),
+            child:  CircularProgressIndicator(),
+          );
+        }
+      }
+    );
+
+
   }
 
 }
+
+

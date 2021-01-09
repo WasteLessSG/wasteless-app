@@ -44,156 +44,162 @@ class LoginState extends State<Login> {
         ),
         backgroundColor: Color.fromRGBO(0, 81, 40, 1),
         body: SingleChildScrollView(
-            child: Center(
-              child: Column(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              child: Center(
+                child: Column(
 
-                children: <Widget>[
-                  SizedBox(
-                    height: size.height *0.05 ,
-                  ),
+                  children: <Widget>[
+                    SizedBox(
+                      height: size.height *0.05 ,
+                    ),
 
-                Container(
-
-                  height: size.height *0.575,
-                  width: size.width * 0.9,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(30))
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-
-                      SizedBox(
-                        height: size.height *0.040 ,
+                    Container(
+                      width: size.width * 0.9,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(30))
                       ),
-
-                      RichText(text: TextSpan(
-                          text: "WasteLess ",
-                          style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: "Beta 0.5",
-                              style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            )
-
-                          ]),
-                      ),
-
-
-                      SizedBox(
-                        height: size.height *0.03 ,
-                      ),
-
-
-
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                        width: size.width * 0.8,
-                        decoration: BoxDecoration(
-                          color: Colors.lightGreen[200],
-                          borderRadius: BorderRadius.circular(29),
-                        ),
-                        child: TextField(
-                          keyboardType: TextInputType.emailAddress,
-                          onChanged: (value) => email = value.trim(),
-                          cursorColor: Color.fromRGBO(32, 95, 38, 1) ,
-                          decoration: InputDecoration(
-                            icon: Icon(
-                              Icons.email,
-                              color: Color.fromRGBO(32, 95, 38, 1) ,
-                            ),
-                            hintText: 'Enter your email',
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                        width: size.width * 0.8,
-                        decoration: BoxDecoration(
-                          color: Colors.lightGreen[200],
-                          borderRadius: BorderRadius.circular(29),
-                        ),
-
-                        child: TextField(
-                          controller: passwordController,
-                          autocorrect: false,
-                          obscureText: _obscureText,
-                          // onChanged: (value) => password = value,
-                          cursorColor: Color.fromRGBO(32, 95, 38, 1) ,
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.lock, color: Color.fromRGBO(32, 95, 38, 1),),
-                            hintText: "Enter your password",
-                            border: InputBorder.none,
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                // Based on passwordVisible state choose the icon
-                                _obscureText
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                                color: Color.fromRGBO(32, 95, 38, 1) ,
-                              ),
-                              onPressed: () {
-                                // Update the state i.e. toogle the state of passwordVisible variable
-                                setState(() {
-                                  _obscureText = !_obscureText;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-
-
-                      LoginButton(
-                        title: "LOGIN",
-                        callback: signIn,
-                      ),
-                      SizedBox(height: size.height * 0.02),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Text("Forget your password? ",
-                            style: TextStyle(color: Color.fromRGBO(32, 95, 38, 1) ),),
-                          GestureDetector(
-                            onTap: _forgetPassword,
-                            child: Text(
-                              "Get help signing in.",
+
+                          SizedBox(
+                            height: size.height *0.040 ,
+                          ),
+
+                          RichText(text: TextSpan(
+                              text: "WasteLess ",
                               style: TextStyle(
-                                color: Color.fromRGBO(32, 95, 38, 1),
+                                fontSize: 30,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: "Beta 0.5",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                )
+
+                              ]),
+                          ),
+
+
+                          SizedBox(
+                            height: size.height *0.03 ,
+                          ),
+
+
+
+                          Container(
+                            margin: EdgeInsets.symmetric(vertical: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                            width: size.width * 0.8,
+                            decoration: BoxDecoration(
+                              color: Colors.lightGreen[200],
+                              borderRadius: BorderRadius.circular(29),
+                            ),
+                            child: TextField(
+                              keyboardType: TextInputType.emailAddress,
+                              onChanged: (value) => email = value.trim(),
+                              cursorColor: Color.fromRGBO(32, 95, 38, 1) ,
+                              decoration: InputDecoration(
+                                icon: Icon(
+                                  Icons.email,
+                                  color: Color.fromRGBO(32, 95, 38, 1) ,
+                                ),
+                                hintText: 'Enter your email',
+                                border: InputBorder.none,
                               ),
                             ),
-                          )
+                          ),
+
+                          Container(
+                            margin: EdgeInsets.symmetric(vertical: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                            width: size.width * 0.8,
+                            decoration: BoxDecoration(
+                              color: Colors.lightGreen[200],
+                              borderRadius: BorderRadius.circular(29),
+                            ),
+
+                            child: TextField(
+                              controller: passwordController,
+                              autocorrect: false,
+                              obscureText: _obscureText,
+                              // onChanged: (value) => password = value,
+                              cursorColor: Color.fromRGBO(32, 95, 38, 1) ,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.lock, color: Color.fromRGBO(32, 95, 38, 1),),
+                                hintText: "Enter your password",
+                                border: InputBorder.none,
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    // Based on passwordVisible state choose the icon
+                                    _obscureText
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: Color.fromRGBO(32, 95, 38, 1) ,
+                                  ),
+                                  onPressed: () {
+                                    // Update the state i.e. toogle the state of passwordVisible variable
+                                    setState(() {
+                                      _obscureText = !_obscureText;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+
+
+                          LoginButton(
+                            title: "LOGIN",
+                            callback: signIn,
+                          ),
+                          SizedBox(height: size.height * 0.02),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text("Forget your password? ",
+                                style: TextStyle(color: Color.fromRGBO(32, 95, 38, 1) ),),
+                              GestureDetector(
+                                onTap: _forgetPassword,
+                                child: Text(
+                                  "Get help signing in.",
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(32, 95, 38, 1),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+
+                          SizedBox(
+                            height: size.height *0.05 ,
+                          ),
+
+
+
+
                         ],
                       ),
+                    ),
+                    SizedBox(
+                      height: size.height *0.1 ,
+                    ),
+
+                    Image.asset('assets/tembusuLogo.png', scale: 1.35),
 
 
 
-                    ],
-                  ),
-                ),
-                  SizedBox(
-                    height: size.height *0.05 ,
-                  ),
-
-                  Image.asset('assets/tembusuLogo.png', scale: 1.35),
-
-
-
-                ], ),
-            )
+                  ], ),
+              ),
+            ),
           ),
         ),
     );

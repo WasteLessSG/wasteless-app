@@ -63,13 +63,17 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
 
   _fetchData(String type, String time) async {
     String currentType;
+    String currentTypeNum;
     String currentTrend;
 
     //trash selected
     if (type == "Trash") {
       currentType = "general";
+      currentTypeNum = '1';
     } else {
       currentType = "all";
+      // TODO:UPDATE ONCE ENDPOINT FOR ALL RECYCLING IS UP
+      currentTypeNum = '2';
     }
 
     if (time == "All Time") {
@@ -81,8 +85,8 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     }
 
     //String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard?aggregateBy=week&type=general";
-    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard?type=${currentType}&aggregateBy=${currentTrend}";
-
+    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard?type=${currentTypeNum}&aggregateBy=${currentTrend}";
+    print("leaderboard " + link);
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
 
     if (response.statusCode == 200) {

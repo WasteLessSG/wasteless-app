@@ -45,7 +45,6 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
                   Container(
 
-                    height: size.height * 0.4,
                     width: size.width * 0.9,
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -112,6 +111,10 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         LoginButton(
                           title: "RESET PASSWORD",
                           callback: resetPassword,
+                        ),
+
+                        SizedBox(
+                          height: size.height *0.03 ,
                         ),
 
 
