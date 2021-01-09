@@ -160,7 +160,7 @@ class LoginState extends State<Login> {
                         title: "LOGIN",
                         callback: signIn,
                       ),
-                      SizedBox(height: size.height * 0.03),
+                      SizedBox(height: size.height * 0.02),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -177,9 +177,6 @@ class LoginState extends State<Login> {
                             ),
                           )
                         ],
-                      ),
-                      SizedBox(
-                        height: size.height *0.02 ,
                       ),
 
 

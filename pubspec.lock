@@ -120,20 +120,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.5"
-  csv:
-    dependency: "direct main"
-    description:
-      name: csv
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.1.0"
-  csv_reader:
-    dependency: "direct main"
-    description:
-      name: csv_reader
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.2"
   cupertino_icons:
     dependency: "direct main"
     description:

@@ -33,8 +33,6 @@ dependencies:
   url_launcher:
   settings_ui:
   http:
-  csv_reader:
-  csv:
   smooth_page_indicator: ^0.2.0
   convert:
   validators: ^2.0.1
