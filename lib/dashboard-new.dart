@@ -86,7 +86,7 @@ class DashboardPageState extends State<DashboardPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   )),
-              TextSpan(text: type == "general" ? " lowest thrash at Tembusu" : " in recycling at Tembusu"),
+              TextSpan(text: type == "general" ? " lowest trash at Tembusu" : " in recycling at Tembusu"),
             ],
           ),
         );

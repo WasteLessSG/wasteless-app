@@ -1,4 +1,4 @@
-package com.example.LessApp
+package wasteLessApp.beta.trial
 
 import io.flutter.embedding.android.FlutterActivity
 
