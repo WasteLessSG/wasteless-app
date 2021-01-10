@@ -79,14 +79,14 @@ class DashboardPageState extends State<DashboardPage> {
             text: "",
             style: TextStyle(
                 fontSize: 20,
-                color: Colors.brown[800]
+                color: type == "general" ? Colors.brown[800] : Colors.green[900],
             ),
             children: <TextSpan>[
               TextSpan(text: formattedRankingText,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   )),
-              TextSpan(text: " lowest thrash at Tembusu"),
+              TextSpan(text: type == "general" ? " lowest thrash at Tembusu" : " in recycling at Tembusu"),
             ],
           ),
         );

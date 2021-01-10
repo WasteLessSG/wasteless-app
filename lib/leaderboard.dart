@@ -106,8 +106,12 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     List newList = list;
     print(list);
 
+    list.sort((a, b) => a['weight'].compareTo(b['weight']));
+    print(list);
 
-    newList = new List.from(newList.reversed);
+    if (type != 'Trash') {
+      newList = new List.from(newList.reversed);
+    }
 
     if (_typeChosen[0] || _trendChosen[0]) {
       return Expanded(
