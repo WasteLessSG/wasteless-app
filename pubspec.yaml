@@ -28,8 +28,6 @@ flutter_icons:
 
 
 dependencies:
-  flutter_login:
-  flutter_linkify:
   url_launcher:
   settings_ui:
   http:

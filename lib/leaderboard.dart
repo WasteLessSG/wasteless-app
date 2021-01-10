@@ -92,6 +92,8 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     if (response.statusCode == 200) {
       map = json.decode(response.body) as Map;
       list = map["data"];
+      print(list);
+      print("leaderboard data^^ for " + currentTypeNum.toString());
     } else {
       throw Exception('Failed to load data');
     }

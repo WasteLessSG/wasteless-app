@@ -29,7 +29,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
   final now = DateTime.now();
   String selectedTime = "week";
-  String selectedType = "general";
+  String selectedType;
   List<bool> isSelectedTrend = [true, false, false];
   List<bool> isSelectedType = [false, true, false];
 
@@ -70,6 +70,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   @override
   void initState() {
     isSelectedTypeAll[0] = userSelectedChoice;
+    selectedType = userSelectedChoice ? "general" : "all";
   }
 
   _fetchDataPersonal(String type) async {
@@ -157,7 +158,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
   _fetchDataArea(String type) async {
 
-    String typeNum = type == "general" ? "1" : "2";
+    String typeNum = type == "general" ? "1" : "4";
 
     int numOfDays ;
     switch (DateFormat('E').format(DateTime.now())) {
@@ -209,7 +210,8 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     }
 
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${typeNum}";
-
+    print(typeNum.toString() + " " + link);
+    print("stats page infor");
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
 
     if (response.statusCode == 200) {
@@ -422,9 +424,10 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     );
   }
 
-  Widget throwingText() {
+  Text throwingText() {
     String text = isSelectedTypeAll[0] ? "Today you threw away" : "Today you recycled";
     return Text(text,
+      textAlign: TextAlign.center,
       style: TextStyle(
         fontSize: MediaQuery.of(context).size.width/18,
       ),
@@ -475,7 +478,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             ),
 
             //type selection
-            isSelectedTypeAll[0] ? new Container() : recyclingBar(),
+            // isSelectedTypeAll[0] ? new Container() : recyclingBar(),
 
             SizedBox(
               height: MediaQuery.of(context).size.height/50,
@@ -551,30 +554,43 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                 color:  isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
                 borderRadius: BorderRadius.circular(5),
               ),
-              height: MediaQuery.of(context).size.height/8,
+              height: MediaQuery.of(context).size.height/7,
               width: MediaQuery.of(context).size.width/1.05,
               padding: EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
+              child: Align(
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
 
-                  throwingText(),
 
-                  SizedBox(
+
+                    SizedBox(
+                      height: (MediaQuery.of(context).size.height/7) * 0.1,
+                    ),
+
+                    throwingText(),
+
+                    SizedBox(
                       height: MediaQuery.of(context).size.height/100,
-                  ),
+                    ),
 
-                  FutureBuilder(
-                      future: _fetchDataPersonal(selectedType),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          return _buildStatsDailyInfo("self");
-                        } else {
-                          return CircularProgressIndicator();
+                    FutureBuilder(
+                        future: _fetchDataPersonal(selectedType),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done) {
+                            return _buildStatsDailyInfo("self");
+                          } else {
+                            return CircularProgressIndicator();
+                          }
                         }
-                      }
-                  ),
-                ],
+                    ),
+
+
+
+                  ],
+                ),
               ),
             ),
 
@@ -582,71 +598,73 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
               height: MediaQuery.of(context).size.height/50,
             ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                (isSelectedTrend[0] || isSelectedTrend[1]) ? Container(
-                  decoration: BoxDecoration(
-                    color: isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
-                    //Colors.lightGreen[200],
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  height: MediaQuery.of(context).size.height/15,
-                  width: MediaQuery.of(context).size.width/1.05,
-                  padding: EdgeInsets.all(7),
-                  child:  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
 
-                      Container(
-                        child: Text("Personal\nWeek Average: ",
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width/30,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-
-                      FutureBuilder(
-                          future: _fetchDataPersonal(selectedType),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.done) {
-                              return _buildStatsInfo("self", selectedTime, Colors.purple);
-                            }
-                            else {
-                              return CircularProgressIndicator();
-                            }
-                          }
-                      ),
-
-                      Container(
-                        child: Text("Tembusu\nWeek Average: ",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width/30,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-
-                      FutureBuilder(
-                          future: _fetchDataArea(selectedType),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.done) {
-                              return _buildStatsInfo("Tembusu", selectedTime, Colors.teal.shade900);
-                            }
-                            else {
-                              return CircularProgressIndicator();
-                            }
-                          }
-                      ),
-
-                    ],
-                  ),
-                ) : new Container(),
-
-              ],
-            ),
+            //TODO: FIX THIS IN THE FUTURE
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: <Widget>[
+            //     (isSelectedTrend[0] || isSelectedTrend[1]) ? Container(
+            //       decoration: BoxDecoration(
+            //         color: isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
+            //         //Colors.lightGreen[200],
+            //         borderRadius: BorderRadius.circular(5),
+            //       ),
+            //       height: MediaQuery.of(context).size.height/15,
+            //       width: MediaQuery.of(context).size.width/1.05,
+            //       padding: EdgeInsets.all(7),
+            //       child:  Row(
+            //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //         children: <Widget>[
+            //
+            //           Container(
+            //             child: Text("Personal\nWeek Average: ",
+            //               style: TextStyle(
+            //                 fontSize: MediaQuery.of(context).size.width/30,
+            //                 fontWeight: FontWeight.bold,
+            //               ),
+            //             ),
+            //           ),
+            //
+            //           FutureBuilder(
+            //               future: _fetchDataPersonal(selectedType),
+            //               builder: (context, snapshot) {
+            //                 if (snapshot.connectionState == ConnectionState.done) {
+            //                   return _buildStatsInfo("self", selectedTime, Colors.purple);
+            //                 }
+            //                 else {
+            //                   return CircularProgressIndicator();
+            //                 }
+            //               }
+            //           ),
+            //
+            //           Container(
+            //             child: Text("Tembusu\nWeek Average: ",
+            //               textAlign: TextAlign.left,
+            //               style: TextStyle(
+            //                 fontSize: MediaQuery.of(context).size.width/30,
+            //                 fontWeight: FontWeight.bold,
+            //               ),
+            //             ),
+            //           ),
+            //
+            //           FutureBuilder(
+            //               future: _fetchDataArea(selectedType),
+            //               builder: (context, snapshot) {
+            //                 if (snapshot.connectionState == ConnectionState.done) {
+            //                   return _buildStatsInfo("Tembusu", selectedTime, Colors.teal.shade900);
+            //                 }
+            //                 else {
+            //                   return CircularProgressIndicator();
+            //                 }
+            //               }
+            //           ),
+            //
+            //         ],
+            //       ),
+            //     ) : new Container(),
+            //
+            //   ],
+            // ),
             //build the graph
             FutureBuilder(
               future: _fetchDataPersonal(selectedType),
@@ -676,7 +694,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     final df5 = new DateFormat('MMM');
 
     double mass = double.parse(weight.toString());
-    DateTime dateTimeValue = DateTime.fromMillisecondsSinceEpoch(epochTime * 1000); //THIS IS FROM EPOCH TIME SO IT IS CORRECT!!!! @ANTHONY
+    DateTime dateTimeValue = DateTime.fromMillisecondsSinceEpoch(epochTime * 1000); //THIS IS FROM EPOCH TIME SO IT IS CORRECT!!!!
     String timestamp = dateTimeValue.toIso8601String();
     String shortenedTime = df4.format(dateTimeValue).toString();
     String day = dateTimeValue.day.toString();
@@ -688,7 +706,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
   Widget _buildBody(BuildContext context) {
 
-    List<MassEntry> nextList = list.map((entry) => massEntryGenerator(entry["time"], entry["weight"])).toList();
+    List<MassEntry> nextList = list.map((entry) => massEntryGenerator(entry["time"], entry["weight"]~/1000000 )).toList();
 
     return _chooseChart(context, nextList, selectedTime);
   }
@@ -705,17 +723,21 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
         return Expanded(
           child: charts.BarChart(_weekSeriesBarData,
-            animate: true, behaviors: [
-              new charts.RangeAnnotation([
-                new charts.LineAnnotationSegment(
-                    personalWeekAverageGeneral, charts.RangeAnnotationAxisType.measure,
-                    color: charts.MaterialPalette.purple.shadeDefault),
+            animate: true,
 
-                new charts.LineAnnotationSegment(
-                    areaWeekAverageGeneral, charts.RangeAnnotationAxisType.measure,
-                    color: charts.MaterialPalette.teal.shadeDefault),
-              ])
-            ],
+            //TODO: FIX THIS IN FUTURE
+            // behaviors: [
+            //   new charts.RangeAnnotation([
+            //     new charts.LineAnnotationSegment(
+            //         personalWeekAverageGeneral, charts.RangeAnnotationAxisType.measure,
+            //         color: charts.MaterialPalette.purple.shadeDefault),
+            //
+            //     new charts.LineAnnotationSegment(
+            //         areaWeekAverageGeneral, charts.RangeAnnotationAxisType.measure,
+            //         color: charts.MaterialPalette.teal.shadeDefault),
+            //   ])
+            // ],
+
           ),
         );
       }

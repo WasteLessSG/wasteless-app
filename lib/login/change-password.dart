@@ -18,6 +18,19 @@ class ChangePasswordState extends State<ChangePassword> {
   FirebaseUser user;
   ChangePasswordState(this.user);
 
+  bool _obscureOldPassword = true;
+  bool _obscureNewPassword1 = true;
+  bool _obscureNewPassword2 = true;
+
+  @override
+  void initState() {
+    _obscureOldPassword = true;
+    _obscureNewPassword1 = true;
+    _obscureNewPassword2 = true;
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,6 +59,7 @@ class ChangePasswordState extends State<ChangePassword> {
       body: SingleChildScrollView(
         child: Container(
           alignment: Alignment.center,
+          padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -54,13 +68,34 @@ class ChangePasswordState extends State<ChangePassword> {
               ),
               TextField(
                 autocorrect: false,
-                obscureText: true,
+                obscureText: _obscureOldPassword,
                 onChanged: (value) => oldPassword = value,
                 decoration: InputDecoration(
+
                   filled: true,
                   fillColor: Colors.white70,
                   hintText: "Enter your old password",
-                  border: const OutlineInputBorder(),
+                  border: UnderlineInputBorder(),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromRGBO(32, 95, 38, 1),
+                      )
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      // Based on passwordVisible state choose the icon
+                      _obscureOldPassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: Color.fromRGBO(32, 95, 38, 1) ,
+                    ),
+                    onPressed: () {
+                      // Update the state i.e. toogle the state of passwordVisible variable
+                      setState(() {
+                        _obscureOldPassword = !_obscureOldPassword;
+                      });
+                    },
+                  ),
                 ),
               ),
               SizedBox(
@@ -68,13 +103,33 @@ class ChangePasswordState extends State<ChangePassword> {
               ),
               TextField(
                 autocorrect: false,
-                obscureText: true,
+                obscureText: _obscureNewPassword1,
                 onChanged: (value) => newPassword = value,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white70,
                   hintText: "Enter your new password",
-                  border: const OutlineInputBorder(),
+                  border: UnderlineInputBorder(),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromRGBO(32, 95, 38, 1),
+                      )
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      // Based on passwordVisible state choose the icon
+                      _obscureNewPassword1
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: Color.fromRGBO(32, 95, 38, 1) ,
+                    ),
+                    onPressed: () {
+                      // Update the state i.e. toogle the state of passwordVisible variable
+                      setState(() {
+                        _obscureNewPassword1 = !_obscureNewPassword1;
+                      });
+                    },
+                  ),
                 ),
               ),
               SizedBox(
@@ -82,13 +137,33 @@ class ChangePasswordState extends State<ChangePassword> {
               ),
               TextField(
                 autocorrect: false,
-                obscureText: true,
+                obscureText: _obscureNewPassword2,
                 onChanged: (value) => newPassword2 = value,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white70,
                   hintText: "Enter your new password again",
-                  border: const OutlineInputBorder(),
+                  border: UnderlineInputBorder(),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromRGBO(32, 95, 38, 1),
+                      )
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      // Based on passwordVisible state choose the icon
+                      _obscureNewPassword2
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: Color.fromRGBO(32, 95, 38, 1) ,
+                    ),
+                    onPressed: () {
+                      // Update the state i.e. toogle the state of passwordVisible variable
+                      setState(() {
+                        _obscureNewPassword2 = !_obscureNewPassword2;
+                      });
+                    },
+                  ),
                 ),
               ),
               SizedBox(

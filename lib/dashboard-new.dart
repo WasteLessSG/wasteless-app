@@ -6,7 +6,6 @@ import 'package:WasteLess/personal-stats.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:async/async.dart';
 import 'package:WasteLess/wasteless-data.dart';
 import 'package:WasteLess/leaderboard.dart';
 
@@ -40,7 +39,7 @@ class DashboardPageState extends State<DashboardPage> {
     String currentTypeNum = type == "general" ? '1': '4';
 
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard/${user.uid.toString()}?type=${currentTypeNum}&aggregateBy=week";
-    //print(link);
+    print(link);
 
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
     if (response.statusCode == 200) {
@@ -91,6 +90,26 @@ class DashboardPageState extends State<DashboardPage> {
           ),
         );
 
+      } else if (snapshot.data == null){
+
+        return RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            text: "",
+            style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width/30,
+              color: type == "general" ? Colors.brown[800] : Colors.green[900],
+            ),
+            children: <TextSpan>[
+              TextSpan(text: type == "general" ? " You did not throw any trash this week" : "You did not recycle this week",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  )),
+            ],
+          ),
+        );
+
+
       } else {return CircularProgressIndicator();}
     }
     );
@@ -100,7 +119,7 @@ class DashboardPageState extends State<DashboardPage> {
   Future<List> _fetchTrashOrRecycleData(String type) async {
 
     //TODO FIX WHEN NEW END POINT FOR RECYCALBLES ARE UP
-    String typeNum = type == "general" ? "1" : "2";
+    String typeNum = type == "general" ? "1" : "4";
     int numOfDays;
     var now = new DateTime.now();
     switch (DateFormat('E').format(DateTime.now())) {
@@ -141,11 +160,12 @@ class DashboardPageState extends State<DashboardPage> {
     String timeRangeEndValue = (now.millisecondsSinceEpoch ~/ 1000).toString();
 
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${typeNum}";
-
-    //print(link);
+    print("Trash/Recycle data " + link);
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
     if (response.statusCode == 200) {
       Map map = json.decode(response.body) as Map;
+      print(map);
+      print("^^ DATA FOR TRASH/RECYCLE: " + typeNum.toString());
       return map["data"];
 
     } else {
@@ -445,7 +465,7 @@ class DashboardPageState extends State<DashboardPage> {
           String selectedState;
           // double avgHouseWaste = 1.5;
           // double avgHouseSize = 3.16;
-          double avgPersonWaste = 1.5/3.16;
+          double avgPersonWaste = (1.5 * 7)/3.16;
           double totalValue = snapshot.data.fold(0, (current, entry) => current + entry["weight"]).toDouble() ;
 
           double percFill = ((totalValue-avgPersonWaste)/avgPersonWaste)*100;
@@ -480,7 +500,8 @@ class DashboardPageState extends State<DashboardPage> {
             );
           }
 
-        } else {return Padding(
+        } else {
+          return Padding(
             padding: EdgeInsets.only(top:10),
             child:  CircularProgressIndicator(),
           );

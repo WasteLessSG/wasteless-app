@@ -2,12 +2,13 @@ import 'package:WasteLess/login/change-password.dart';
 import 'package:WasteLess/login/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:WasteLess/TermsOfService.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
-
+import 'package:WasteLess/wasteless-data.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SettingsPage extends StatefulWidget{
   final FirebaseUser user;
@@ -19,18 +20,130 @@ class SettingsPage extends StatefulWidget{
 
 class SettingsPageState extends State<SettingsPage>{
 
-  Future<void> _onOpen(LinkableElement link) async {
-    if (await canLaunch(link.url)) {
-      await launch(link.url);
-    } else {
-      throw 'Could not launch $link';
-    }
-  }
 
   TextStyle defaultStyle = TextStyle(color: Colors.grey, fontSize: 20.0);
   TextStyle linkStyle = TextStyle(color: Colors.blue);
   FirebaseUser user;
   SettingsPageState(this.user);
+
+
+  Future<Map> _fetchLoginData() async{
+
+    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/user/${user.uid.toString()}/login";
+
+    final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
+    if (response.statusCode == 200) {
+      return json.decode(response.body) as Map;
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  Widget _loginAlert() {
+    return FutureBuilder(
+      future: _fetchLoginData(),
+      builder: (context,snapshot){
+        if(snapshot.hasData) {
+
+          return Column(
+            children: <Widget>[
+              SizedBox(
+                height: 20,
+              ),
+
+              Text("Login Number",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),),
+              SizedBox(
+                height: 10,
+              ),
+              Text(snapshot.data["userLogin"].toString(),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 50,
+                  color: Colors.green[900],
+                ),),
+              SizedBox(
+                height: 30,
+              ),
+              Text("Pin Number",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),),
+              SizedBox(
+                height: 10,
+              ),
+              Text(snapshot.data["pin"].toString(),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
+                  fontSize: 50,
+                ),),
+
+            ],
+          );
+
+        }
+        else if (snapshot.data == {} ) {
+
+          return Column(
+            children: <Widget>[
+              SizedBox(
+                height: 20,
+              ),
+
+              Text("ERROR",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.red,
+                ),),
+              SizedBox(
+                height: 10,
+              ),
+              RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.red,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(text: 'PLEASE CONTACT THE WASTELESS TEAM AT '),
+                    TextSpan(
+                        text: 'SGWASTELESS@GMAIL.COM.',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                          decoration: TextDecoration.underline,
+                          color: Colors.red,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            _launchURL('mailto:sgwasteless@gmail.com');
+                            print('email');
+                          }),
+
+                  ],
+                ),
+              )
+
+            ],
+          );
+
+
+
+        } else {return Column(
+            children: <Widget>[
+            SizedBox( height: 20),
+        CircularProgressIndicator(),
+        ],
+        );}
+      }
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +174,36 @@ class SettingsPageState extends State<SettingsPage>{
                       fontSize: 20,
                     ),
                     tiles: [
+                      SettingsTile(
+                        title: 'Chute Login Info',
+                        leading: Icon(Icons.meeting_room_outlined ),
+                        onPressed:  (BuildContext context){
+                          showDialog(context: context,
+                              builder: (context){
+                                return new AlertDialog(
+
+                                  title: Text('Chute Login Information',
+                                  style: TextStyle(
+                                    // fontWeight: FontWeight.bold,
+                                  ),),
+                                  content: SingleChildScrollView(
+                                    child: Center(
+                                      child: _loginAlert(),
+                                    )
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('Close'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
+
+                        },
+                      ),
                       SettingsTile(
                         title: 'Change Password ',
                         leading: Icon(Icons.lock_outlined),
