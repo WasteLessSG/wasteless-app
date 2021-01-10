@@ -168,7 +168,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
                   ),),
                     //title: new Text(df3.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["userId"] * 1000)).toString()),
                     //title: new Text(DateTime.now().month.toString()),
-                  trailing: new Text(newList[index]["weight"].toString() + " kg",
+                  trailing: new Text((newList[index]["weight"]/1000000).toString() + " kg",
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold

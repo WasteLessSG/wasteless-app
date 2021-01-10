@@ -173,7 +173,7 @@ class DashboardPageState extends State<DashboardPage> {
                 fit: BoxFit.fitWidth,
                 child: Text(
                   // "100.00" + "kg",
-                  nf.format(totalValue) + "kg",
+                  nf.format(totalValue /1000000) + "kg",
                   // textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.045,

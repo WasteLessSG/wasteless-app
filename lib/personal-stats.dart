@@ -876,7 +876,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
     return Expanded(
 
-      child: Text(nf.format(totalValue) + " kg",
+      child: Text(nf.format(totalValue/1000000) + " kg",
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width/15,
@@ -919,7 +919,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     }
 
     return Expanded(
-        child: Text(nf.format(averageValue) + "kg",
+        child: Text(nf.format(averageValue /1000000) + "kg",
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width/25,

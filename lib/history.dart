@@ -166,7 +166,7 @@ class HistoryPageState extends  State<HistoryPage> {
                       fontSize: 25,
                     ),),
                     //title: new Text(DateTime.now().month.toString()),
-                   trailing: new Text(newList[index]["weight"].toString() + "kg",
+                   trailing: new Text((newList[index]["weight"] /1000000).toString() + "kg",
                      style: TextStyle(
                        fontSize: 25,
                        fontWeight: FontWeight.bold
