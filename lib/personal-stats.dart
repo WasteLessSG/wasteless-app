@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:WasteLess/massEntry.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:WasteLess/styles.dart';
 import 'dart:convert';
@@ -308,38 +307,38 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       ),
     );
   }
-
-  static Text getPersonalWeekTotal(String house) {
-
-    StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance
-            .collection('houses')
-            .document(house)
-            .collection("RawData")
-            .snapshots(),
-
-        builder: (context, snapshot) {
-
-          if (!snapshot.hasData) {
-            return Styles.formatNumber(0.00);
-          }
-          else {
-            //print(snapshot.toString());
-            List<MassEntry> weekData = snapshot.data.documents
-                .map((documentSnapshot) =>
-                MassEntry.fromMap(documentSnapshot.data))
-                .toList()
-                .where((i) =>
-                DateTime.parse(i.timestamp).isAfter(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-                    .subtract(Duration(days: 6))))
-                .toList();
-            double weeklyMass = weekData.fold(0, (previousValue, element) => previousValue + element.mass);
-            //debugPrint(weeklyMass.toString());
-            return Styles.formatNumber(38.2);
-          }
-        }
-    );
-  }
+  //
+  // static Text getPersonalWeekTotal(String house) {
+  //
+  //   StreamBuilder<QuerySnapshot>(
+  //       stream: Firestore.instance
+  //           .collection('houses')
+  //           .document(house)
+  //           .collection("RawData")
+  //           .snapshots(),
+  //
+  //       builder: (context, snapshot) {
+  //
+  //         if (!snapshot.hasData) {
+  //           return Styles.formatNumber(0.00);
+  //         }
+  //         else {
+  //           //print(snapshot.toString());
+  //           List<MassEntry> weekData = snapshot.data.documents
+  //               .map((documentSnapshot) =>
+  //               MassEntry.fromMap(documentSnapshot.data))
+  //               .toList()
+  //               .where((i) =>
+  //               DateTime.parse(i.timestamp).isAfter(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+  //                   .subtract(Duration(days: 6))))
+  //               .toList();
+  //           double weeklyMass = weekData.fold(0, (previousValue, element) => previousValue + element.mass);
+  //           //debugPrint(weeklyMass.toString());
+  //           return Styles.formatNumber(38.2);
+  //         }
+  //       }
+  //   );
+  // }
 
   Widget recyclingBar() {
 
@@ -659,6 +658,10 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                 }
               }
             ),
+
+             SizedBox(
+               height: MediaQuery.of(context).size.height * 0.05,
+             ),
 
              //_buildBody(context),
 
