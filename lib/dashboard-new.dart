@@ -90,7 +90,7 @@ class DashboardPageState extends State<DashboardPage> {
           ),
         );
 
-      } else if (snapshot.data == null){
+      } else if (snapshot.data == [] || snapshot.data == {} ){
 
         return RichText(
           textAlign: TextAlign.center,

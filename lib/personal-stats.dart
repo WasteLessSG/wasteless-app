@@ -59,7 +59,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   final dfFilter = DateFormat("yyyy-MM-dd");
   int userID = 1234;
 
-  List list = List();
+  List dataList = List();
   List areaList = List();
 
   Map map = Map();
@@ -73,6 +73,74 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     selectedType = userSelectedChoice ? "general" : "all";
   }
 
+  Future<double> _fetchTotalData() async {
+
+    String typeNum =  userSelectedChoice  ? "1" : "4";
+
+    int numOfDays ;
+    switch (DateFormat('E').format(DateTime.now())) {
+
+      case 'Mon' : {
+        numOfDays = 0;
+        break;
+      }
+      case 'Tue' : {
+        numOfDays = 1;
+        break;
+      }
+      case 'Wed' : {
+        numOfDays = 2;
+        break;
+      }
+      case 'Thu' : {
+        numOfDays = 3;
+        break;
+      }
+      case 'Fri' : {
+        numOfDays = 4;
+        break;
+      }
+      case 'Sat' : {
+        numOfDays = 5;
+        break;
+      }
+      case 'Sun' : {
+        numOfDays = 6;
+        break;
+      }
+    }
+
+    var now = new DateTime.now();
+    var prevDay = new DateTime(now.year, now.month, now.day);
+    var prevWeek = new DateTime(now.year, now.month, now.day - numOfDays);
+    var prevMonth = new DateTime(now.year, now.month, 1); //fix to be first day of every month
+    String timeRangeStartValue;
+    if (selectedTime == "allTime") {
+      timeRangeStartValue = "0"; //6th Jan, 2021, 5.53pm
+    } else if (selectedTime == "month") {
+      timeRangeStartValue = (prevMonth.millisecondsSinceEpoch ~/ 1000).toString();
+    } else { //week
+      timeRangeStartValue = (prevWeek.millisecondsSinceEpoch ~/ 1000).toString();
+    }
+
+    String timeRangeEndValue = (now.millisecondsSinceEpoch ~/ 1000).toString();
+    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${typeNum}";
+    print("box link " + link);
+    final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
+
+    if (response.statusCode == 200) {
+      Map map = json.decode(response.body) as Map;
+      print("box data "+map["data"].toString());
+      print("supposed to return " + map["data"].fold(0, (current, entry) => current + entry["weight"]).toDouble().toString());
+       double ans = map["data"].fold(0, (current, entry) => current + entry["weight"]).toDouble()  ;
+
+      return ans ;
+
+    } else {
+      throw Exception('Failed to load data');
+    }
+
+}
   _fetchDataPersonal(String type) async {
 
     String typeNum = type == "general" ? "1" : "4";
@@ -132,7 +200,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
     if (response.statusCode == 200) {
       map = json.decode(response.body) as Map;
-      list = map["data"];
+      dataList = map["data"];
 
       /*
       print("VVVVV");
@@ -425,8 +493,23 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   }
 
   Text throwingText() {
-    String text = isSelectedTypeAll[0] ? "Today you threw away" : "Today you recycled";
-    return Text(text,
+    String timeText;
+    switch(selectedTime){
+      case "week": {
+        timeText= "This week";
+        break;
+      }
+      case "month": {
+        timeText= "This month";
+        break;
+      }
+      case "allTime": {
+        timeText= "For all of time,";
+        break;
+      }
+    }
+    String text = isSelectedTypeAll[0] ? " you threw away" : " you recycled";
+    return Text(timeText + text,
       textAlign: TextAlign.center,
       style: TextStyle(
         fontSize: MediaQuery.of(context).size.width/18,
@@ -559,38 +642,56 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
               padding: EdgeInsets.all(10),
               child: Align(
                 alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
+                child:  FutureBuilder(
+                          future:_fetchTotalData(),
+                          // future: _fetchDataPersonal(selectedType),
+                          builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            print("Snapshot data!!!");
+                            print(snapshot.data);
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
 
 
 
-                    SizedBox(
-                      height: (MediaQuery.of(context).size.height/7) * 0.1,
-                    ),
+                              SizedBox(
+                                height: (MediaQuery.of(context).size.height/7) * 0.07,
+                              ),
 
-                    throwingText(),
+                              throwingText(),
 
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height/100,
-                    ),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height/100,
+                              ),
+                            Expanded(
 
-                    FutureBuilder(
-                        future: _fetchDataPersonal(selectedType),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.done) {
-                            return _buildStatsDailyInfo("self");
+                            child: Text(nf.format(snapshot.data/1000000) + " kg",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width/15,
+                            fontWeight: FontWeight.bold,
+                            ),
+                            ),
+
+
+                            )
+                              // _buildStatsDailyInfo("self"),
+
+
+
+                            ],
+                          );
                           } else {
-                            return CircularProgressIndicator();
+                          return CircularProgressIndicator();
                           }
-                        }
-                    ),
+                          }
+                          ),
 
 
 
-                  ],
-                ),
+
               ),
             ),
 
@@ -706,8 +807,11 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
   Widget _buildBody(BuildContext context) {
 
-    List<MassEntry> nextList = list.map((entry) => massEntryGenerator(entry["time"], entry["weight"]~/1000000 )).toList();
+    List<MassEntry> nextList = dataList.map((entry) => massEntryGenerator(entry["time"], entry["weight"]~/1000000 )).toList();
+    for (int i = 0; i < nextList.length ; i++ ) {
+      print(i.toString() + " Date: " + DateFormat('yyyy-MM-dd').format(nextList[i].dateTimeValue).toString() + "mass " + nextList[i].mass.toString());
 
+    }
     return _chooseChart(context, nextList, selectedTime);
   }
 
@@ -718,6 +822,9 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
         myData = massdata.where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
             .toList();
+
+
+
         _generateWeeklyData(formatWeekdays(combineDays(myData)));
         //print(DateTime.now().weekday.toString());
 
@@ -805,6 +912,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       }
 
     }
+
     return output;
   }
   
@@ -842,26 +950,45 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   }
 
   List<formattedWeekEntry> formatWeekdays(List<MassEntry> rawdata){
-    List<formattedWeekEntry> output = [
-      formattedWeekEntry(0,"MON"),
-      formattedWeekEntry(0,"TUE"),
-      formattedWeekEntry(0,"WED"),
-      formattedWeekEntry(0,"THU"),
-      formattedWeekEntry(0,"FRI"),
-      formattedWeekEntry(0,"SAT"),
-      formattedWeekEntry(0,"SUN"),
-    ];
+
+    for (int i = 0; i < rawdata.length ; i++ ) {
+      print("format week daTA "+ i.toString() + " Date: " + DateFormat('yyyy-MM-dd').format(rawdata[i].dateTimeValue).toString() + "mass " + rawdata[i].mass.toString());
+
+    }
+
+    List<double> rawArray = [0,0,0,0,0,0,0];
 
     int currentTime = DateTime.now().weekday;
+    print(currentTime);
 
-    for ( var i = currentTime; i > 0; i--){
-      var x = rawdata.where((element) =>
-      element.dateTimeValue.weekday == i);
-
-      if (x.isNotEmpty){
-        output[i-1].mass = rawdata[rawdata.indexOf(x.toList()[0])].mass;
-      }
+    for (int i = 0; i<rawdata.length;i++){
+      print(rawdata[i].dateTimeValue.weekday);
+      rawArray[rawdata[i].dateTimeValue.weekday-1] += rawdata[i].mass;
     }
+
+
+    List<formattedWeekEntry> output = [
+      formattedWeekEntry(rawArray[0],"MON"),
+      formattedWeekEntry(rawArray[1],"TUE"),
+      formattedWeekEntry(rawArray[2],"WED"),
+      formattedWeekEntry(rawArray[3],"THU"),
+      formattedWeekEntry(rawArray[4],"FRI"),
+      formattedWeekEntry(rawArray[5],"SAT"),
+      formattedWeekEntry(rawArray[6],"SUN"),
+    ];
+
+
+
+    // for ( var i = currentTime; i > 0; i--) {
+    //   var x = rawdata.where((element) =>
+    //   element.dateTimeValue.weekday == i);
+    //   print(x);
+    //   print("above is x");
+    //
+    //   if (x.isNotEmpty){
+    //     output[i-1].mass = rawdata[rawdata.indexOf(x.toList()[0])].mass;
+    //   }
+    // }
     return output;
   }
 
@@ -876,7 +1003,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
     */
 
-    List list1 = list.map((entry) => massEntryGenerator(entry["time"], entry["weight"]))
+    List list1 = dataList.map((entry) => massEntryGenerator(entry["time"], entry["weight"]))
         .toList();
 
     List list1_1 = list1.map((entry) => entry.day).toList();
@@ -933,13 +1060,13 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     switch(trend) {
 
       case "week": {
-        averageValue = list.fold(0, (current, entry) => current + entry["weight"]) / 7.0;
+        averageValue = dataList.fold(0, (current, entry) => current + entry["weight"]) / 7.0;
       }
       break;
 
       //for month data
       default: {
-        averageValue = list.fold(0, (current, entry) => current + entry["weight"]) / monthDays;
+        averageValue = dataList.fold(0, (current, entry) => current + entry["weight"]) / monthDays;
       }
     }
 
