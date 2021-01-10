@@ -73,7 +73,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     } else {
       currentType = "all";
       // TODO:UPDATE ONCE ENDPOINT FOR ALL RECYCLING IS UP
-      currentTypeNum = '2';
+      currentTypeNum = '4';
     }
 
     if (time == "All Time") {

@@ -37,10 +37,10 @@ class DashboardPageState extends State<DashboardPage> {
   Future<int> _fetchLeaderBoardData(String type) async{
 
     //TODO: FIX END POINT ONCE RECYCLING ENDPOINT IS UP
-    String currentTypeNum = type == "general" ? '1': '2';
+    String currentTypeNum = type == "general" ? '1': '4';
 
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard/${user.uid.toString()}?type=${currentTypeNum}&aggregateBy=week";
-    print(link);
+    //print(link);
 
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
     if (response.statusCode == 200) {
@@ -78,7 +78,7 @@ class DashboardPageState extends State<DashboardPage> {
           text: TextSpan(
             text: "",
             style: TextStyle(
-                fontSize: 20,
+                fontSize: MediaQuery.of(context).size.width/20,
                 color: type == "general" ? Colors.brown[800] : Colors.green[900],
             ),
             children: <TextSpan>[
@@ -141,7 +141,8 @@ class DashboardPageState extends State<DashboardPage> {
     String timeRangeEndValue = (now.millisecondsSinceEpoch ~/ 1000).toString();
 
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${typeNum}";
-    print(link);
+
+    //print(link);
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
     if (response.statusCode == 200) {
       Map map = json.decode(response.body) as Map;
@@ -156,17 +157,14 @@ class DashboardPageState extends State<DashboardPage> {
 
   Widget _buildStats(String party, String type) {
 
-
     return FutureBuilder(
         future: _fetchTrashOrRecycleData(type),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             double totalValue = snapshot.data.fold(0, (current, entry) => current + entry["weight"]).toDouble() ;
-            print("vvvv");
-            print(snapshot.data);
-            print("^^^^");
-
-
+            //print("vvvv");
+            //print(snapshot.data);
+            //("^^^^");
 
             return Container(
               alignment: Alignment.center,
@@ -199,7 +197,7 @@ class DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    print("height: " + size.height.toString());
+    //print("height: " + size.height.toString());
 
     // String name = user.uid;
     String name = "Ryan Wong";
@@ -219,7 +217,7 @@ class DashboardPageState extends State<DashboardPage> {
                             child: Text("Welcome,",
                               textAlign: TextAlign.left,
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: MediaQuery.of(context).size.width/15,
                                 color: Colors.black45
                               ),
                             ),
@@ -235,7 +233,7 @@ class DashboardPageState extends State<DashboardPage> {
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 50,
+                                    fontSize: MediaQuery.of(context).size.width/5,
                                   ),
                                 ),
                             ),
@@ -302,7 +300,7 @@ class DashboardPageState extends State<DashboardPage> {
                           ),
 
                           SizedBox(
-                            height: 15,
+                            height: MediaQuery.of(context).size.height/40,
                           ),
                           InkWell(
                             onTap:  () => {
@@ -330,7 +328,7 @@ class DashboardPageState extends State<DashboardPage> {
                             ),
                           ),
                           SizedBox(
-                            height: 15,
+                            height: MediaQuery.of(context).size.height/40,
                           ),
 
                          InkWell(
@@ -396,7 +394,7 @@ class DashboardPageState extends State<DashboardPage> {
                            ),
                          ),
                           SizedBox(
-                            height: 15,
+                            height: MediaQuery.of(context).size.height/40,
                           ),
                           InkWell(
                             onTap:  () => {
@@ -489,7 +487,6 @@ class DashboardPageState extends State<DashboardPage> {
         }
       }
     );
-
 
   }
 

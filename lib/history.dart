@@ -39,8 +39,8 @@ class HistoryPageState extends  State<HistoryPage> {
   final df5 = new DateFormat('MMM');
   final dfFilter = DateFormat("yyyy-MM-dd");
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  _fetchData() async {
 
+  _fetchData() async {
 
     int numOfDays ;
     var now = new DateTime.now();
@@ -91,7 +91,7 @@ class HistoryPageState extends  State<HistoryPage> {
     } else {
       currentType = "all";
       //TODO: Fix once end pt for all trash is up
-      currentTypeNum = "2";
+      currentTypeNum = "4";
     }
 
     if (_selectedTrend == "All Time") {
