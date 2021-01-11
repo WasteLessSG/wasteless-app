@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:WasteLess/massEntry.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:WasteLess/styles.dart';
 import 'dart:convert';
@@ -12,6 +13,7 @@ import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 import 'package:WasteLess/wasteless-data.dart';
 import 'package:date_utils/date_utils.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class PersonalStatsPage extends StatefulWidget{
   final bool userSelectedChoice ;
@@ -41,41 +43,41 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   List<charts.Series<formattedWeekEntry, String>> _weekSeriesBarData;
   List<charts.Series<MassEntry, DateTime>> _timeChartData;
   List<MassEntry> myData, massEntryDay;
-  static int pageCounter = 15001;
-
-  double personalWeekAverageGeneral = 0.00;
-  double areaWeekAverageGeneral = 0.00;
-
-  double personalWeekAverageAll = 0.00;
-  double areaWeekAverageAll = 0.00;
-  double personalWeekAveragePlastic = 0.00;
-  double areaWeekAveragePlastic = 0.00;
-  double personalWeekAveragePaper = 0.00;
-  double areaWeekAveragePaper = 0.00;
-
 
   NumberFormat nf = NumberFormat("#00.00", "en_US");
   final df3 = DateFormat.yMMMd();
   final dfFilter = DateFormat("yyyy-MM-dd");
-  int userID = 1234;
 
   List dataList = List();
   List areaList = List();
 
   Map map = Map();
   bool isSelected = false;
-  // int isSelectedIndex = 0;
+  int isSelectedIndex = 0;
 
 
   @override
   void initState() {
     isSelectedTypeAll[0] = userSelectedChoice;
     selectedType = userSelectedChoice ? "general" : "all";
+    //might be causing issue because if we nav from this page @ plastic back to dashboard, and move from dashboard back to here, it registers all but the counter is still at plastic's counter
   }
 
-  Future<double> _fetchTotalData() async {
+  Future<double> _fetchTotalDataPersonal() async {
+    //String typeNum =  userSelectedChoice  ? "1" : "4";
 
-    String typeNum =  userSelectedChoice  ? "1" : "4";
+    String typeNum;
+    if(userSelectedChoice) {
+      typeNum = "1";
+    } else {
+      if(selectedType == "plastic") {
+        typeNum = "2";
+      } if(selectedType == "paper") {
+        typeNum = "3";
+      } else {
+        typeNum = "4";
+      }
+    }
 
     int numOfDays ;
     switch (DateFormat('E').format(DateTime.now())) {
@@ -143,7 +145,16 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 }
   _fetchDataPersonal(String type) async {
 
-    String typeNum = type == "general" ? "1" : "4";
+    String typeNum;
+    if(type == "general") {
+      typeNum = "1";
+    } if(type == "plastic") {
+      typeNum = "2";
+    } if(type == "paper") {
+      typeNum = "3";
+    } else {
+      typeNum = "4";
+    }
 
     int numOfDays ;
     switch (DateFormat('E').format(DateTime.now())) {
@@ -226,7 +237,16 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
   _fetchDataArea(String type) async {
 
-    String typeNum = type == "general" ? "1" : "4";
+    String typeNum;
+    if(type == "general") {
+      typeNum = "1";
+    } if(type == "plastic") {
+      typeNum = "2";
+    } if(type == "paper") {
+      typeNum = "3";
+    } else {
+      typeNum = "4";
+    }
 
     int numOfDays ;
     switch (DateFormat('E').format(DateTime.now())) {
@@ -410,12 +430,42 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   //   );
   // }
 
+  Widget switchBar() {
+    return ToggleSwitch(
+      minWidth: MediaQuery.of(context).size.width/1.05,
+      minHeight: MediaQuery.of(context).size.height/20,
+      initialLabelIndex: isSelectedIndex,
+      cornerRadius: 20.0,
+      activeFgColor: Colors.white,
+      inactiveBgColor: Colors.grey,
+      inactiveFgColor: Colors.white,
+      labels: ['', '', ''],
+      icons: [
+        FontAwesome.recycle,
+        FontAwesome.newspaper_o,
+        SimpleLineIcons.bag,
+      ],
+      iconSize: MediaQuery.of(context).size.height/35,
+      activeBgColors: [Colors.green, Colors.blue, Colors.yellow[600]],
+      onToggle: (index) {
+        print('switched to: $index');
+        isSelectedIndex = index;
+
+        setState(() {
+          if (index == 0) {
+            selectedType = "all";
+          } else if (index == 1) {
+            selectedType = "paper";
+          } else {
+            selectedType = "plastic";
+          }
+        });
+      },
+    );
+  }
+
+  /*
   Widget recyclingBar() {
-
-    bool paperVisible = PersonalStatsPageState.pageCounter % 3 == 0;
-    bool allVisible = PersonalStatsPageState.pageCounter % 3 == 1;
-    bool plasticVisible = PersonalStatsPageState.pageCounter % 3 == 2;
-
     return Container(
         decoration: BoxDecoration(
           color: isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
@@ -428,46 +478,41 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
         child: Center(
           child: Row(
             children: <Widget>[
+
               FlatButton(
                 child: Icon(Icons.arrow_back),
                 onPressed: () {
-                  //PersonalStatsPageState.pageCounter--;
+                  String currentType = selectedType.toString();
                   setState(() {
-                    PersonalStatsPageState.pageCounter--;
 
-                    if (isSelectedTypeAll[0]) {
-                      selectedType = "general";
+                    if (currentType == "all") {
+                      selectedType = "plastic";
+                    } else
+                    if (currentType == "plastic") {
+                      selectedType = "paper";
                     } else {
-                      if (PersonalStatsPageState.pageCounter % 3 == 0) {
-                        selectedType = "plastic";
-                      } else
-                      if (PersonalStatsPageState.pageCounter % 3 == 1) {
-                        selectedType = "all";
-                      } else {
-                        selectedType = "plastic";
-                      }
+                      selectedType = "all";
                     }
                   });
-
 
                 },
               ),
 
-              allVisible ? Text("                All                ",
+              (selectedType ==  "all") ? Text(" All ",
                 style: TextStyle(
                   fontSize: MediaQuery.of(context).size.width/20,
                   fontWeight: FontWeight.bold,
                 ),
               ) : new Container(),
 
-              paperVisible ? Text("             Paper              ",
+              (selectedType ==  "paper") ? Text(" Paper ",
                 style: TextStyle(
                   fontSize: MediaQuery.of(context).size.width/20,
                   fontWeight: FontWeight.bold,
                 ),
               ) : new Container(),
 
-              plasticVisible ? Text("             Plastic            ",
+              (selectedType ==  "plastic") ? Text(" Plastic ",
                 style: TextStyle(
                   fontSize: MediaQuery.of(context).size.width/20,
                   fontWeight: FontWeight.bold,
@@ -477,10 +522,18 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
               FlatButton(
                 child: Icon(Icons.arrow_forward),
                 onPressed: () {
-                  //PersonalStatsPageState.pageCounter++;
 
+                  String currentType = selectedType.toString();
                   setState(() {
-                    PersonalStatsPageState.pageCounter++;
+
+                    if (currentType == "all") {
+                      selectedType = "paper";
+                    } else
+                    if (currentType == "paper") {
+                      selectedType = "plastic";
+                    } else {
+                      selectedType = "all";
+                    }
                   });
 
                 },
@@ -491,8 +544,10 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
         )
     );
   }
+  */
 
   Text throwingText() {
+
     String timeText;
     switch(selectedTime){
       case "week": {
@@ -561,7 +616,8 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             ),
 
             //type selection
-            // isSelectedTypeAll[0] ? new Container() : recyclingBar(),
+            //isSelectedTypeAll[0] ? new Container() : recyclingBar(),
+            isSelectedTypeAll[0] ? new Container() : switchBar(),
 
             SizedBox(
               height: MediaQuery.of(context).size.height/50,
@@ -643,8 +699,8 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
               child: Align(
                 alignment: Alignment.center,
                 child:  FutureBuilder(
-                          future:_fetchTotalData(),
-                          // future: _fetchDataPersonal(selectedType),
+                          future:_fetchTotalDataPersonal(),
+                          //future: _fetchDataPersonal(selectedType),
                           builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             print("Snapshot data!!!");
@@ -654,13 +710,22 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
 
-
-
                               SizedBox(
                                 height: (MediaQuery.of(context).size.height/7) * 0.07,
                               ),
 
-                              throwingText(),
+                              FutureBuilder(
+                                  future:_fetchTotalDataPersonal(),
+                                //future: _fetchDataArea(selectedType),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.done) {
+                                  return throwingText();
+                                  } else {
+                                  return CircularProgressIndicator();
+                                  }
+                                }
+                              ),
+                              //throwingText(),
 
                               SizedBox(
                                 height: MediaQuery.of(context).size.height/100,
@@ -700,72 +765,75 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             ),
 
 
-            //TODO: FIX THIS IN THE FUTURE
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //   children: <Widget>[
-            //     (isSelectedTrend[0] || isSelectedTrend[1]) ? Container(
-            //       decoration: BoxDecoration(
-            //         color: isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
-            //         //Colors.lightGreen[200],
-            //         borderRadius: BorderRadius.circular(5),
-            //       ),
-            //       height: MediaQuery.of(context).size.height/15,
-            //       width: MediaQuery.of(context).size.width/1.05,
-            //       padding: EdgeInsets.all(7),
-            //       child:  Row(
-            //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //         children: <Widget>[
-            //
-            //           Container(
-            //             child: Text("Personal\nWeek Average: ",
-            //               style: TextStyle(
-            //                 fontSize: MediaQuery.of(context).size.width/30,
-            //                 fontWeight: FontWeight.bold,
-            //               ),
-            //             ),
-            //           ),
-            //
-            //           FutureBuilder(
-            //               future: _fetchDataPersonal(selectedType),
-            //               builder: (context, snapshot) {
-            //                 if (snapshot.connectionState == ConnectionState.done) {
-            //                   return _buildStatsInfo("self", selectedTime, Colors.purple);
-            //                 }
-            //                 else {
-            //                   return CircularProgressIndicator();
-            //                 }
-            //               }
-            //           ),
-            //
-            //           Container(
-            //             child: Text("Tembusu\nWeek Average: ",
-            //               textAlign: TextAlign.left,
-            //               style: TextStyle(
-            //                 fontSize: MediaQuery.of(context).size.width/30,
-            //                 fontWeight: FontWeight.bold,
-            //               ),
-            //             ),
-            //           ),
-            //
-            //           FutureBuilder(
-            //               future: _fetchDataArea(selectedType),
-            //               builder: (context, snapshot) {
-            //                 if (snapshot.connectionState == ConnectionState.done) {
-            //                   return _buildStatsInfo("Tembusu", selectedTime, Colors.teal.shade900);
-            //                 }
-            //                 else {
-            //                   return CircularProgressIndicator();
-            //                 }
-            //               }
-            //           ),
-            //
-            //         ],
-            //       ),
-            //     ) : new Container(),
-            //
-            //   ],
-            // ),
+            //TODO: FIX THIS IN THE FUTURE. issue right now is that it sometimes gives nonesense values. might have to segment the UI differently to be FutureBuilder blocks based on which _fetchData is used. in this case, need to link the personal week avg with the graph's method while the tembusu week avg is separate
+            /*
+            Row(
+               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+               children: <Widget>[
+                 (isSelectedTrend[0] || isSelectedTrend[1]) ? Container(
+                   decoration: BoxDecoration(
+                     color: isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
+                     //Colors.lightGreen[200],
+                     borderRadius: BorderRadius.circular(5),
+                   ),
+                   height: MediaQuery.of(context).size.height/15,
+                   width: MediaQuery.of(context).size.width/1.05,
+                   padding: EdgeInsets.all(7),
+                   child:  Row(
+                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                     children: <Widget>[
+
+                       Container(
+                         child: Text("Personal\nWeek Average: ",
+                           style: TextStyle(
+                             fontSize: MediaQuery.of(context).size.width/30,
+                             fontWeight: FontWeight.bold,
+                           ),
+                         ),
+                       ),
+
+                       FutureBuilder(
+                           future: _fetchTotalDataPersonal(),
+                           builder: (context, snapshot) {
+                             if (snapshot.connectionState == ConnectionState.done) {
+                               return _buildStatsInfo("self", selectedTime, Colors.purple);
+                             }
+                             else {
+                               return CircularProgressIndicator();
+                             }
+                           }
+                       ),
+
+                       Container(
+                         child: Text("Tembusu\nWeek Average: ",
+                           textAlign: TextAlign.left,
+                           style: TextStyle(
+                             fontSize: MediaQuery.of(context).size.width/30,
+                             fontWeight: FontWeight.bold,
+                           ),
+                         ),
+                       ),
+
+                       FutureBuilder(
+                           future: _fetchDataArea(selectedType),
+                           builder: (context, snapshot) {
+                             if (snapshot.connectionState == ConnectionState.done) {
+                               return _buildStatsInfo("Tembusu", selectedTime, Colors.teal.shade900);
+                             }
+                             else {
+                               return CircularProgressIndicator();
+                             }
+                           }
+                       ),
+
+                     ],
+                   ),
+                 ) : new Container(),
+
+               ],
+             ),
+            */
+
             //build the graph
             FutureBuilder(
               future: _fetchDataPersonal(selectedType),
