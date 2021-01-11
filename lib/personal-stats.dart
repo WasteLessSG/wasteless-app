@@ -440,14 +440,14 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       activeFgColor: Colors.white,
       inactiveBgColor: Colors.grey,
       inactiveFgColor: Colors.white,
-      labels: ['', '', ''],
-      icons: [
-        FontAwesome.recycle,
-        FontAwesome.newspaper_o,
-        SimpleLineIcons.bag,
-      ],
+      labels: ['All', 'Paper', 'Plastic'],
+      // icons: [
+      //   FontAwesome.recycle,
+      //   FontAwesome.newspaper_o,
+      //   SimpleLineIcons.bag,
+      // ],
       iconSize: MediaQuery.of(context).size.height/35,
-      activeBgColors: [Colors.green, Colors.blue, Colors.yellow[600]],
+      activeBgColors: [Colors.green, Colors.green, Colors.green],
       onToggle: (index) {
         print('switched to: $index');
         setState(() {

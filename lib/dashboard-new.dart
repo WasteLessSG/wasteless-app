@@ -90,7 +90,7 @@ class DashboardPageState extends State<DashboardPage> {
           ),
         );
 
-      } else if (snapshot.data == [] || snapshot.data == {} ){
+      } else if (snapshot.data == null ){
 
         return RichText(
           textAlign: TextAlign.center,
@@ -101,7 +101,7 @@ class DashboardPageState extends State<DashboardPage> {
               color: type == "general" ? Colors.brown[800] : Colors.green[900],
             ),
             children: <TextSpan>[
-              TextSpan(text: type == "general" ? " You did not throw any trash this week" : "You did not recycle this week",
+              TextSpan(text: type == "general" ? " Not on this week's trash leaderboard" : "Not on this week's recycling leaderboard",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   )),
