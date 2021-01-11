@@ -70,9 +70,10 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     if(userSelectedChoice) {
       typeNum = "1";
     } else {
+
       if(selectedType == "plastic") {
         typeNum = "2";
-      } if(selectedType == "paper") {
+      } else if (selectedType == "paper") {
         typeNum = "3";
       } else {
         typeNum = "4";
@@ -148,9 +149,9 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     String typeNum;
     if(type == "general") {
       typeNum = "1";
-    } if(type == "plastic") {
+    } else if (type == "plastic") {
       typeNum = "2";
-    } if(type == "paper") {
+    } else if(type == "paper") {
       typeNum = "3";
     } else {
       typeNum = "4";
@@ -449,8 +450,6 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       activeBgColors: [Colors.green, Colors.blue, Colors.yellow[600]],
       onToggle: (index) {
         print('switched to: $index');
-        isSelectedIndex = index;
-
         setState(() {
           if (index == 0) {
             selectedType = "all";
@@ -460,6 +459,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             selectedType = "plastic";
           }
         });
+        isSelectedIndex = index;
       },
     );
   }
