@@ -322,6 +322,7 @@ class DashboardPageState extends State<DashboardPage> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height/40,
                           ),
+
                           InkWell(
                             onTap:  () => {
                               Navigator.push(context, MaterialPageRoute(
@@ -347,6 +348,7 @@ class DashboardPageState extends State<DashboardPage> {
                               ),
                             ),
                           ),
+
                           SizedBox(
                             height: MediaQuery.of(context).size.height/40,
                           ),
@@ -377,7 +379,6 @@ class DashboardPageState extends State<DashboardPage> {
                                  ]
                              ),
                              child: Row(
-
                                children: <Widget>[
                                  Column(
                                    crossAxisAlignment: CrossAxisAlignment.center,

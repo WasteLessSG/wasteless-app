@@ -164,15 +164,15 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
                     ],
                   ),
                   contentPadding: EdgeInsets.all(10.0),
-                  title: new Text(newList[index]["username"].toString(),
+                  title: new Text(newList[index]["username"],
                   style: TextStyle(
                     fontSize: 25,
                   ),),
                     //title: new Text(df3.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["userId"] * 1000)).toString()),
                     //title: new Text(DateTime.now().month.toString()),
-                  trailing: new Text((newList[index]["weight"]/1000000).toString() + " kg",
+                  trailing: new Text(nf.format((newList[index]["weight"]/1000000)) + " kg",
                     style: TextStyle(
-                      fontSize: 25,
+                      fontSize: MediaQuery.of(context).size.width/15,
                       fontWeight: FontWeight.bold
                     ),),
                   ),
