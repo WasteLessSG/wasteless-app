@@ -56,7 +56,7 @@ class DashboardPageState extends State<DashboardPage> {
     return FutureBuilder(
     future: _fetchLeaderBoardData(type),
     builder: (context, snapshot) {
-      if (snapshot.hasData){
+      if (snapshot.connectionState == ConnectionState.done  && snapshot.hasData){
         int initialDay = snapshot.data;
         String formattedRankingText;
 
@@ -90,7 +90,11 @@ class DashboardPageState extends State<DashboardPage> {
           ),
         );
 
-      } else if (snapshot.data == null ){
+      } else if (snapshot.connectionState == ConnectionState.waiting ){
+
+        return CircularProgressIndicator();
+
+      } else {
 
         return RichText(
           textAlign: TextAlign.center,
@@ -110,7 +114,7 @@ class DashboardPageState extends State<DashboardPage> {
         );
 
 
-      } else {return CircularProgressIndicator();}
+      }
     }
     );
 }
@@ -467,10 +471,11 @@ class DashboardPageState extends State<DashboardPage> {
           // double avgHouseWaste = 1.5;
           // double avgHouseSize = 3.16;
           double avgPersonWaste = (1.5 * 7)/3.16;
-          double totalValue = snapshot.data.fold(0, (current, entry) => current + entry["weight"]).toDouble() ;
+          print("sg avg: " + avgPersonWaste.toString());
+          double totalValue = snapshot.data.fold(0, (current, entry) => current + entry["weight"]).toDouble() /1000000 ;
 
           double percFill = ((totalValue-avgPersonWaste)/avgPersonWaste)*100;
-
+          print("%: " + percFill.toString());
           if (percFill < 50.0) {
 
             selectedState = "rubbishEmpty";

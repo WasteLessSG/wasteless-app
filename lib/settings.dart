@@ -43,7 +43,7 @@ class SettingsPageState extends State<SettingsPage>{
     return FutureBuilder(
       future: _fetchLoginData(),
       builder: (context,snapshot){
-        if(snapshot.hasData) {
+        if(snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
 
           return Column(
             children: <Widget>[
@@ -87,8 +87,18 @@ class SettingsPageState extends State<SettingsPage>{
           );
 
         }
-        else if (snapshot.data == {} ) {
+        else if (snapshot.connectionState == ConnectionState.waiting ) {
+          return Column(
+            children: <Widget>[
+              SizedBox( height: 20),
+              CircularProgressIndicator(),
+            ],
+          );
 
+
+
+
+        } else {
           return Column(
             children: <Widget>[
               SizedBox(
@@ -135,12 +145,7 @@ class SettingsPageState extends State<SettingsPage>{
 
 
 
-        } else {return Column(
-            children: <Widget>[
-            SizedBox( height: 20),
-        CircularProgressIndicator(),
-        ],
-        );}
+        }
       }
     );
   }
