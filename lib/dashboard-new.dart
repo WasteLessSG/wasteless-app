@@ -92,7 +92,9 @@ class DashboardPageState extends State<DashboardPage> {
 
       } else if (snapshot.connectionState == ConnectionState.waiting ){
 
-        return CircularProgressIndicator();
+        return CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+        );
 
       } else {
 
@@ -209,7 +211,10 @@ class DashboardPageState extends State<DashboardPage> {
           } else {
             return Padding(
               padding: EdgeInsets.only(top:10),
-              child:  CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+              ),
+
             );
           }
         }
@@ -462,7 +467,6 @@ class DashboardPageState extends State<DashboardPage> {
 
   Widget makeTrashBin() {
 
-
     return FutureBuilder(
       future: _fetchTrashOrRecycleData("general"),
       builder: (context,snapshot) {
@@ -509,7 +513,9 @@ class DashboardPageState extends State<DashboardPage> {
         } else {
           return Padding(
             padding: EdgeInsets.only(top:10),
-            child:  CircularProgressIndicator(),
+            child:  CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+            ),
           );
         }
       }

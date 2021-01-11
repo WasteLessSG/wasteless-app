@@ -321,7 +321,9 @@ class HistoryPageState extends  State<HistoryPage> {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return _buildList();
                   } else {
-                    return CircularProgressIndicator();
+                    return CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                    );
                   }
                 }
               ),

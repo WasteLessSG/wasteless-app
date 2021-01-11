@@ -14,14 +14,11 @@ class HomePage extends StatefulWidget{
 }
 class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
 
-
-
   FirebaseUser user;
 
   HomePageState(this.user);
 
   TabController controller;
-
 
   @override
   void initState() {

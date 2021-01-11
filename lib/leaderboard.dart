@@ -19,7 +19,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
   FirebaseUser user;
   LeaderboardPageState(this.user, this.chosenType);
 
-  NumberFormat nf = NumberFormat("###.00", "en_US");
+  NumberFormat nf = NumberFormat("##0.00", "en_US");
 
   String _selectedType = "Select Type";
   String _selectedTrend = "Select Trend";
@@ -257,7 +257,9 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return _buildList(_selectedType, _selectedTrend);
                 } else {
-                  return CircularProgressIndicator();
+                  return CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                  );
                 }
               }
             ),

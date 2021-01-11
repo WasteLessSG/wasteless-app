@@ -721,7 +721,9 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                                   if (snapshot.connectionState == ConnectionState.done) {
                                   return throwingText();
                                   } else {
-                                  return CircularProgressIndicator();
+                                  return CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                                  );
                                   }
                                 }
                               ),
@@ -749,7 +751,9 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                             ],
                           );
                           } else {
-                          return CircularProgressIndicator();
+                          return CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                          );
                           }
                           }
                           ),
@@ -765,7 +769,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             ),
 
 
-            //TODO: FIX THIS IN THE FUTURE. issue right now is that it sometimes gives nonesense values. might have to segment the UI differently to be FutureBuilder blocks based on which _fetchData is used. in this case, need to link the personal week avg with the graph's method while the tembusu week avg is separate
+            //TODO: FIX THIS IN THE FUTURE. issue right now is that it sometimes gives nonsense values. might have to segment the UI differently to be FutureBuilder blocks based on which _fetchData is used. in this case, need to link the personal week avg with the graph's method while the tembusu week avg is separate
             /*
             Row(
                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -841,7 +845,9 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                 if (snapshot.connectionState == ConnectionState.done) {
                   return _buildBody(context);
                 } else {
-                  return CircularProgressIndicator();
+                  return CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                  );
                 }
               }
             ),
