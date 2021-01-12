@@ -256,7 +256,7 @@ class SettingsPageState extends State<SettingsPage>{
                                           text: TextSpan(
                                             style: defaultStyle,
                                             children: <TextSpan>[
-                                              TextSpan(text: 'To find out more about WasteLess and the WasteLess solution, visit our website  '),
+                                              TextSpan(text: 'Supported by SouthWest CDC and NUS. \n\nTo find out more about WasteLess and the WasteLess solution, visit our website  '),
                                               TextSpan(
                                                   text: 'wastelesssg.github.io.',
                                                   style: linkStyle,

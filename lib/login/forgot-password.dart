@@ -125,7 +125,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     height: size.height *0.225 ,
                   ),
 
-                  Image.asset('assets/tembusuLogo.png', scale: 1.35),
+                  Image.asset('assets/nusLogo.png'),
 
 
                 ],),
