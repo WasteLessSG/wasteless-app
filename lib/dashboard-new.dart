@@ -33,7 +33,7 @@ class DashboardPageState extends State<DashboardPage> {
   final df3 = DateFormat.yMMMd();
   final dfFilter = DateFormat("yyyy-MM-dd");
 
-  Future<int> _fetchLeaderBoardData(String type) async{
+  Future<String> _fetchLeaderBoardData(String type, String nameOrRank) async{
 
     //TODO: FIX END POINT ONCE RECYCLING ENDPOINT IS UP
     String currentTypeNum = type == "general" ? '1': '4';
@@ -44,7 +44,8 @@ class DashboardPageState extends State<DashboardPage> {
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
     if (response.statusCode == 200) {
       Map map = json.decode(response.body) as Map;
-      return map["data"][0]['rank'];
+
+      return nameOrRank == "rank" ? map["data"][0]['rank'].toString() : map["data"][0]['username'];
 
     } else {
       throw Exception('Failed to load data');
@@ -54,10 +55,11 @@ class DashboardPageState extends State<DashboardPage> {
 
   Widget _rankingText(String type) {
     return FutureBuilder(
-    future: _fetchLeaderBoardData(type),
+    future: _fetchLeaderBoardData(type, 'rank'),
     builder: (context, snapshot) {
+
       if (snapshot.connectionState == ConnectionState.done  && snapshot.hasData){
-        int initialDay = snapshot.data;
+        int initialDay = int.parse(snapshot.data);
         String formattedRankingText;
 
         if (initialDay == 11 || initialDay == 12 || initialDay == 13) {
@@ -91,7 +93,7 @@ class DashboardPageState extends State<DashboardPage> {
         );
 
       } else if (snapshot.connectionState == ConnectionState.waiting ){
-
+        print(snapshot.data);
         return CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
         );
@@ -179,7 +181,30 @@ class DashboardPageState extends State<DashboardPage> {
     }
   }
 
+  Widget _returnName() {
 
+    return FutureBuilder(
+        future: _fetchLeaderBoardData( "", "name"),
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+            return Text( snapshot.data,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: MediaQuery.of(context).size.width/5,
+          )); } else if (snapshot.connectionState == ConnectionState.waiting) {{ return CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+          );}} else {
+            return Text( "Dylan",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: MediaQuery.of(context).size.width/5,
+                ));
+          }
+    });
+
+  }
 
   Widget _buildStats(String party, String type) {
 
@@ -258,15 +283,10 @@ class DashboardPageState extends State<DashboardPage> {
                               alignment: Alignment.centerLeft,
                               child: FittedBox(
                                 fit:BoxFit.scaleDown,
-                                child: Text("Ryan",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: MediaQuery.of(context).size.width/5,
-                                  ),
+                                child: _returnName(),
                                 ),
                             ),
-                          ),
+
 
                           InkWell(
                             onTap:  () => {

@@ -190,7 +190,7 @@ class LoginState extends State<Login> {
                       ),
                     ),
                     SizedBox(
-                      height: size.height *0.1 ,
+                      height: size.height *0.14 ,
                     ),
 
                     Image.asset('assets/tembusuLogo.png', scale: 1.35),

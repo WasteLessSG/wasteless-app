@@ -118,7 +118,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     if (_typeChosen[0] || _trendChosen[0]) {
       return Expanded(
         child: Center(
-          child: Text("Please select your desired \nType and Trend",
+          child: Text("Please select your desired trend",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 25,
