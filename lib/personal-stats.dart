@@ -36,7 +36,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   List<bool> isSelectedType = [false, true, false];
 
   List<bool> isSelectedTypeAll = [true, false];
-  List<String> title = ["Personal Trash Stats", "Personal Recycling Stats"];
+  List<String> title = ["Your Rubbish Data", "Your Recycling Data"];
 
   List<Color> colorPalette = [Colors.lightGreen[200], Colors.brown[100]];
   List<charts.Series<MassEntry, String>> _seriesBarData;

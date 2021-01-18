@@ -87,7 +87,7 @@ class DashboardPageState extends State<DashboardPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   )),
-              TextSpan(text: type == "general" ? " lowest trash at Tembusu" : " in recycling at Tembusu"),
+              TextSpan(text: type == "general" ? " lowest rubbish at Tembusu" : " in recycling at Tembusu"),
             ],
           ),
         );
@@ -109,7 +109,7 @@ class DashboardPageState extends State<DashboardPage> {
               color: type == "general" ? Colors.brown[800] : Colors.green[900],
             ),
             children: <TextSpan>[
-              TextSpan(text: type == "general" ? " Not on this week's trash leaderboard" : "Not on this week's recycling leaderboard",
+              TextSpan(text: type == "general" ? " No rubbish data this week" : "No recycling data this week",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   )),
@@ -168,12 +168,12 @@ class DashboardPageState extends State<DashboardPage> {
     String timeRangeEndValue = (now.millisecondsSinceEpoch ~/ 1000).toString();
 
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${typeNum}";
-    print("Trash/Recycle data " + link);
+    //print("Trash/Recycle data " + link);
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
     if (response.statusCode == 200) {
       Map map = json.decode(response.body) as Map;
-      print(map);
-      print("^^ DATA FOR TRASH/RECYCLE: " + typeNum.toString());
+      //print(map);
+      //print("^^ DATA FOR TRASH/RECYCLE: " + typeNum.toString());
       return map["data"];
 
     } else {

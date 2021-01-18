@@ -25,7 +25,7 @@ class HistoryPageState extends  State<HistoryPage> {
   String _selectedTrend = "Select Trend";
 
   List<bool> _typeChosen = [true, false, false];
-  List<String> _typeList = ["Select Type", "Trash", "Recyclables"];
+  List<String> _typeList = ["Select Type", "Rubbish", "Recyclables"];
 
   List<bool> _trendChosen = [true, false, false, false];
   List<String> _trendList = ["Select Trend", "Week", "Month", "All Time"];
@@ -90,12 +90,10 @@ class HistoryPageState extends  State<HistoryPage> {
       currentTypeNum = "1";
     } else {
       currentType = "all";
-      //TODO: Fix once end pt for all trash is up
       currentTypeNum = "4";
     }
 
     if (_selectedTrend == "All Time") {
-      //TODO: AFTER TESTING, CHANGE THIS VALUE. should at least be 1609926000
       timeRangeStartValue = "0";
     } else if (_selectedTrend == "Month") {
       timeRangeStartValue = (prevMonth.millisecondsSinceEpoch ~/ 1000).toString();

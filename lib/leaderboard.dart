@@ -25,7 +25,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
   String _selectedTrend = "Select Trend";
 
   List<bool> _typeChosen = [true, false, false];
-  List<String> _typeList = ["Select Type", "Trash", "Recyclables"];
+  List<String> _typeList = ["Select Type", "Rubbish", "Recyclables"];
 
   List<bool> _trendChosen = [true, false, false, false];
   List<String> _trendList = ["Select Trend", "Week", "Month", "All Time"];
@@ -48,7 +48,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     _selectedType = chosenType;
     _trendChosen = [false, true, false, false];
     switch (chosenType){
-      case "Trash":{
+      case "Rubbish":{
         _typeChosen = [false,true,false];
         break;
       }
@@ -66,8 +66,8 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     String currentTypeNum;
     String currentTrend;
 
-    //trash selected
-    if (type == "Trash") {
+    //Rubbish selected
+    if (type == "Rubbish") {
       currentType = "general";
       currentTypeNum = '1';
     } else {
@@ -111,7 +111,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     list.sort((a, b) => a['weight'].compareTo(b['weight']));
     print(list);
 
-    if (type != 'Trash') {
+    if (type != 'Rubbish') {
       newList = new List.from(newList.reversed);
     }
 
@@ -201,7 +201,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
               Navigator.pop(context);
             }),
           title: Text(
-              (chosenType == "Trash" ? "🗑" : "♻️")
+              (chosenType == "Rubbish" ? "🗑" : "♻️")
               + " Leaderboard"
             + (_selectedTrend == "All Time" ? " (AT)" : " (${_selectedTrend[0]})") ,
             style: TextStyle(
