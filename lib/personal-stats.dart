@@ -241,9 +241,9 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     String typeNum;
     if(type == "general") {
       typeNum = "1";
-    } if(type == "plastic") {
+    } if (type == "plastic") {
       typeNum = "2";
-    } if(type == "paper") {
+    } if (type == "paper") {
       typeNum = "3";
     } else {
       typeNum = "4";
@@ -440,7 +440,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       activeFgColor: Colors.white,
       inactiveBgColor: Colors.grey,
       inactiveFgColor: Colors.white,
-      labels: ['All', 'Paper', 'Plastic'],
+      labels: ['All', 'Paper', 'Plastic/Metal'],
       // icons: [
       //   FontAwesome.recycle,
       //   FontAwesome.newspaper_o,
@@ -463,88 +463,6 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       },
     );
   }
-
-  /*
-  Widget recyclingBar() {
-    return Container(
-        decoration: BoxDecoration(
-          color: isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
-          //Colors.lightGreen[200],
-          borderRadius: BorderRadius.circular(5),
-        ),
-        height: MediaQuery.of(context).size.height/20,
-        width: MediaQuery.of(context).size.width/1.05,
-        padding: EdgeInsets.all(7),
-        child: Center(
-          child: Row(
-            children: <Widget>[
-
-              FlatButton(
-                child: Icon(Icons.arrow_back),
-                onPressed: () {
-                  String currentType = selectedType.toString();
-                  setState(() {
-
-                    if (currentType == "all") {
-                      selectedType = "plastic";
-                    } else
-                    if (currentType == "plastic") {
-                      selectedType = "paper";
-                    } else {
-                      selectedType = "all";
-                    }
-                  });
-
-                },
-              ),
-
-              (selectedType ==  "all") ? Text(" All ",
-                style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width/20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ) : new Container(),
-
-              (selectedType ==  "paper") ? Text(" Paper ",
-                style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width/20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ) : new Container(),
-
-              (selectedType ==  "plastic") ? Text(" Plastic ",
-                style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width/20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ) : new Container(),
-
-              FlatButton(
-                child: Icon(Icons.arrow_forward),
-                onPressed: () {
-
-                  String currentType = selectedType.toString();
-                  setState(() {
-
-                    if (currentType == "all") {
-                      selectedType = "paper";
-                    } else
-                    if (currentType == "paper") {
-                      selectedType = "plastic";
-                    } else {
-                      selectedType = "all";
-                    }
-                  });
-
-                },
-              ),
-
-            ],
-          ),
-        )
-    );
-  }
-  */
 
   Text throwingText() {
 

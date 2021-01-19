@@ -191,7 +191,7 @@ class DashboardPageState extends State<DashboardPage> {
                 textAlign: TextAlign.left,
                 style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: MediaQuery.of(context).size.width/5,
+                fontSize: MediaQuery.of(context).size.width/8,
           )); } else if (snapshot.connectionState == ConnectionState.waiting) {{ return CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
           );}} else {
@@ -199,7 +199,7 @@ class DashboardPageState extends State<DashboardPage> {
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: MediaQuery.of(context).size.width/5,
+                  fontSize: MediaQuery.of(context).size.width/8,
                 ));
           }
     });
@@ -251,11 +251,6 @@ class DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    //print("height: " + size.height.toString());
-
-    // String name = user.uid;
-    String name = "Ryan Wong";
-
     return Scaffold(
 
       body: SafeArea(
