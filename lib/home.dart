@@ -43,14 +43,29 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
       child: Scaffold(
 
           bottomNavigationBar: new TabBar(
-            labelColor: Colors.black,
-            indicatorColor: Colors.green,
-            controller: controller ,
-            tabs: <Tab> [
-              new Tab(icon: Icon(Icons.account_box),) ,
-              new Tab(icon: Icon(Icons.home),) ,
-              new Tab(icon: Icon(Icons.settings),) ,
 
+            labelColor: Colors.green,
+            unselectedLabelColor: Colors.black,
+            indicatorColor: Colors.green,
+
+            controller: controller ,
+
+            tabs: <Tab> [
+              new Tab(icon: Icon(
+                Icons.account_box,
+                size: MediaQuery.of(context).size.width/14,
+                ),
+              ),
+              new Tab(icon: Icon(
+                    Icons.home,
+                    size: MediaQuery.of(context).size.width/14,
+                ),
+              ),
+              new Tab(icon: Icon(
+                Icons.settings,
+                size: MediaQuery.of(context).size.width/14,
+              ),
+              ),
             ],
 
           ),
@@ -58,7 +73,6 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
 
 
           body: new TabBarView(
-
               physics: NeverScrollableScrollPhysics(),
               controller: controller,
               children: <Widget>[
