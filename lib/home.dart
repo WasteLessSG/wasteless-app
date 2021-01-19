@@ -44,9 +44,9 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
 
           bottomNavigationBar: new TabBar(
 
-            labelColor: Colors.green,
-            unselectedLabelColor: Colors.black,
-            indicatorColor: Colors.green,
+            labelColor: Colors.green[900],
+            unselectedLabelColor: Colors.black54,
+            indicatorColor: Colors.green[900],
 
             controller: controller ,
 

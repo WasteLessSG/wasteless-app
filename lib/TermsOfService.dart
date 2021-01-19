@@ -8,7 +8,7 @@ class TermsOfService extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green[900],
-        title: Text("Terms of Service",
+        title: Text("Privacy Policy",
           style: TextStyle(
             color: Colors.white,
           ),

@@ -33,9 +33,21 @@ class DashboardPageState extends State<DashboardPage> {
   final df3 = DateFormat.yMMMd();
   final dfFilter = DateFormat("yyyy-MM-dd");
 
+  Future<String> _fetchName() async{
+
+    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/user/${user.uid.toString()}/login";
+    print("name future link: " + link);
+    final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
+    if (response.statusCode == 200) {
+      return json.decode(response.body)["username"].toString();
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
   Future<String> _fetchLeaderBoardData(String type, String nameOrRank) async{
 
-    //TODO: FIX END POINT ONCE RECYCLING ENDPOINT IS UP
+
     String currentTypeNum = type == "general" ? '1': '4';
 
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard/${user.uid.toString()}?type=${currentTypeNum}&aggregateBy=week";
@@ -184,7 +196,7 @@ class DashboardPageState extends State<DashboardPage> {
   Widget _returnName() {
 
     return FutureBuilder(
-        future: _fetchLeaderBoardData( "", "name"),
+        future: _fetchName(),
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
             return Text( snapshot.data,
@@ -199,7 +211,7 @@ class DashboardPageState extends State<DashboardPage> {
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: MediaQuery.of(context).size.width/8,
+                  fontSize: MediaQuery.of(context).size.width/10,
                 ));
           }
     });
@@ -263,16 +275,16 @@ class DashboardPageState extends State<DashboardPage> {
                           Container(
                             padding: EdgeInsets.fromLTRB(0, 10, 15,0),
                             width: size.width * 0.93,
-                            child: Text("Welcome,",
+                            child: Text("Welcome Tembusu Resident,",
                               textAlign: TextAlign.left,
                               style: TextStyle(
-                                fontSize: MediaQuery.of(context).size.width/15,
+                                fontSize: MediaQuery.of(context).size.width/20,
                                 color: Colors.black45
                               ),
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.fromLTRB(0, 5, 15,10),
+                            padding: EdgeInsets.fromLTRB(0, 5, 10,10),
                             width: size.width * 0.93,
                             height: size.height * 0.12,
                               alignment: Alignment.centerLeft,
@@ -350,7 +362,7 @@ class DashboardPageState extends State<DashboardPage> {
                           InkWell(
                             onTap:  () => {
                               Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => new LeaderboardPage(user,"Trash")))
+                                  builder: (context) => new LeaderboardPage(user,"Rubbish")))
                             },
                             child: Ink(
                               padding: EdgeInsets.fromLTRB(15, 0, 15,0),

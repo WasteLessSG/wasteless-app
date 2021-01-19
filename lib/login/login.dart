@@ -164,7 +164,7 @@ class LoginState extends State<Login> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text("Forget your password? ",
+                              Text("Forgot your password? ",
                                 style: TextStyle(color: Color.fromRGBO(32, 95, 38, 1) ),),
                               GestureDetector(
                                 onTap: _forgetPassword,

@@ -223,8 +223,43 @@ class SettingsPageState extends State<SettingsPage>{
                         title: 'Sign Out',
                         leading: Icon(Icons.logout),
                         onPressed: (BuildContext context) {
-                          _signOut();
-                        },
+
+                        showDialog(context: context,
+                        builder: (context){
+
+                          return new AlertDialog(
+
+                            title: Text('Are you sure you want to log out?',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),),
+                            // content: SingleChildScrollView(
+                            //     child: Center(
+                            //       child: Text('Are you sure you want to log out?',
+                            //         style: TextStyle(
+                            //           fontWeight: FontWeight.bold,
+                            //         ),),
+                            //     )
+                            // ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('Cancel'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: Text('Yes'),
+                                onPressed: () {
+                                  _signOut();
+                                },
+                              ),
+
+
+                            ],
+                          );
+                        });
+                        }
                       ),
                     ],
                   ),
@@ -338,7 +373,7 @@ class SettingsPageState extends State<SettingsPage>{
                         },
                       ),
                       SettingsTile(
-                        title: 'Terms of Services',
+                        title: 'Privacy Policy',
                         leading: Icon(Icons.article_outlined),
                         onPressed: (BuildContext context) {
                           Navigator.push(context,
