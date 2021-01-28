@@ -1,3 +1,4 @@
+import 'package:WasteLess/change-displayName.dart';
 import 'package:WasteLess/login/change-password.dart';
 import 'package:WasteLess/login/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -207,6 +208,15 @@ class SettingsPageState extends State<SettingsPage>{
                                 );
                               });
 
+                        },
+                      ),
+                      SettingsTile(
+                        title: 'Change Display Name ',
+                        leading: Icon(Icons.account_circle_outlined),
+                        onPressed: (BuildContext context) {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => new ChangeName(user))
+                          );
                         },
                       ),
                       SettingsTile(

@@ -148,11 +148,11 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
     String typeNum;
     if(type == "general") {
-      typeNum = "1";
-    } else if (type == "plastic") {
-      typeNum = "2";
-    } else if(type == "paper") {
       typeNum = "3";
+    } else if (type == "plastic") {
+      typeNum = "1";
+    } else if(type == "paper") {
+      typeNum = "2";
     } else {
       typeNum = "4";
     }

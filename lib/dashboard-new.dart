@@ -48,7 +48,7 @@ class DashboardPageState extends State<DashboardPage> {
   Future<String> _fetchLeaderBoardData(String type, String nameOrRank) async{
 
 
-    String currentTypeNum = type == "general" ? '1': '4';
+    String currentTypeNum = type == "general" ? '3': '4';
 
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard/${user.uid.toString()}?type=${currentTypeNum}&aggregateBy=week";
     print(link);
@@ -139,7 +139,7 @@ class DashboardPageState extends State<DashboardPage> {
   Future<List> _fetchTrashOrRecycleData(String type) async {
 
     //TODO FIX WHEN NEW END POINT FOR RECYCALBLES ARE UP
-    String typeNum = type == "general" ? "1" : "4";
+    String typeNum = type == "general" ? "3" : "4";
     int numOfDays;
     var now = new DateTime.now();
     switch (DateFormat('E').format(DateTime.now())) {

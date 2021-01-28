@@ -69,7 +69,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     //Rubbish selected
     if (type == "Rubbish") {
       currentType = "general";
-      currentTypeNum = '1';
+      currentTypeNum = '3';
     } else {
       currentType = "all";
       // TODO:UPDATE ONCE ENDPOINT FOR ALL RECYCLING IS UP

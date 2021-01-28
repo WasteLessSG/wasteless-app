@@ -87,8 +87,9 @@ class HistoryPageState extends  State<HistoryPage> {
 
     if (_typeChosen[1]) {
       currentType = "general";
-      currentTypeNum = "1";
+      currentTypeNum = "3";
     } else {
+      // all is paper plus plastic
       currentType = "all";
       currentTypeNum = "4";
     }
