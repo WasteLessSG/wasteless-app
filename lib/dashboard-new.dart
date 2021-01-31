@@ -180,7 +180,7 @@ class DashboardPageState extends State<DashboardPage> {
     String timeRangeEndValue = (now.millisecondsSinceEpoch ~/ 1000).toString();
 
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${typeNum}";
-    //print("Trash/Recycle data " + link);
+    print("Trash/Recycle data " + link);
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
     if (response.statusCode == 200) {
       Map map = json.decode(response.body) as Map;

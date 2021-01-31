@@ -68,13 +68,16 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
     String typeNum;
     if(userSelectedChoice) {
-      typeNum = "1";
+      // for userSelectedChoice
+      // true is trash
+      // false is all recycling data
+      typeNum = "3";
     } else {
 
       if(selectedType == "plastic") {
-        typeNum = "2";
+        typeNum = "1";
       } else if (selectedType == "paper") {
-        typeNum = "3";
+        typeNum = "2";
       } else {
         typeNum = "4";
       }
