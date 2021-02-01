@@ -2,6 +2,7 @@ import 'package:WasteLess/change-displayName.dart';
 import 'package:WasteLess/login/change-password.dart';
 import 'package:WasteLess/login/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:WasteLess/TermsOfService.dart';
@@ -48,6 +49,15 @@ class SettingsPageState extends State<SettingsPage>{
 
           return Column(
             children: <Widget>[
+
+              Text("1. Key in your Login number and press *\n2. Key in your Pin number and press *\n3. The display should show 'OPEN'",
+                style: TextStyle(
+                  fontSize: 15,
+                  //fontStyle: FontStyle.italic,
+                  color: Colors.black54,
+                ),
+              ),
+
               SizedBox(
                 height: 20,
               ),
