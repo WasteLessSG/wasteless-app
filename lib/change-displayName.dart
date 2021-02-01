@@ -73,11 +73,13 @@ class ChangeNameState extends State<ChangeName> {
               SizedBox(
                 height: 50,
               ),
+
+
               TextField(
                 autocorrect: false,
                 controller: nameController,
                 // onChanged: (value) => newName = value,
-                inputFormatters: [ FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")), ],
+                //inputFormatters: [ FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")), ],
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white70,
@@ -90,6 +92,7 @@ class ChangeNameState extends State<ChangeName> {
                   ),
                 ),
               ),
+
               SizedBox(
                 height: 20,
               ),
