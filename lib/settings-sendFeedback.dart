@@ -5,29 +5,27 @@ import 'package:WasteLess/wasteless-data.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
-class ChangeName extends StatefulWidget {
+class sendFeedback extends StatefulWidget {
 
   final FirebaseUser user;
-  ChangeName(this.user);
+  sendFeedback(this.user);
 
   @override
-  ChangeNameState createState() => new ChangeNameState(this.user);
+  FeedbackState createState() => new FeedbackState(this.user);
 }
 
-class ChangeNameState extends State<ChangeName> {
+class FeedbackState extends State<sendFeedback> {
 
   String newName;
   FirebaseUser user;
-  ChangeNameState(this.user);
+  FeedbackState(this.user);
   final TextEditingController nameController = TextEditingController();
-
 
   @override
   void initState() {
 
     super.initState();
   }
-
 
   @override
   void dispose() {
@@ -39,10 +37,11 @@ class ChangeNameState extends State<ChangeName> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text("Change Display Name",
+        title: Text("Feedback",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -82,7 +81,11 @@ class ChangeNameState extends State<ChangeName> {
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white70,
-                  hintText: "Enter a new display name",
+                  hintText: "Please enter your feedback here!",
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 200.0
+                  ),
+
                   border: UnderlineInputBorder(),
                   focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
@@ -100,10 +103,10 @@ class ChangeNameState extends State<ChangeName> {
                 height: 20,
               ),
 
-
+              //TODO: change this callback to the google forms API
               /*
               LoginButton(
-                title: "Confirm Name Change",
+                title: "Confirm feedback submission",
                 callback: changeDisplayName,
               ),
               */
@@ -112,39 +115,6 @@ class ChangeNameState extends State<ChangeName> {
         ),
       ),
     );
-  }
-
-  Future<void> changeDisplayName() async {
-   newName = nameController.text;
-
-
-    if (newName == null) {
-      _showAlertDialog("Error", "Please enter a new name");
-    } else
-      try {
-
-        String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/user/${user.uid.toString()}?username=${newName}";
-
-
-        final response = await http.put(link, headers: {"x-api-key": WasteLessData.userKey});
-        if (response.statusCode == 200) {
-          _showAlertDialog("Name Changed Successfully!", "Display name is now " + newName);
-          nameController.clear();
-        } else {
-          throw Exception('Failed to load data');
-        }
-
-      } catch (e) {
-       _showAlertDialog("Error", e.message);
-      }
-  }
-
-  void _showAlertDialog(String title, String message) {
-    AlertDialog alertDialog = AlertDialog(
-      title: Text(title),
-      content: Text(message),
-    );
-    showDialog(context: context, builder: (_) => alertDialog);
   }
 
 }

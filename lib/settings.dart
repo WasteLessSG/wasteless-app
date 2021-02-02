@@ -1,3 +1,4 @@
+import 'package:WasteLess/settings-sendFeedback.dart';
 import 'package:WasteLess/change-displayName.dart';
 import 'package:WasteLess/login/change-password.dart';
 import 'package:WasteLess/login/login.dart';
@@ -236,6 +237,7 @@ class SettingsPageState extends State<SettingsPage>{
                           );
                         },
                       ),
+
                       SettingsTile(
                         title: 'Change Password ',
                         leading: Icon(Icons.lock_outlined),
@@ -399,6 +401,17 @@ class SettingsPageState extends State<SettingsPage>{
 
                         },
                       ),
+
+                      SettingsTile(
+                        title: 'Feedback ',
+                        leading: Icon(Icons.feedback_outlined),
+                        onPressed: (BuildContext context) {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => new sendFeedback(user))
+                          );
+                        },
+                      ),
+
                       SettingsTile(
                         title: 'Privacy Policy',
                         leading: Icon(Icons.article_outlined),
