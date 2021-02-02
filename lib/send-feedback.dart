@@ -64,63 +64,74 @@ class FeedbackPageState extends State<FeedbackPage> {
         child: Container(
           alignment: Alignment.center,
           padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-          child: Column(
+          child: GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              print('current focus: ' + currentFocus.toString() );
 
-            children: <Widget>[
-              SizedBox(
-                height: 35,
-              ),
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+             //FocusScope.of(context).requestFocus(new FocusNode());
+             //  SystemChannels.textInput.invokeMethod('TextInput.hide');
+            },
+            child: Column(
 
+              children: <Widget>[
+                SizedBox(
+                  height: 15,
+                ),
 
-              TextField(
-                autocorrect: false,
-                controller: feedbackController,
-                keyboardType: TextInputType.multiline,
-                minLines: 15,
-                maxLines: 15,
-                // onChanged: (value) => newName = value,
-                //inputFormatters: [ FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")), ],
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white70,
-                  hintText: "We want to provide the best experience possible! To help us, please take a moment to leave your feedback here. Thank you! ",
-                  contentPadding: const EdgeInsets.all(20),
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color.fromRGBO(32, 95, 38, 1),
-                      )
+                TextField(
+                  autocorrect: false,
+                  controller: feedbackController,
+                  keyboardType: TextInputType.multiline,
+                  minLines: 7,
+                  maxLines: 7,
+                  // onChanged: (value) => newName = value,
+                  //inputFormatters: [ FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")), ],
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white70,
+                    hintText: "We want to provide the best experience possible! To help us, please take a moment to leave your feedback here. Thank you! ",
+                    contentPadding: const EdgeInsets.all(20),
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromRGBO(32, 95, 38, 1),
+                        )
+                    ),
                   ),
                 ),
-              ),
 
-              SizedBox(
-                height: 10,
-              ),
-
+                SizedBox(
+                  height: 10,
+                ),
 
 
-          CheckboxListTile(
-            controlAffinity: ListTileControlAffinity.leading,
-            activeColor:  Color.fromRGBO(32, 95, 38, 1),
-            title: Text('Send anonymously'),
-            value: anon,
-            onChanged: (value) {
-              setState(() {
-                anon = !anon;
-                print(anon);
 
-              });}),
+                CheckboxListTile(
+                    controlAffinity: ListTileControlAffinity.leading,
+                    activeColor:  Color.fromRGBO(32, 95, 38, 1),
+                    title: Text('Send anonymously'),
+                    value: anon,
+                    onChanged: (value) {
+                      setState(() {
+                        anon = !anon;
+                        print(anon);
 
-              SizedBox(
-                height: 20,
-              ),
+                      });}),
 
-              LoginButton(
-                title: "Send Feedback",
-                callback: sendFeedback,
-              ),
+                SizedBox(
+                  height: 20,
+                ),
 
-            ],
+                LoginButton(
+                  title: "Send Feedback",
+                  callback: sendFeedback,
+                ),
+
+              ],
+            ),
           ),
         ),
       ),

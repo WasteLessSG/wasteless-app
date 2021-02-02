@@ -101,12 +101,12 @@ class ChangeNameState extends State<ChangeName> {
               ),
 
 
-              /*
+
               LoginButton(
                 title: "Confirm Name Change",
                 callback: changeDisplayName,
               ),
-              */
+
             ],
           ),
         ),
