@@ -1,4 +1,4 @@
-import 'package:WasteLess/settings-sendFeedback.dart';
+import 'package:WasteLess/send-feedback.dart';
 import 'package:WasteLess/change-displayName.dart';
 import 'package:WasteLess/login/change-password.dart';
 import 'package:WasteLess/login/login.dart';
@@ -403,11 +403,11 @@ class SettingsPageState extends State<SettingsPage>{
                       ),
 
                       SettingsTile(
-                        title: 'Feedback ',
+                        title: 'Send Feedback ',
                         leading: Icon(Icons.feedback_outlined),
                         onPressed: (BuildContext context) {
                           Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => new sendFeedback(user))
+                              MaterialPageRoute(builder: (context) => new FeedbackPage(user))
                           );
                         },
                       ),
