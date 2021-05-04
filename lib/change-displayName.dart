@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:WasteLess/wasteless-data.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/services.dart';
 
 class ChangeName extends StatefulWidget {
 
@@ -24,7 +23,6 @@ class ChangeNameState extends State<ChangeName> {
 
   @override
   void initState() {
-
     super.initState();
   }
 
@@ -37,6 +35,9 @@ class ChangeNameState extends State<ChangeName> {
     super.dispose();
   }
 
+  /**
+   * main scaffolding function to build change name page under settings.
+   */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,10 +115,11 @@ class ChangeNameState extends State<ChangeName> {
     );
   }
 
+  /**
+   * function to allow users to change their display name
+   */
   Future<void> changeDisplayName() async {
    newName = nameController.text;
-
-
     if (newName == null) {
       _showAlertDialog("Error", "Please enter a new name");
     } else
@@ -139,6 +141,10 @@ class ChangeNameState extends State<ChangeName> {
       }
   }
 
+  /**
+   * returns an alert for the user to notify of name change.
+   * Called after async operation, assuming successful retrieval of information.
+   */
   void _showAlertDialog(String title, String message) {
     AlertDialog alertDialog = AlertDialog(
       title: Text(title),

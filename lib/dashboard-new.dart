@@ -9,6 +9,9 @@ import 'dart:convert';
 import 'package:WasteLess/wasteless-data.dart';
 import 'package:WasteLess/leaderboard.dart';
 
+/**
+ * Initialises dashboard page
+ */
 class DashboardPage extends StatefulWidget{
 
   FirebaseUser user;
@@ -33,6 +36,9 @@ class DashboardPageState extends State<DashboardPage> {
   final df3 = DateFormat.yMMMd();
   final dfFilter = DateFormat("yyyy-MM-dd");
 
+  /**
+   * async operation that retrieves the user's name from firebase based on username and password provided
+   */
   Future<String> _fetchName() async{
 
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/user/${user.uid.toString()}/login";
@@ -45,9 +51,12 @@ class DashboardPageState extends State<DashboardPage> {
     }
   }
 
+
+  /**
+   * async operation that retrieves the leaderboard data to be displayed in the dashboard.
+   * shows a loading circle while data is being fetched, returns user's ranking on the leaderboard.
+   */
   Future<String> _fetchLeaderBoardData(String type, String nameOrRank) async{
-
-
     String currentTypeNum = type == "general" ? '3': '4';
 
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard/${user.uid.toString()}?type=${currentTypeNum}&aggregateBy=week";
@@ -65,6 +74,9 @@ class DashboardPageState extends State<DashboardPage> {
 
   }
 
+  /**
+   * returns text for leaderboard tiles to inform user's ranking in general waste leaderboard
+   */
   Widget _rankingText(String type) {
     return FutureBuilder(
     future: _fetchLeaderBoardData(type, 'rank'),
@@ -111,7 +123,6 @@ class DashboardPageState extends State<DashboardPage> {
         );
 
       } else {
-
         return RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
@@ -128,17 +139,17 @@ class DashboardPageState extends State<DashboardPage> {
             ],
           ),
         );
-
-
       }
-    }
-    );
+    });
 }
 
 
+
+  /**
+   * returns the list of data for both leaderboards
+   */
   Future<List> _fetchTrashOrRecycleData(String type) async {
 
-    //TODO FIX WHEN NEW END POINT FOR RECYCALBLES ARE UP
     String typeNum = type == "general" ? "3" : "4";
     int numOfDays;
     var now = new DateTime.now();
@@ -180,12 +191,11 @@ class DashboardPageState extends State<DashboardPage> {
     String timeRangeEndValue = (now.millisecondsSinceEpoch ~/ 1000).toString();
 
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${typeNum}";
-    print("Trash/Recycle data " + link);
+
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
+
     if (response.statusCode == 200) {
       Map map = json.decode(response.body) as Map;
-      //print(map);
-      //print("^^ DATA FOR TRASH/RECYCLE: " + typeNum.toString());
       return map["data"];
 
     } else {
@@ -193,8 +203,11 @@ class DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  Widget _returnName() {
 
+  /**
+   * returns the name of the user
+   */
+  Widget _returnName() {
     return FutureBuilder(
         future: _fetchName(),
         builder: (context, snapshot) {
@@ -204,30 +217,26 @@ class DashboardPageState extends State<DashboardPage> {
                 style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: MediaQuery.of(context).size.width/8,
-          )); } else if (snapshot.connectionState == ConnectionState.waiting) {{ return CircularProgressIndicator(
+          )); } else {
+            { return CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-          );}} else {
-            return Text( "Dylan",
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: MediaQuery.of(context).size.width/10,
-                ));
+            );
+            }
           }
-    });
+        }
+    );
 
   }
 
+  /**
+   * returns specific amount of waste generated
+   */
   Widget _buildStats(String party, String type) {
-
     return FutureBuilder(
         future: _fetchTrashOrRecycleData(type),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             double totalValue = snapshot.data.fold(0, (current, entry) => current + entry["weight"]).toDouble() ;
-            //print("vvvv");
-            //print(snapshot.data);
-            //("^^^^");
 
             return Container(
               alignment: Alignment.center,
@@ -235,9 +244,7 @@ class DashboardPageState extends State<DashboardPage> {
               child: FittedBox(
                 fit: BoxFit.fitWidth,
                 child: Text(
-                  // "100.00" + "kg",
                   nf.format(totalValue /1000000) + "kg",
-                  // textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.045,
                     fontWeight: FontWeight.bold,
@@ -251,7 +258,6 @@ class DashboardPageState extends State<DashboardPage> {
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
               ),
-
             );
           }
         }
@@ -259,7 +265,9 @@ class DashboardPageState extends State<DashboardPage> {
   }
 
 
-
+  /**
+   * scaffold of application
+   */
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -493,14 +501,11 @@ class DashboardPageState extends State<DashboardPage> {
   }
 
   Widget makeTrashBin() {
-
     return FutureBuilder(
       future: _fetchTrashOrRecycleData("general"),
       builder: (context,snapshot) {
         if (snapshot.hasData){
           String selectedState;
-          // double avgHouseWaste = 1.5;
-          // double avgHouseSize = 3.16;
           double avgPersonWaste = (1.5 * 7)/3.16;
           print("sg avg: " + avgPersonWaste.toString());
           double totalValue = snapshot.data.fold(0, (current, entry) => current + entry["weight"]).toDouble() /1000000 ;
@@ -536,7 +541,6 @@ class DashboardPageState extends State<DashboardPage> {
               width: MediaQuery.of(context).size.height * 0.177,
             );
           }
-
         } else {
           return Padding(
             padding: EdgeInsets.only(top:10),

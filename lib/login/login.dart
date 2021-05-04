@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:WasteLess/home.dart';
 
-
+/**
+ * Initialises login screen
+ */
 class Login extends StatefulWidget {
 
   @override
@@ -13,7 +15,8 @@ class Login extends StatefulWidget {
 class LoginState extends State<Login> {
   String email, password;
   final TextEditingController passwordController = TextEditingController();
-//Firebase doesnt support custom usernames, username must be in form of email
+
+  //Firebase doesnt support custom usernames, username must be in form of email
   bool _obscureText = true;
 
   @override

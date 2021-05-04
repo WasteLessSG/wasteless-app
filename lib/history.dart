@@ -6,6 +6,9 @@ import 'package:WasteLess/wasteless-data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
+/**
+ * Initialise history page based on firebase user
+ */
 class HistoryPage extends StatefulWidget{
 
   final FirebaseUser user;
@@ -14,6 +17,7 @@ class HistoryPage extends StatefulWidget{
   @override
   HistoryPageState createState() => new HistoryPageState(this.user);
 }
+
 
 class HistoryPageState extends  State<HistoryPage> {
   FirebaseUser user;
@@ -40,8 +44,11 @@ class HistoryPageState extends  State<HistoryPage> {
   final dfFilter = DateFormat("yyyy-MM-dd");
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  _fetchData() async {
 
+  /**
+   * Async operation to retrieve user's historical data
+   */
+  _fetchData() async {
     int numOfDays ;
     var now = new DateTime.now();
     switch (DateFormat('E').format(DateTime.now())) {
@@ -79,18 +86,15 @@ class HistoryPageState extends  State<HistoryPage> {
     var prevMonth = new DateTime(now.year, now.month, 1);
     var prevWeek = new DateTime(now.year, now.month, now.day - numOfDays);
 
-
-    String currentType;
     String currentTypeNum;
     String timeRangeStartValue;
     String timeRangeEndValue = (now.millisecondsSinceEpoch * 1000).toString();
 
     if (_typeChosen[1]) {
-      currentType = "general";
+      //general waste
       currentTypeNum = "3";
     } else {
-      // all is paper plus plastic
-      currentType = "all";
+      //paper plus plastic
       currentTypeNum = "4";
     }
 
@@ -101,8 +105,6 @@ class HistoryPageState extends  State<HistoryPage> {
     } else {
       timeRangeStartValue = (prevWeek.millisecondsSinceEpoch ~/ 1000).toString();
     }
-
-
 
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${currentTypeNum}";
     print(link);
@@ -117,9 +119,10 @@ class HistoryPageState extends  State<HistoryPage> {
   }
 
 
+  /**
+   * builds the history list based on information retrieved
+   */
   Widget _buildList() {
-
-    var now = new DateTime.now();
     List newList = list;
 
     newList = new List.from(newList.reversed);
@@ -156,20 +159,21 @@ class HistoryPageState extends  State<HistoryPage> {
             itemCount: newList.length,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-                  color:   _typeChosen[1] ? ((index % 2 == 0) ? Colors.brown[50] : Colors.white10) : ((index % 2 == 0) ? Colors.lightGreen[50] : Colors.white10),
+                  color: _typeChosen[1] ? ((index % 2 == 0) ? Colors.brown[50] : Colors.white10) : ((index % 2 == 0) ? Colors.lightGreen[50] : Colors.white10),
                   child: ListTile(
                     dense: true,
                     contentPadding: EdgeInsets.fromLTRB(20,10.0,20,10),
-                    title: new Text(df4.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["time"] * 1000)).toString(),
+                    title: Text(df4.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["time"] * 1000)).toString(),
                     style: TextStyle(
                       fontSize: 25,
-                    ),),
-                    //title: new Text(DateTime.now().month.toString()),
-                   trailing: new Text(nf.format((newList[index]["weight"] /1000000)) + "kg",
+                    ),
+                    ),
+                   trailing: Text(nf.format((newList[index]["weight"] /1000000)) + "kg",
                      style: TextStyle(
                        fontSize: MediaQuery.of(context).size.width/15,
                        fontWeight: FontWeight.bold
-                     ),),
+                     ),
+                   ),
                   )
               );
             },
@@ -179,6 +183,9 @@ class HistoryPageState extends  State<HistoryPage> {
   }
 
 
+  /**
+   * scaffold of history page
+   */
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

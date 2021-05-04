@@ -4,17 +4,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:WasteLess/massEntry.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:WasteLess/massentry.dart';
 import 'package:intl/intl.dart';
-import 'package:WasteLess/styles.dart';
 import 'dart:convert';
-import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 import 'package:WasteLess/wasteless-data.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
+/**
+ * Initialises personal statistics page
+ */
 class PersonalStatsPage extends StatefulWidget{
   final bool userSelectedChoice ;
   final FirebaseUser user;
@@ -60,11 +60,12 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   void initState() {
     isSelectedTypeAll[0] = userSelectedChoice;
     selectedType = userSelectedChoice ? "general" : "all";
-    //might be causing issue because if we nav from this page @ plastic back to dashboard, and move from dashboard back to here, it registers all but the counter is still at plastic's counter
   }
 
+  /**
+   * retrieves user's data for textbox information generation
+   */
   Future<double> _fetchTotalDataPersonal() async {
-    //String typeNum =  userSelectedChoice  ? "1" : "4";
 
     String typeNum;
     if(userSelectedChoice) {
@@ -117,12 +118,12 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     }
 
     var now = new DateTime.now();
-    var prevDay = new DateTime(now.year, now.month, now.day);
     var prevWeek = new DateTime(now.year, now.month, now.day - numOfDays);
-    var prevMonth = new DateTime(now.year, now.month, 1); //fix to be first day of every month
+    var prevMonth = new DateTime(now.year, now.month, 1);
     String timeRangeStartValue;
+
     if (selectedTime == "allTime") {
-      timeRangeStartValue = "0"; //6th Jan, 2021, 5.53pm
+      timeRangeStartValue = "0";
     } else if (selectedTime == "month") {
       timeRangeStartValue = (prevMonth.millisecondsSinceEpoch ~/ 1000).toString();
     } else { //week
@@ -131,7 +132,6 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
     String timeRangeEndValue = (now.millisecondsSinceEpoch ~/ 1000).toString();
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${typeNum}";
-    print("box link " + link);
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
 
     if (response.statusCode == 200) {
@@ -145,10 +145,12 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     } else {
       throw Exception('Failed to load data');
     }
+  }
 
-}
+  /**
+   * retrieves user's data for graph generation
+   */
   _fetchDataPersonal(String type) async {
-
     String typeNum;
     if(type == "general") {
       typeNum = "3";
@@ -201,8 +203,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     String timeRangeEndValue = (now.millisecondsSinceEpoch ~/ 1000).toString();
 
     if (selectedTime == "allTime") {
-      //TODO: AFTER TESTING, CHANGE THIS VALUE. should at least be 1609926000
-      timeRangeStartValue = "0"; //6th Jan, 2021, 5.53pm
+      timeRangeStartValue = "0";
     } else if (selectedTime == "month") {
       timeRangeStartValue = (prevMonth.millisecondsSinceEpoch ~/ 1000).toString();
     } else { //week
@@ -216,121 +217,14 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     if (response.statusCode == 200) {
       map = json.decode(response.body) as Map;
       dataList = map["data"];
-
-      /*
-      print("VVVVV");
-      print("FETCHDATA");
-      print("selected type: " + selectedType);
-      print("selected time: " + selectedTime);
-      print("Current TimeRangeEndValue: " + timeRangeEndValue);
-      print("Now value: " + (now.millisecondsSinceEpoch ~/ 1000).toString());
-      print("Current TimeRangeStart value: " + timeRangeStartValue);
-      print("preMonth value: " + (prevMonth.millisecondsSinceEpoch ~/ 1000).toString());
-      print("preWeek value: " + (prevWeek.millisecondsSinceEpoch ~/ 1000).toString());
-      print("CurrentList: " + list.toString());
-      print("link :" + link);
-      print("^^^^^");
-      */
-
-
-    } else {
-      throw Exception('Failed to load data');
-    }
-
-  }
-
-  _fetchDataArea(String type) async {
-
-    String typeNum;
-    if(type == "general") {
-      typeNum = "1";
-    } if (type == "plastic") {
-      typeNum = "2";
-    } if (type == "paper") {
-      typeNum = "3";
-    } else {
-      typeNum = "4";
-    }
-
-    int numOfDays ;
-    switch (DateFormat('E').format(DateTime.now())) {
-
-      case 'Mon' : {
-        numOfDays = 0;
-        break;
-      }
-      case 'Tue' : {
-        numOfDays = 1;
-        break;
-      }
-      case 'Wed' : {
-        numOfDays = 2;
-        break;
-      }
-      case 'Thu' : {
-        numOfDays = 3;
-        break;
-      }
-      case 'Fri' : {
-        numOfDays = 4;
-        break;
-      }
-      case 'Sat' : {
-        numOfDays = 5;
-        break;
-      }
-      case 'Sun' : {
-        numOfDays = 6;
-        break;
-      }
-    }
-
-    var now = new DateTime.now();
-    var prevMonth = new DateTime(now.year, now.month, 1); //fix to be first day of every month
-    var prevWeek = new DateTime(now.year, now.month, now.day - numOfDays);
-
-    String timeRangeStartValue;
-    String timeRangeEndValue = (now.millisecondsSinceEpoch ~/ 1000).toString();
-
-    if (selectedTime == "allTime") {
-      //TODO: AFTER TESTING, CHANGE THIS VALUE. should at least be 1609926000
-      timeRangeStartValue = "0"; //6th Jan, 2021, 5.53pm
-    } else if (selectedTime == "month") {
-      timeRangeStartValue = (prevMonth.millisecondsSinceEpoch ~/ 1000).toString();
-    } else { //week
-      timeRangeStartValue = (prevWeek.millisecondsSinceEpoch ~/ 1000).toString();
-    }
-
-    String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${typeNum}";
-    print(typeNum.toString() + " " + link);
-    print("stats page infor");
-    final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
-
-    if (response.statusCode == 200) {
-      map = json.decode(response.body) as Map;
-      areaList = map["data"];
-
-      /*
-      print("VVVVV");
-      print("FETCHDATA");
-      print("selected type: " + selectedType);
-      print("selected time: " + selectedTime);
-      print("Current TimeRangeEndValue: " + timeRangeEndValue);
-      print("Now value: " + (now.millisecondsSinceEpoch ~/ 1000).toString());
-      print("Current TimeRangeStart value: " + timeRangeStartValue);
-      print("preMonth value: " + (prevMonth.millisecondsSinceEpoch ~/ 1000).toString());
-      print("preWeek value: " + (prevWeek.millisecondsSinceEpoch ~/ 1000).toString());
-      print("CurrentList: " + list.toString());
-      print("link :" + link);
-      print("^^^^^");
-      */
-
-
     } else {
       throw Exception('Failed to load data');
     }
   }
 
+  /**
+   * helper method to generate data
+   */
   _generateData(myData) {
     _seriesBarData = List<charts.Series<MassEntry, String>>();
     _seriesBarData.add(
@@ -345,20 +239,9 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     );
   }
 
-  _generateDailyData(myData) {
-    _seriesBarData = List<charts.Series<MassEntry, String>>();
-    _seriesBarData.add(
-      charts.Series(
-        domainFn: (MassEntry massEntry, _) => DateFormat.Hm().format(massEntry.dateTimeValue),
-        measureFn: (MassEntry massEntry, _) => massEntry.mass,
-        seriesColor: charts.ColorUtil.fromDartColor(Colors.green),
-        id: 'Mass',
-        data: myData,
-
-      ),
-    );
-  }
-
+  /**
+   * helper method to generate data
+   */
   _generateComDayData(myData) {
     _seriesBarData = List<charts.Series<MassEntry, String>>();
     _seriesBarData.add(
@@ -373,6 +256,9 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     );
   }
 
+  /**
+   * helper method to generate data
+   */
   _generateWeeklyData(myData) {
     _weekSeriesBarData = List<charts.Series<formattedWeekEntry, String>>();
     _weekSeriesBarData.add(
@@ -386,6 +272,10 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       ),
     );
   }
+
+  /**
+   * helper method to generate data
+   */
   _generateTimeChartData(myData) {
     _timeChartData = List<charts.Series<MassEntry, DateTime>>();
 
@@ -395,45 +285,15 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
         measureFn: (MassEntry massEntry, _) => massEntry.mass,
         colorFn: (_, __) => isSelectedTypeAll[0] ? charts.MaterialPalette.deepOrange.shadeDefault: charts.MaterialPalette.green.shadeDefault,
         areaColorFn: (MassEntry massEntry, _) => isSelectedTypeAll[0] ? charts.MaterialPalette.deepOrange.shadeDefault.lighter : charts.MaterialPalette.green.shadeDefault.lighter,
-        // seriesColor: charts.ColorUtil.fromDartColor(Colors.green),
         id: 'Mass',
         data: myData,
       ),
     );
   }
-  //
-  // static Text getPersonalWeekTotal(String house) {
-  //
-  //   StreamBuilder<QuerySnapshot>(
-  //       stream: Firestore.instance
-  //           .collection('houses')
-  //           .document(house)
-  //           .collection("RawData")
-  //           .snapshots(),
-  //
-  //       builder: (context, snapshot) {
-  //
-  //         if (!snapshot.hasData) {
-  //           return Styles.formatNumber(0.00);
-  //         }
-  //         else {
-  //           //print(snapshot.toString());
-  //           List<MassEntry> weekData = snapshot.data.documents
-  //               .map((documentSnapshot) =>
-  //               MassEntry.fromMap(documentSnapshot.data))
-  //               .toList()
-  //               .where((i) =>
-  //               DateTime.parse(i.timestamp).isAfter(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-  //                   .subtract(Duration(days: 6))))
-  //               .toList();
-  //           double weeklyMass = weekData.fold(0, (previousValue, element) => previousValue + element.mass);
-  //           //debugPrint(weeklyMass.toString());
-  //           return Styles.formatNumber(38.2);
-  //         }
-  //       }
-  //   );
-  // }
 
+  /**
+   * switchbar for recyclables between paper, plastic/mentals, and all
+   */
   Widget switchBar() {
     return ToggleSwitch(
       minWidth: MediaQuery.of(context).size.width/1.05,
@@ -444,11 +304,6 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       inactiveBgColor: Colors.grey,
       inactiveFgColor: Colors.white,
       labels: ['All', 'Paper', 'Plastic/Metal'],
-      // icons: [
-      //   FontAwesome.recycle,
-      //   FontAwesome.newspaper_o,
-      //   SimpleLineIcons.bag,
-      // ],
       iconSize: MediaQuery.of(context).size.height/35,
       activeBgColors: [Colors.green, Colors.green, Colors.green],
       onToggle: (index) {
@@ -467,8 +322,10 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     );
   }
 
+  /**
+   * helper method for text generation for information on disposal amount
+   */
   Text throwingText() {
-
     String timeText;
     switch(selectedTime){
       case "week": {
@@ -494,9 +351,11 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
   }
 
 
+  /**
+   * scaffold for statistics page
+   */
   @override
   Widget build(BuildContext context) {
-
     String currentTitle;
     if (isSelectedTypeAll[0]) {
       currentTitle = title[0];
@@ -505,7 +364,6 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
     }
 
     return Scaffold(
-      //appBar: Styles.MainStatsPageHeader(title[0], FontWeight.bold, Colors.black),
       appBar: AppBar(
         leading: IconButton(
             icon: Icon(
@@ -536,8 +394,6 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
               height: MediaQuery.of(context).size.height/50,
             ),
 
-            //type selection
-            //isSelectedTypeAll[0] ? new Container() : recyclingBar(),
             isSelectedTypeAll[0] ? new Container() : switchBar(),
 
             SizedBox(
@@ -609,6 +465,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
               height: MediaQuery.of(context).size.height/50,
             ),
 
+
             Container(
               decoration: BoxDecoration(
                 color:  isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
@@ -621,7 +478,6 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                 alignment: Alignment.center,
                 child:  FutureBuilder(
                           future:_fetchTotalDataPersonal(),
-                          //future: _fetchDataPersonal(selectedType),
                           builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             print("Snapshot data!!!");
@@ -637,7 +493,6 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
                               FutureBuilder(
                                   future:_fetchTotalDataPersonal(),
-                                //future: _fetchDataArea(selectedType),
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState == ConnectionState.done) {
                                   return throwingText();
@@ -648,7 +503,6 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                                   }
                                 }
                               ),
-                              //throwingText(),
 
                               SizedBox(
                                 height: MediaQuery.of(context).size.height/100,
@@ -685,79 +539,10 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
               ),
             ),
 
+
             SizedBox(
               height: MediaQuery.of(context).size.height/50,
             ),
-
-
-            //TODO: FIX THIS IN THE FUTURE. issue right now is that it sometimes gives nonsense values. might have to segment the UI differently to be FutureBuilder blocks based on which _fetchData is used. in this case, need to link the personal week avg with the graph's method while the tembusu week avg is separate
-            /*
-            Row(
-               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-               children: <Widget>[
-                 (isSelectedTrend[0] || isSelectedTrend[1]) ? Container(
-                   decoration: BoxDecoration(
-                     color: isSelectedTypeAll[0] ? colorPalette[1]: colorPalette[0],
-                     //Colors.lightGreen[200],
-                     borderRadius: BorderRadius.circular(5),
-                   ),
-                   height: MediaQuery.of(context).size.height/15,
-                   width: MediaQuery.of(context).size.width/1.05,
-                   padding: EdgeInsets.all(7),
-                   child:  Row(
-                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                     children: <Widget>[
-
-                       Container(
-                         child: Text("Personal\nWeek Average: ",
-                           style: TextStyle(
-                             fontSize: MediaQuery.of(context).size.width/30,
-                             fontWeight: FontWeight.bold,
-                           ),
-                         ),
-                       ),
-
-                       FutureBuilder(
-                           future: _fetchTotalDataPersonal(),
-                           builder: (context, snapshot) {
-                             if (snapshot.connectionState == ConnectionState.done) {
-                               return _buildStatsInfo("self", selectedTime, Colors.purple);
-                             }
-                             else {
-                               return CircularProgressIndicator();
-                             }
-                           }
-                       ),
-
-                       Container(
-                         child: Text("Tembusu\nWeek Average: ",
-                           textAlign: TextAlign.left,
-                           style: TextStyle(
-                             fontSize: MediaQuery.of(context).size.width/30,
-                             fontWeight: FontWeight.bold,
-                           ),
-                         ),
-                       ),
-
-                       FutureBuilder(
-                           future: _fetchDataArea(selectedType),
-                           builder: (context, snapshot) {
-                             if (snapshot.connectionState == ConnectionState.done) {
-                               return _buildStatsInfo("Tembusu", selectedTime, Colors.teal.shade900);
-                             }
-                             else {
-                               return CircularProgressIndicator();
-                             }
-                           }
-                       ),
-
-                     ],
-                   ),
-                 ) : new Container(),
-
-               ],
-             ),
-            */
 
             //build the graph
             FutureBuilder(
@@ -780,7 +565,9 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
              //_buildBody(context),
 
     ]
-    )));
+        )
+      )
+    );
   }//, String time
 
 
@@ -821,29 +608,13 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
 
         _generateWeeklyData(formatWeekdays(combineDays(myData)));
-        //print(DateTime.now().weekday.toString());
 
         return Expanded(
           child: charts.BarChart(_weekSeriesBarData,
             animate: true,
-
-            //TODO: FIX THIS IN FUTURE
-            // behaviors: [
-            //   new charts.RangeAnnotation([
-            //     new charts.LineAnnotationSegment(
-            //         personalWeekAverageGeneral, charts.RangeAnnotationAxisType.measure,
-            //         color: charts.MaterialPalette.purple.shadeDefault),
-            //
-            //     new charts.LineAnnotationSegment(
-            //         areaWeekAverageGeneral, charts.RangeAnnotationAxisType.measure,
-            //         color: charts.MaterialPalette.teal.shadeDefault),
-            //   ])
-            // ],
-
           ),
         );
-      }
-      break;
+      } break;
 
       case "month": {
         myData = massdata.where((i)=> (i.dateTimeValue.month == DateTime.now().month)
@@ -855,8 +626,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             animate: true,
           ),
         );
-      }
-      break;
+      } break;
 
       case "allTime":{
         myData = massdata;
@@ -868,8 +638,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
             new charts.LineRendererConfig(includeArea: true, stacked: true),
           ),
         );
-      }
-      break;
+      } break;
 
       default: {
         //same as today
@@ -880,8 +649,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
           child: charts.BarChart(_seriesBarData,
             animate: true,),
         );
-      }
-      break;
+      } break;
     }
   }
 
@@ -972,109 +740,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
       formattedWeekEntry(rawArray[6],"SUN"),
     ];
 
-
-
-    // for ( var i = currentTime; i > 0; i--) {
-    //   var x = rawdata.where((element) =>
-    //   element.dateTimeValue.weekday == i);
-    //   print(x);
-    //   print("above is x");
-    //
-    //   if (x.isNotEmpty){
-    //     output[i-1].mass = rawdata[rawdata.indexOf(x.toList()[0])].mass;
-    //   }
-    // }
     return output;
-  }
-
-  Widget _buildStatsDailyInfo(String party) {
-
-    var now = new DateTime.now();
-    /*
-    List newList = list.map((entry) => massEntryGenerator(entry["time"], entry["weight"]))
-        .where((i) => i.shortenedTime == DateFormat('d MMM y')
-        .format(DateTime.now()).toString())
-        .toList();
-
-    */
-
-    List list1 = dataList.map((entry) => massEntryGenerator(entry["time"], entry["weight"]))
-        .toList();
-
-    List list1_1 = list1.map((entry) => entry.day).toList();
-
-    List list2 = list1.where((entry) => entry.day == now.day.toString()).toList();
-
-    List newList = list2;
-
-
-    /*
-    print("VVVVV");
-    print("_buildStatsDailyInfo");
-    print(now.day.toString());
-    print(list.toString());
-    print(list1.toString());
-    print(list1_1.toString());
-    print(list2.toString());
-    print("^^^^^");
-    */
-
-    double totalValue = newList.fold(0, (current, entry) => current + entry["weight"]);
-
-    return Expanded(
-
-      child: Text(nf.format(totalValue/1000000) + " kg",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: MediaQuery.of(context).size.width/15,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-
-
-    );
-  }
-
-  Widget _buildStatsInfo(String party, String trend, Color color) {
-
-    var now = new DateTime.now();
-    DateTime date = new DateTime(now.year, now.month);
-    DateTime lastDay = Utils.lastDayOfMonth(date);
-    int monthDays = lastDay.day;
-    double averageValue;
-
-    /*
-    print("VVVVV");
-    print("_buildStatsInfo");
-    print(trend);
-    print(type);
-    print(list.toString());
-    print("^^^^^");
-    */
-
-    switch(trend) {
-
-      case "week": {
-        averageValue = dataList.fold(0, (current, entry) => current + entry["weight"]) / 7.0;
-      }
-      break;
-
-      //for month data
-      default: {
-        averageValue = dataList.fold(0, (current, entry) => current + entry["weight"]) / monthDays;
-      }
-    }
-
-    return Expanded(
-        child: Text(nf.format(averageValue /1000000) + "kg",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: MediaQuery.of(context).size.width/25,
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
-        )
-    );
   }
 }
 

@@ -1,6 +1,6 @@
 import 'package:WasteLess/send-feedback.dart';
 import 'package:WasteLess/change-displayName.dart';
-import 'package:WasteLess/login/change-password.dart';
+import 'package:WasteLess/change-password.dart';
 import 'package:WasteLess/login/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +13,9 @@ import 'package:WasteLess/wasteless-data.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+/**
+ * Initialises Settings page
+ */
 class SettingsPage extends StatefulWidget{
   final FirebaseUser user;
   SettingsPage(this.user);
@@ -23,15 +26,15 @@ class SettingsPage extends StatefulWidget{
 
 class SettingsPageState extends State<SettingsPage>{
 
-
   TextStyle defaultStyle = TextStyle(color: Colors.grey, fontSize: 20.0);
   TextStyle linkStyle = TextStyle(color: Colors.blue);
   FirebaseUser user;
   SettingsPageState(this.user);
 
-
+  /**
+   * async operation to retrieve login information to enable further edit of data
+   */
   Future<Map> _fetchLoginData() async{
-
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/user/${user.uid.toString()}/login";
 
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
@@ -42,6 +45,9 @@ class SettingsPageState extends State<SettingsPage>{
     }
   }
 
+  /**
+   * returns information on each user's chute information including id and password for manual entry and unlocking of chute
+   */
   Widget _loginAlert() {
     return FutureBuilder(
       future: _fetchLoginData(),
@@ -105,18 +111,13 @@ class SettingsPageState extends State<SettingsPage>{
             ],
           );
 
-        }
-        else if (snapshot.connectionState == ConnectionState.waiting ) {
+        } else if (snapshot.connectionState == ConnectionState.waiting ) {
           return Column(
             children: <Widget>[
               SizedBox( height: 20),
               CircularProgressIndicator(),
             ],
           );
-
-
-
-
         } else {
           return Column(
             children: <Widget>[
@@ -158,20 +159,18 @@ class SettingsPageState extends State<SettingsPage>{
                   ],
                 ),
               )
-
             ],
           );
-
-
-
         }
       }
     );
   }
 
+  /**
+   * scaffold for settings page
+   */
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.white30,
         appBar:AppBar(
@@ -255,21 +254,12 @@ class SettingsPageState extends State<SettingsPage>{
 
                         showDialog(context: context,
                         builder: (context){
-
                           return new AlertDialog(
-
                             title: Text('Are you sure you want to log out?',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                              ),),
-                            // content: SingleChildScrollView(
-                            //     child: Center(
-                            //       child: Text('Are you sure you want to log out?',
-                            //         style: TextStyle(
-                            //           fontWeight: FontWeight.bold,
-                            //         ),),
-                            //     )
-                            // ),
+                              ),
+                            ),
                             actions: <Widget>[
                               TextButton(
                                 child: Text('Cancel'),
@@ -283,8 +273,6 @@ class SettingsPageState extends State<SettingsPage>{
                                   _signOut();
                                 },
                               ),
-
-
                             ],
                           );
                         });
@@ -302,7 +290,6 @@ class SettingsPageState extends State<SettingsPage>{
                       fontSize: 20,
                     ),
                     tiles: [
-
                       SettingsTile(
                         title: 'About Us',
                         leading: Icon(Icons.info_outlined),
@@ -326,11 +313,9 @@ class SettingsPageState extends State<SettingsPage>{
                                                   style: linkStyle,
                                                   recognizer: TapGestureRecognizer()
                                                     ..onTap = () {
-
                                                       _launchURL('https://wastelesssg.github.io/#/');
                                                       print('wasteless website');
                                                     }),
-
                                             ],
                                           ),
                                         )
@@ -339,6 +324,7 @@ class SettingsPageState extends State<SettingsPage>{
                                       ],
                                     ),
                                   ),
+
                                   actions: <Widget>[
                                     TextButton(
                                       child: Text('Close'),
@@ -348,9 +334,8 @@ class SettingsPageState extends State<SettingsPage>{
                                     ),
                                   ],
                                 );
-                              });
-
-                        },
+                          });
+                          },
                       ),
 
                       SettingsTile(
@@ -379,12 +364,9 @@ class SettingsPageState extends State<SettingsPage>{
                                                       _launchURL('mailto:sgwasteless@gmail.com');
                                                       print('email');
                                                     }),
-
                                             ],
                                           ),
                                         )
-
-
                                       ],
                                     ),
                                   ),
@@ -397,8 +379,7 @@ class SettingsPageState extends State<SettingsPage>{
                                     ),
                                   ],
                                 );
-                              });
-
+                          });
                         },
                       ),
 
@@ -442,16 +423,12 @@ class SettingsPageState extends State<SettingsPage>{
                   ),
                 ],
               ),
-
-
-
-
-
-
-
-      );
-
+    );
   }
+
+  /**
+   * async function to allow user to sign out of their account
+   */
   Future<void> _signOut() async {
     try {
       await FirebaseAuth.instance.signOut();
@@ -461,16 +438,15 @@ class SettingsPageState extends State<SettingsPage>{
               builder: (context) =>
               new Login()),
               (route) => false);
-
     } catch (e) {
       print(e); // TODO: show dialog with error
     }
-
-
-
   }
 }
 
+/**
+ * helper method to direct user to url for project's website
+ */
 _launchURL(url) async {
   print("launching url");
   if (await canLaunch(url)) {

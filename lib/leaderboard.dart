@@ -6,6 +6,9 @@ import 'dart:convert';
 import 'package:async/async.dart';
 import 'package:WasteLess/wasteless-data.dart';
 
+/**
+ * Initialises leaderboard page
+ */
 class LeaderboardPage extends StatefulWidget{
   final FirebaseUser user;
   String chosenType;
@@ -13,6 +16,7 @@ class LeaderboardPage extends StatefulWidget{
   @override
   LeaderboardPageState createState() => new LeaderboardPageState(this.user, this.chosenType);
 }
+
 
 class LeaderboardPageState extends  State<LeaderboardPage> {
   String chosenType;
@@ -61,18 +65,18 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
   }
 
 
+  /**
+   * retrieves data from firebase based on information selected on the filter, saves in list data structure
+   */
   _fetchData(String type, String time) async {
-    String currentType;
     String currentTypeNum;
     String currentTrend;
 
-    //Rubbish selected
     if (type == "Rubbish") {
-      currentType = "general";
+      //general trash
       currentTypeNum = '3';
     } else {
-      currentType = "all";
-      // TODO:UPDATE ONCE ENDPOINT FOR ALL RECYCLING IS UP
+      //paper, plastic, general
       currentTypeNum = '4';
     }
 
@@ -99,6 +103,9 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     }
   }
 
+  /**
+   * returns list shown on scaffold
+   */
   Widget _buildList(String type, String trend) {
 
     print(type);
@@ -183,13 +190,11 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
     }
   }
 
-
-
+  /**
+   * scaffold of either general or recyclables leaderboard depending on which leaderboard user selects along with the filtered criterion
+   */
   @override
   Widget build(BuildContext context) {
-
-
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

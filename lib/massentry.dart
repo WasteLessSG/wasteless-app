@@ -1,3 +1,4 @@
+
 class formattedWeekEntry {
   double mass;
   String day;
@@ -33,22 +34,6 @@ class MassEntry {
         day = map['day'],
         month = map['month'],
         year = map['year'];
-
-        //noTime = DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.parse(map['timestamp'])));
-
-  // MassEntry.fromJson(Map<String, dynamic> json):
-  //       mass = json['mass'],
-  //       noTime = json['noTime'],
-  //       timestamp = json['timestamp'],
-  //       shortenedTime = json['shortenedTime'];
-  // Map<String, dynamic> toJson() {
-  //   return {
-  //     'mass': mass,
-  //     'timestamp': timestamp,
-  //     'shortenedTime': shortenedTime,
-  //     'noTime': noTime,
-  //   };
-  // }
 
 
 }

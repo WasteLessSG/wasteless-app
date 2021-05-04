@@ -2,6 +2,9 @@ import 'package:WasteLess/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+/**
+ * Initialises change password page located at settings
+ */
 class ChangePassword extends StatefulWidget {
 
   final FirebaseUser user;

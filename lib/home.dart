@@ -4,6 +4,9 @@ import 'package:WasteLess/history.dart';
 import 'package:WasteLess/dashboard-new.dart';
 import 'package:WasteLess/settings.dart';
 
+/**
+ * initialises toolbar for navigation
+ */
 class HomePage extends StatefulWidget{
 
   final FirebaseUser user;
@@ -12,6 +15,7 @@ class HomePage extends StatefulWidget{
   @override
   HomePageState createState() => new HomePageState(this.user);
 }
+
 class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
 
   FirebaseUser user;
@@ -28,13 +32,15 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
   }
 
 
-
   @override
   void dispose() {
     controller.dispose();
     super.dispose();
   }
 
+  /**
+   * scaffold of toolbar
+   */
   @override
   Widget build(BuildContext context) {
     debugPrint(user.uid);

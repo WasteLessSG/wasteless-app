@@ -1,10 +1,12 @@
 import 'package:WasteLess/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:WasteLess/wasteless-data.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
+/**
+ * Intialises feedback page under settings
+ */
 class FeedbackPage extends StatefulWidget {
 
   final FirebaseUser user;
@@ -34,6 +36,9 @@ class FeedbackPageState extends State<FeedbackPage> {
     super.dispose();
   }
 
+  /**
+   * scaffold for feedback page.
+   */
   @override
   Widget build(BuildContext context) {
 
@@ -72,8 +77,6 @@ class FeedbackPageState extends State<FeedbackPage> {
               if (!currentFocus.hasPrimaryFocus) {
                 currentFocus.unfocus();
               }
-             //FocusScope.of(context).requestFocus(new FocusNode());
-             //  SystemChannels.textInput.invokeMethod('TextInput.hide');
             },
             child: Column(
 
@@ -88,8 +91,6 @@ class FeedbackPageState extends State<FeedbackPage> {
                   keyboardType: TextInputType.multiline,
                   minLines: 7,
                   maxLines: 7,
-                  // onChanged: (value) => newName = value,
-                  //inputFormatters: [ FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")), ],
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white70,
@@ -107,8 +108,6 @@ class FeedbackPageState extends State<FeedbackPage> {
                   height: 10,
                 ),
 
-
-
                 CheckboxListTile(
                     controlAffinity: ListTileControlAffinity.leading,
                     activeColor:  Color.fromRGBO(32, 95, 38, 1),
@@ -118,8 +117,8 @@ class FeedbackPageState extends State<FeedbackPage> {
                       setState(() {
                         anon = !anon;
                         print(anon);
-
-                      });}),
+                      });
+                    }),
 
                 SizedBox(
                   height: 20,
@@ -129,7 +128,6 @@ class FeedbackPageState extends State<FeedbackPage> {
                   title: "Send Feedback",
                   callback: sendFeedback,
                 ),
-
               ],
             ),
           ),
@@ -137,6 +135,10 @@ class FeedbackPageState extends State<FeedbackPage> {
       ),
     );
   }
+
+  /**
+   * async function to send feedback to google docs
+   */
   Future<void> sendFeedback() async {
     String feedbackText = feedbackController.text;
     print(feedbackText);
@@ -173,6 +175,9 @@ class FeedbackPageState extends State<FeedbackPage> {
       }
   }
 
+  /**
+   * helper method for alert popup after feedback is sent successfully
+   */
   void _showAlertDialog(String title, String message) {
     AlertDialog alertDialog = AlertDialog(
       title: Text(title),

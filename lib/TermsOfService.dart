@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+
+///Terms of Service page
 class TermsOfService extends StatelessWidget {
 
   @override

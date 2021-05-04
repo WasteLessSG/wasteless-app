@@ -2,7 +2,9 @@ import 'package:WasteLess/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
+/**
+ * Initialises forget password page from login screen
+ */
 class ForgotPasswordPage extends StatefulWidget {
 
   @override

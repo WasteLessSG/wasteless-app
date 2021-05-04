@@ -1,6 +1,5 @@
 import 'package:WasteLess/wasteless-data.dart';
 import 'package:flutter/material.dart';
-import 'package:WasteLess/styles.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -37,10 +36,24 @@ class TestPageState extends State<TestPage>{
     futureWaste = fetchWaste();
   }
 
+  AppBar MainStatsPageHeader(String string, FontWeight fw, Color chosenColor) {
+    return AppBar(
+      title: Text(string,
+        style: TextStyle(
+          fontWeight: fw,
+          color: chosenColor,
+        ),
+      ),
+      centerTitle: true,
+      backgroundColor: Colors.white,
+      elevation: 0,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Styles.MainStatsPageHeader("TEST FOR DEBUGGING", FontWeight.bold, Colors.black),
+      appBar: MainStatsPageHeader("TEST FOR DEBUGGING", FontWeight.bold, Colors.black),
       body: Center(
             child: FutureBuilder<WasteLessData>(
                   future: futureWaste,
