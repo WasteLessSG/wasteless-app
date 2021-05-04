@@ -34,6 +34,9 @@ class ChangePasswordState extends State<ChangePassword> {
     super.initState();
   }
 
+  /**
+   * scaffold for change password page from settings page
+   */
   @override
   Widget build(BuildContext context) {
     return Scaffold(

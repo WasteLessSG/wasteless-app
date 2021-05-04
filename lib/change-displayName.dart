@@ -4,6 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:WasteLess/wasteless-data.dart';
 import 'package:http/http.dart' as http;
 
+/**
+ * Initialises change name page from settings page
+ */
 class ChangeName extends StatefulWidget {
 
   final FirebaseUser user;
@@ -29,14 +32,12 @@ class ChangeNameState extends State<ChangeName> {
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
     nameController.dispose();
     super.dispose();
   }
 
   /**
-   * main scaffolding function to build change name page under settings.
+   * Scaffold to build change name page under settings.
    */
   @override
   Widget build(BuildContext context) {
@@ -78,8 +79,6 @@ class ChangeNameState extends State<ChangeName> {
               TextField(
                 autocorrect: false,
                 controller: nameController,
-                // onChanged: (value) => newName = value,
-                //inputFormatters: [ FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")), ],
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white70,
@@ -101,13 +100,10 @@ class ChangeNameState extends State<ChangeName> {
                 height: 20,
               ),
 
-
-
               LoginButton(
                 title: "Confirm Name Change",
                 callback: changeDisplayName,
               ),
-
             ],
           ),
         ),
@@ -124,9 +120,7 @@ class ChangeNameState extends State<ChangeName> {
       _showAlertDialog("Error", "Please enter a new name");
     } else
       try {
-
         String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/user/${user.uid.toString()}?username=${newName}";
-
 
         final response = await http.put(link, headers: {"x-api-key": WasteLessData.userKey});
         if (response.statusCode == 200) {

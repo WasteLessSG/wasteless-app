@@ -266,7 +266,7 @@ class DashboardPageState extends State<DashboardPage> {
 
 
   /**
-   * scaffold of application
+   * scaffold of dashboard
    */
   @override
   Widget build(BuildContext context) {
@@ -500,6 +500,9 @@ class DashboardPageState extends State<DashboardPage> {
       );
   }
 
+  /**
+   * helper function to display different state of trashbin based on amount of waste a person has thrown relative to area amount
+   */
   Widget makeTrashBin() {
     return FutureBuilder(
       future: _fetchTrashOrRecycleData("general"),

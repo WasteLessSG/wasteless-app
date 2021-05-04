@@ -14,6 +14,10 @@ class ForgotPasswordPage extends StatefulWidget {
 class ForgotPasswordPageState extends State<ForgotPasswordPage> {
   String email;
 
+
+  /**
+   * scaffold for forget password page from login page
+   */
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery
@@ -109,7 +113,6 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           ),
                         ),
 
-
                         LoginButton(
                           title: "RESET PASSWORD",
                           callback: resetPassword,
@@ -136,6 +139,9 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
       );
   }
 
+  /**
+   * async operation to send email to user's email address to reset password
+   */
   Future<void> resetPassword() async {
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     try {
@@ -158,22 +164,12 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 content: Text(e.message),
               ));
     }
-
-
-    void _showAlertDialog(String title, String message) {
-      AlertDialog alertDialog = AlertDialog(
-        title: Text(title),
-        content: Text(message),
-      );
-      showDialog(
-          context: context,
-          builder: (_) => alertDialog
-      );
-    }
   }
 }
 
-
+/**
+ * helper page to reset password. not login function but same code
+ */
 class LoginButton extends StatelessWidget {
   final String title;
   final VoidCallback callback;
@@ -186,7 +182,6 @@ class LoginButton extends StatelessWidget {
     return Container(
         padding: EdgeInsets.all(10.0),
         child: Container(
-          // margin: EdgeInsets.symmetric(vertical: 10),
           width: size.width * 0.8,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(29),

@@ -16,7 +16,7 @@ class LoginState extends State<Login> {
   String email, password;
   final TextEditingController passwordController = TextEditingController();
 
-  //Firebase doesnt support custom usernames, username must be in form of email
+  //Firebase does not support custom username, username must be in form of email
   bool _obscureText = true;
 
   @override
@@ -27,11 +27,13 @@ class LoginState extends State<Login> {
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
     passwordController.dispose();
     super.dispose();
   }
+
+  /**
+   * scaffold for login page
+   */
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -222,6 +224,9 @@ class LoginState extends State<Login> {
 
   }
 
+  /**
+   * helper function to direct user to forget-password page
+   */
   void _forgetPassword(){
 
     Navigator.push(
@@ -234,6 +239,10 @@ class LoginState extends State<Login> {
 
 
   }
+
+  /**
+   * helper function for alert
+   */
   void _showAlertDialog( String title, String message ) {
     AlertDialog alertDialog = AlertDialog(
       title: Text(title),
@@ -248,7 +257,9 @@ class LoginState extends State<Login> {
 }
 
 
-
+/**
+ * login button to go to dashboard page
+ */
 class LoginButton extends StatelessWidget {
   final String title;
   final VoidCallback callback;
