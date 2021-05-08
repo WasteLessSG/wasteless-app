@@ -20,10 +20,10 @@ the information is sent to the server and the data can be accessed by the user u
 
 ## Features
 <p>
-1. Leaderboard page that informs the user on his/her relative contribution to the amount of trash thrown in an area. <br>
-2. History page to inform users on the amount of waste they generated and also the type of waste generated. <br>
-3. Filter function for both leaderboard and history page to enable users to obtain more accurate information on the type of waste generated to better aid decision making. <br>
-4. Settings page containing information for the user to access the chute manually. <br>
+1. Leaderboard page that informs the user on his/her relative contribution to the amount of trash thrown in an area. <br><br>
+2. History page to inform users on the amount of waste they generated and also the type of waste generated. <br><br>
+3. Filter function for both leaderboard and history page to enable users to obtain more accurate information on the type of waste generated to better aid decision making. <br><br>
+4. Settings page containing information for the user to access the chute manually. <br><br>
 </p>
 
 
