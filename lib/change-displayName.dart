@@ -121,7 +121,6 @@ class ChangeNameState extends State<ChangeName> {
     } else
       try {
         String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/user/${user.uid.toString()}?username=${newName}";
-
         final response = await http.put(link, headers: {"x-api-key": WasteLessData.userKey});
         if (response.statusCode == 200) {
           _showAlertDialog("Name Changed Successfully!", "Display name is now " + newName);
@@ -129,7 +128,6 @@ class ChangeNameState extends State<ChangeName> {
         } else {
           throw Exception('Failed to load data');
         }
-
       } catch (e) {
        _showAlertDialog("Error", e.message);
       }

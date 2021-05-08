@@ -9,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:WasteLess/wasteless-data.dart';
-import 'package:date_utils/date_utils.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 /**
@@ -516,13 +515,7 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                             fontWeight: FontWeight.bold,
                             ),
                             ),
-
-
-                            )
-                              // _buildStatsDailyInfo("self"),
-
-
-
+                            ),
                             ],
                           );
                           } else {
@@ -532,9 +525,6 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
                           }
                           }
                           ),
-
-
-
 
               ),
             ),
@@ -561,8 +551,6 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
              SizedBox(
                height: MediaQuery.of(context).size.height * 0.05,
              ),
-
-             //_buildBody(context),
 
     ]
         )
@@ -604,8 +592,6 @@ class PersonalStatsPageState extends State<PersonalStatsPage>{
 
         myData = massdata.where((i)=> DateTime.parse(i.timestamp).isAfter(DateTime(now.year, now.month, now.day).subtract(Duration(days: 6)))  )
             .toList();
-
-
 
         _generateWeeklyData(formatWeekdays(combineDays(myData)));
 

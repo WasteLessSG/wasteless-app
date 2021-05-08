@@ -89,14 +89,12 @@ class ChangePasswordState extends State<ChangePassword> {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      // Based on passwordVisible state choose the icon
                       _obscureOldPassword
                           ? Icons.visibility_off
                           : Icons.visibility,
                       color: Color.fromRGBO(32, 95, 38, 1) ,
                     ),
                     onPressed: () {
-                      // Update the state i.e. toogle the state of passwordVisible variable
                       setState(() {
                         _obscureOldPassword = !_obscureOldPassword;
                       });
@@ -123,14 +121,12 @@ class ChangePasswordState extends State<ChangePassword> {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      // Based on passwordVisible state choose the icon
                       _obscureNewPassword1
                           ? Icons.visibility_off
                           : Icons.visibility,
                       color: Color.fromRGBO(32, 95, 38, 1) ,
                     ),
                     onPressed: () {
-                      // Update the state i.e. toogle the state of passwordVisible variable
                       setState(() {
                         _obscureNewPassword1 = !_obscureNewPassword1;
                       });
@@ -157,14 +153,12 @@ class ChangePasswordState extends State<ChangePassword> {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      // Based on passwordVisible state choose the icon
                       _obscureNewPassword2
                           ? Icons.visibility_off
                           : Icons.visibility,
                       color: Color.fromRGBO(32, 95, 38, 1) ,
                     ),
                     onPressed: () {
-                      // Update the state i.e. toogle the state of passwordVisible variable
                       setState(() {
                         _obscureNewPassword2 = !_obscureNewPassword2;
                       });

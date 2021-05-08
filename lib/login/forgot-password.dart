@@ -121,19 +121,15 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         SizedBox(
                           height: size.height *0.03 ,
                         ),
-
-
                       ],
                     ),
                   ),
                   SizedBox(
                     height: size.height *0.225 ,
                   ),
-
                   Image.asset('assets/nusLogo.png'),
-
-
-                ],),
+                ],
+              ),
             )
         ),
       );

@@ -16,7 +16,6 @@ class LoginState extends State<Login> {
   String email, password;
   final TextEditingController passwordController = TextEditingController();
 
-  //Firebase does not support custom username, username must be in form of email
   bool _obscureText = true;
 
   @override
@@ -68,11 +67,9 @@ class LoginState extends State<Login> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-
                           SizedBox(
                             height: size.height *0.040 ,
                           ),
-
                           RichText(text: TextSpan(
                               text: "WasteLess ",
                               style: TextStyle(
@@ -91,14 +88,9 @@ class LoginState extends State<Login> {
 
                               ]),
                           ),
-
-
                           SizedBox(
                             height: size.height *0.03 ,
                           ),
-
-
-
                           Container(
                             margin: EdgeInsets.symmetric(vertical: 10),
                             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -121,7 +113,6 @@ class LoginState extends State<Login> {
                               ),
                             ),
                           ),
-
                           Container(
                             margin: EdgeInsets.symmetric(vertical: 10),
                             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -130,7 +121,6 @@ class LoginState extends State<Login> {
                               color: Colors.lightGreen[200],
                               borderRadius: BorderRadius.circular(29),
                             ),
-
                             child: TextField(
                               controller: passwordController,
                               autocorrect: false,
@@ -159,8 +149,6 @@ class LoginState extends State<Login> {
                               ),
                             ),
                           ),
-
-
                           LoginButton(
                             title: "LOGIN",
                             callback: signIn,
@@ -183,14 +171,9 @@ class LoginState extends State<Login> {
                               )
                             ],
                           ),
-
                           SizedBox(
                             height: size.height *0.05 ,
                           ),
-
-
-
-
                         ],
                       ),
                     ),
@@ -199,9 +182,6 @@ class LoginState extends State<Login> {
                     ),
 
                     Image.asset('assets/nusLogo.png'),
-
-
-
                   ], ),
               ),
             ),
@@ -217,7 +197,6 @@ class LoginState extends State<Login> {
       FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password)).user;
       Navigator.push(context, MaterialPageRoute(builder: (context)=> new HomePage(user)));
     } catch (e) {
-
       _showAlertDialog("ERROR",e.message );
       passwordController.clear();
     }
@@ -228,7 +207,6 @@ class LoginState extends State<Login> {
    * helper function to direct user to forget-password page
    */
   void _forgetPassword(){
-
     Navigator.push(
       context,
       PageRouteBuilder(

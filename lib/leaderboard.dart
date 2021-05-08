@@ -29,7 +29,6 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
   String _selectedTrend = "Select Trend";
 
   List<bool> _typeChosen = [true, false, false];
-  List<String> _typeList = ["Select Type", "Rubbish", "Recyclables"];
 
   List<bool> _trendChosen = [true, false, false, false];
   List<String> _trendList = ["Select Trend", "Week", "Month", "All Time"];
@@ -43,11 +42,8 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
   final dfFilter = DateFormat("yyyy-MM-dd");
   final df3 = DateFormat('d MMM yyyy');
 
-  AsyncMemoizer _memoizer;
-
   @override
   void initState() {
-    _memoizer = AsyncMemoizer();
     _selectedTrend = "Week";
     _selectedType = chosenType;
     _trendChosen = [false, true, false, false];
@@ -88,7 +84,6 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
       currentTrend = "week";
     }
 
-    //String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard?aggregateBy=week&type=general";
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/leaderboard?type=${currentTypeNum}&aggregateBy=${currentTrend}";
     print("leaderboard " + link);
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
@@ -108,14 +103,7 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
    */
   Widget _buildList(String type, String trend) {
 
-    print(type);
-    print(trend);
-
-    var now = new DateTime.now();
     List newList = list;
-    print(list);
-
-    list.sort((a, b) => a['weight'].compareTo(b['weight']));
     print(list);
 
     if (type != 'Rubbish') {
@@ -174,9 +162,8 @@ class LeaderboardPageState extends  State<LeaderboardPage> {
                   title: new Text(newList[index]["username"],
                   style: TextStyle(
                     fontSize: 25,
-                  ),),
-                    //title: new Text(df3.format(DateTime.fromMillisecondsSinceEpoch(newList[index]["userId"] * 1000)).toString()),
-                    //title: new Text(DateTime.now().month.toString()),
+                  ),
+                  ),
                   trailing: new Text(nf.format((newList[index]["weight"]/1000000)) + " kg",
                     style: TextStyle(
                       fontSize: MediaQuery.of(context).size.width/15,

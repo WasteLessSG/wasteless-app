@@ -189,9 +189,7 @@ class DashboardPageState extends State<DashboardPage> {
 
     String timeRangeStartValue = (prevWeek.millisecondsSinceEpoch ~/ 1000).toString();
     String timeRangeEndValue = (now.millisecondsSinceEpoch ~/ 1000).toString();
-
     String link = "https://yt7s7vt6bi.execute-api.ap-southeast-1.amazonaws.com/dev/waste/${user.uid.toString()}?aggregateBy=day&timeRangeStart=${timeRangeStartValue}&timeRangeEnd=${timeRangeEndValue}&type=${typeNum}";
-
     final response = await http.get(link, headers: {"x-api-key": WasteLessData.userKey});
 
     if (response.statusCode == 200) {
@@ -495,7 +493,6 @@ class DashboardPageState extends State<DashboardPage> {
                 ),
               ),
             ),
-
       ),
       );
   }
@@ -516,18 +513,12 @@ class DashboardPageState extends State<DashboardPage> {
           double percFill = ((totalValue-avgPersonWaste)/avgPersonWaste)*100;
           print("%: " + percFill.toString());
           if (percFill < 50.0) {
-
             selectedState = "rubbishEmpty";
-
           } else if (50.0 <= percFill && percFill < 80.0) {
-
             selectedState = "rubbishFilled";
-
           } else {
             selectedState = "rubbishOverflow";
           }
-
-
           if (selectedState == "rubbishEmpty") {
             return Image.asset('assets/rubbishEmptyIsland.png',
               height: MediaQuery.of(context).size.height * 0.177,

@@ -1,4 +1,6 @@
-
+/**
+ * Format class that takes in values to conform to graph generation
+ */
 class formattedWeekEntry {
   double mass;
   String day;

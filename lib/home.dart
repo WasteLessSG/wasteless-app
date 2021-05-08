@@ -73,10 +73,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
               ),
               ),
             ],
-
           ),
-
-
 
           body: new TabBarView(
               physics: NeverScrollableScrollPhysics(),
@@ -85,7 +82,6 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin 
                 new HistoryPage(user),
                 new DashboardPage(user),
                 new SettingsPage(user),
-
             ])
       ),
     );
