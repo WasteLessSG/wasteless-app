@@ -14,9 +14,10 @@ The following technological stacks were used in the project
 
 ## Sponsors and Affiliates
 We would like to thank the following organisations for their continuous support which enabled us to achieve our goal of serving the community.
-![National University of Singapore](https://logos-download.com/wp-content/uploads/2016/12/National_University_of_Singapore_logo_NUS.png)
-![Tembusu Residential College](https://tembusu.nus.edu.sg/images/features/_homeFeature/Tembusu_Admission.png)
-![South West Community Development Council](https://s3.ap-southeast-1.amazonaws.com/logos.form.gov.sg/1590560379953-SWCDC_Logo_FC_RGB_1080px.png)
-![National Environmental Agency](https://www.nea.gov.sg/assets/images/design/logo.png)
+<img src="https://logos-download.com/wp-content/uploads/2016/12/National_University_of_Singapore_logo_NUS.png" width=20% height=20% alt="NUS logo">
+<img src="https://tembusu.nus.edu.sg/images/features/_homeFeature/Tembusu_Admission.png" width=20% height=20% alt="Tembusu RC logo">
+<img src="https://s3.ap-southeast-1.amazonaws.com/logos.form.gov.sg/1590560379953-SWCDC_Logo_FC_RGB_1080px.png" width=20% height=20% alt="South West CDC logo">
+<img src="https://www.nea.gov.sg/assets/images/design/logo.png" width=20% height=20% alt="NEA logo">
+
 
 
