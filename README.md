@@ -2,8 +2,8 @@
 
 ## Background
 <p>
-Developed from idea submitted for NTU Impact Through Inspiration Ideathon, aiming to influence the community to tackle waste generation in Singapore. We were spurred by Singapore’s 
-domestic recycling rate decreasing from 22% in 2016 to 13% in 2020. We wanted to augment existing efforts by the government to help increase recycling rates in Singapore to assist in Singapore's
+Developed from idea submitted for NTU Impact Through Inspiration Ideathon with the aim of influencing the community to tackle waste generation in Singapore. We were spurred by Singapore’s 
+domestic recycling rate decreasing from 22% in 2016 to 13% in 2020. We wanted to augment existing efforts by the government to help increase recycling rates in Singapore to assist the nation's
 Zero Waste Initiative as the waste we produce contributes greatly to climate change too. 
 
 Our project received funding from Southwest CDC and was successfully deployed in Q1 2021 at The National University of Singapore (NUS)'s Tembusu Residential College.
@@ -57,7 +57,6 @@ We would like to thank the following organisations for their continuous support 
     <img src="https://logos-download.com/wp-content/uploads/2016/12/National_University_of_Singapore_logo_NUS.png" width=20% height=20% alt="NUS logo">
     <img src="https://squaremilerelay.com/wp-content/themes/smr/assets/img/companies/tembusu_college.png" width=20% height=20% alt="Tembusu RC logo">
     <img src="https://s3.ap-southeast-1.amazonaws.com/logos.form.gov.sg/1590560379953-SWCDC_Logo_FC_RGB_1080px.png" width=20% height=20% alt="South West CDC logo">
-    <img src="https://www.nea.gov.sg/assets/images/design/logo.png" width=20% height=20% alt="NEA logo">
 </p>
 
 
